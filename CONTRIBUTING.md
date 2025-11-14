@@ -14,6 +14,6 @@ Please provide any issues in the following format, yes you can copy-paste it:
 >``## Sign-off: By signing off, you tell us you have looked through open issues first.``   
 
 ## Commits
-We follow a commit format in order to quickly dessiminate what a happens in yours/ours pull request. We do this to streamline our effort and not have differing commits messages which vary widely by user. You can find a full list on [Conventional Commits Cheatsheet] [commits]
+We follow a commit format in order to quickly dessiminate what a happens in yours/ours pull request. We do this to streamline our effort and not have differing commits messages which vary widely by user. You can find a full list on [Conventional Commits Cheatsheet][commits]
 
 [commits]<https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13>
