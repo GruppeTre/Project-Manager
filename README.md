@@ -1,9 +1,8 @@
-# Usage
+# Project Calculation Tool
+## Usage
 
-# 
+## Getting Started
 
-# Contributing
+## Contributing
 
-# Contributing
-
-# Maintaining
+## Maintaining
