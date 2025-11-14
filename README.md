@@ -4,6 +4,8 @@
 ## Getting Started
 
 ## Contributing
-To contribute to the project such as creating issues or pull requests please refer to [Contributing.md]:(Contributing.md)
+To contribute to the project such as creating issues or pull requests please refer to [Contributing] [contr]
 
 ## Maintaining
+
+[contr]: ([https](https://github.com/GruppeTre/ProjectCalculationTool/blob/main/CONTRIBUTING.md)
