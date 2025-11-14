@@ -8,4 +8,4 @@ To contribute to the project such as creating issues or pull requests please ref
 
 ## Maintaining
 
-[contr]: ([https](https://github.com/GruppeTre/ProjectCalculationTool/blob/main/CONTRIBUTING.md)
+[contr]: <https://github.com/GruppeTre/ProjectCalculationTool/blob/main/CONTRIBUTING.md>
