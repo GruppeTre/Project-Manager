@@ -3,6 +3,8 @@
 
 ## Getting Started
 
+## Code of conduct
+
 ## Contributing
 To contribute to the project such as creating issues or pull requests please refer to [Contributing][contr]
 
