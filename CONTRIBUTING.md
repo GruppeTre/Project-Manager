@@ -1,6 +1,6 @@
 # Contributions   
    
-We value all contributions, but also must keep the code free of feature creep, scope-creep and with a low as possible technical debt.   
+We value all contributions, but must also keep the code free of feature creep, scope-creep and with a low as possible technical debt.   
 Therefore any pull requests and issues which adds or requests features may not be accepted by the team.
    
 ## Issues   
@@ -14,7 +14,7 @@ Please provide any issues in the following format, yes you can copy-paste it:
 >``## Sign-off: By signing off, you tell us you have looked through open issues first.``   
 
 ## Commits
-We follow a commit format in order to quickly dessiminate what a happens in yours/ours pull request. We do this to streamline our effort and not have differing commits messages which vary widely by user. You can find a full list on [Conventional Commits Cheatsheet][commits]   
+We follow a commit format in order to quickly dessiminate what happens in pull request's commits. We do this to streamline our effort and not have differing commits messages which vary widely by user. You can find a full list on [Conventional Commits Cheatsheet][commits]   
 Commonly used shorts:   
 - **Types:** [feat], [fix], [refactor], [style], [test]
 - **Description:** Short description with will/should change
@@ -25,3 +25,7 @@ Commonly used shorts:
 ``-m" <optional footer>"``   
 
 [commits]: <https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13>
+
+## Pulls
+A good pull request includes a description of the issue you're trying to solve, improve or add. It should be informative and concise. For a pull request to be considered, we ask that you add one or more of the maintainers as reviewer(s).   
+Please be aware that due to time constraints, it can take some time for us to find the time to review it.
