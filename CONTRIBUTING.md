@@ -17,7 +17,7 @@ Please provide any issues in the following format, yes you can copy-paste it:
 We follow a commit format in order to quickly dessiminate what happens in pull request's commits. We do this to streamline our effort and not have differing commits messages which vary widely by user. You can find a full list on [Conventional Commits Cheatsheet][commits]   
 Commonly used shorts:   
 - **Types:** [feat], [fix], [refactor], [style], [test]
-- **Description:** Short description with will/should change
+- **Description:** Short description with will/should change in present tense
 - **Footer:** Optional, use when closing an issue with Issue#14
 
 **Format**   
