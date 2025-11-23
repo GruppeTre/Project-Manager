@@ -59,26 +59,20 @@ INSERT INTO employee (position, mail, firstName, lastName) VALUES
 ', 'Karoline', 'Bjerg'),
 ('Tester', 'oliver.kure@gmail.com
 ', 'Oliver', 'Kure'),
-
 ('Udvikler', 'li.wei@gmail.com
 ', 'Li', 'Wei'),
 ('Designer', 'chen.lina@yahoo.com
 ', 'Chen', 'Lina'),
-
 ('Support', 'samal.nurpeiis@gmail.com
 ', 'Samal', 'Nurpeiis'),
 ('Udvikler', 'arkan.kadyrov@yahoo.com
 ', 'Arkan', 'Kadyrov'),
-
 ('Analytiker', 'oleksii.bondarenko@gmail.com
 ', 'Oleksii', 'Bondarenko'),
-
 ('Tester', 'igor.morozov@hotmail.com
 ', 'Igor', 'Morozov'),
-
 ('Udvikler', 'mael.kerdudo@gmail.com
 ', 'Mael', 'Kerdudo'),
-
 ('Designer', 'tobias.bechholm@gmail.com
 ', 'Tobias', 'Bechholm'),
 ('Support', 'rebecca.halberg@yahoo.com
@@ -101,8 +95,12 @@ INSERT INTO employee (position, mail, firstName, lastName) VALUES
 ', 'Stine', 'Haugaard');
 
 INSERT INTO account(role, password, emp_id) VALUES
+--manager--
 (1, 'Ostesovs3000', 9),
+--manager--
 (1, 'TommyWieseau200' 1),
+
+--developers--
 (2, 'MischeviousFig' 2),
 (2, 'SilentHarbor42', 4),
 (2, 'NordicPineTrail', 6),
@@ -117,6 +115,7 @@ INSERT INTO account(role, password, emp_id) VALUES
 INSERT INTO project(name, start_date, end_date) VALUES
 ('Shopify.com WebPage Adjustment', 2025-03-23, 2025-07-10),
 ('CDON.com User-payment fixes', 2024-04-22, 2024-08-29);
+
 
 INSERT INTO subproject(name, start_date, end_date) VALUES
 ('Change search options bar to include new product categories', '2025-03-24', '2025-04-15'),
@@ -147,4 +146,83 @@ INSERT INTO task(name, start_date, end_date, hours) VALUES
 ('Revise shipping calculation formulas', '2024-06-21', '2024-07-01', 16),
 ('Test international shipping scenarios', '2024-07-02', '2024-07-10', 12),
 ('Update shipping error messages', '2024-07-11', '2024-07-15', 8);
+
+--Junciton tables:
+
+INSERT INTO account_project_junction(project_id, account_id) VALUES
+--First project--
+(1, 1),
+(1,10),
+(1,11),
+(1,46),
+(1,42),
+(1,40),
+
+--second project--
+(2,15),
+(2,4),
+(2,6),
+(2,8);
+
+INSERT INTO project_subproject_junction(project_id, subproject_id) VALUES
+--first project and its subprojects.
+(1,1),
+(1,2),
+(1,5),
+
+(2,3),
+(2,4),
+(2,6);
+
+
+
+INSERT INTO subproject_task_junction(subproject_id, task_id) VALUES
+INSERT INTO subproject_task_junction(subproject_id, task_id) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(2, 5),
+(2, 6),
+(2, 7),
+(2, 8),
+(3, 9),
+(3, 10),
+(3, 11),
+(4, 12),
+(4, 13),
+(4, 14),
+(5, 15),
+(5, 16),
+(5, 17),
+(6, 18),
+(6, 19),
+(6, 20);
+
+INSERT INTO employee_task_junction(employee_id, task_id) VALUES
+ (2, 1),
+ (6, 2),
+ (8, 3),
+ (10, 4),
+ (4, 5),
+ (15, 6),
+ (21, 7),
+ (40, 8),
+ (11, 9),
+ (22, 10),
+ (29, 11),
+ (31, 12),
+ (32, 13),
+ (35, 14),
+ (42, 15),
+ (46, 16),
+ (27, 17),
+ (14, 18),
+ (24, 19),
+ (19, 20);
+
+
+
+
+
 
