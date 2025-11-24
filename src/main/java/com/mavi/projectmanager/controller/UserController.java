@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
 
-    private AccountService accountService;
+    private final AccountService accountService;
 
     public UserController (AccountService accountService){
         this.accountService = accountService;
@@ -33,6 +33,6 @@ public class UserController {
     public String editUser(@ModelAttribute Account updatedAccount){
         accountService.updatedAccount(updatedAccount);
 
-        return "redirect:/user/overview";
+        return "redirect:/user/edit/1";
     }
 }

@@ -11,13 +11,14 @@
 <main>
     <section>
         <article>
-            <form th:action="@{/user/editUser}" th:object="${account}">
+            <form th:action="@{/user/editUser}" th:object="${account}" th:method="post">
+                <input th:type="hidden" th:field="*{id}">
                 <label for="userName" th:text="#{form.label.username}"></label>
                 <input id="userName" th:type="text" th:field="*{mail}" readonly>
 
                 <label for="role" th:text="#{form.label.role}"></label>
                 <select id="role" th:type="dropdown" th:field="*{role}">
-                    <option th:each="roles : ${roles}" th:value="${roles.id}" th:text="${roles.value}" />
+                    <option th:each="roles : ${roles}" th:value="${roles.name()}" th:text="${roles.value}" />
                 </select>
                 <label for="password" th:text="#{form.label.password}"></label>
                 <input id="password" th:type="password" th:field="*{password}">

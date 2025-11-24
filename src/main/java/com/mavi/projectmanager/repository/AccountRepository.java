@@ -18,8 +18,10 @@ public class AccountRepository {
 
     public final RowMapper<Account> accountRowMapper = ((rs, rowNum) -> {
         Account account = new Account();
+        int roleId = rs.getInt("role");
+
         account.setId(rs.getInt("id"));
-        account.setRole(Role.values()[rs.getInt("role")]);
+        account.setRole(Role.getRoleByID(roleId));
         account.setPassword(rs.getString("password"));
         account.setEmployee(getEmployeeByID(rs.getInt("emp_id")));
 

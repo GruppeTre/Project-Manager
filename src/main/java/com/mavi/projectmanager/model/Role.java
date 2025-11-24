@@ -20,4 +20,14 @@ public enum Role {
     public String getValue() {
         return value;
     }
+
+    public static Role getRoleByID(int id){
+        for(Role role : Role.values()){
+            if(role.id == id){
+                return role;
+            }
+        }
+
+        throw new IllegalArgumentException("No role found with id: " + id);
+    }
 }
