@@ -15,7 +15,7 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public boolean checkPassword(String str){
+    public boolean isValidPassword(String str){
         if(str.isEmpty()){
             throw new InvalidFieldException("Password cannot be empty", Field.PASSWORD);
         } else return true;
@@ -30,7 +30,7 @@ public class AccountService {
     }
 
     public Account updatedAccount(Account updatedAccount){
-        if (checkPassword(updatedAccount.getPassword())) {
+        if (isValidPassword(updatedAccount.getPassword())) {
             return accountRepository.updatedAccount(updatedAccount);
         }
         else {
