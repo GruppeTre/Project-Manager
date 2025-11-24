@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/style/normalize.css}">
+    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/style/custom.css}">
+</head>
+<body>
+<main>
+    <section>
+        <article>
+            <form th:object="@{account}">
+                <label for="userName"></label>
+                <input id="userName" th:type="text" th:field="*{name}" readonly>
+
+                <label for="role"></label>
+                <select id="role" th:type="dropdown" th:field="@{EnumRoles}">
+                    <option th:each="roles : ${EnumRoles}" th:value="${EnumRoleName}" th:text="${EnumRoleName}" />
+                </select>
+                <label for="password"></label>
+                <input id="password" th:type="password" th:field="*{password}">
+
+                <button th:type="submit">Submit</button>
+            </form>
+                <a th:href="/users/overviewPage">Cancel</a>
+        </article>
+    </section>
+</main>
+</body>
+</html>
