@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.View;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -78,5 +79,14 @@ class UserControllerTest {
      */
 
     @Test
+    void shouldEditUser() throws Exception{
+        Account updatedTestAccount = testAccount;
 
+        Mockito.when(accountService.updatedAccount(updatedTestAccount)).thenReturn(updatedTestAccount);
+
+        mockMvc.perform(post("/user/editUser"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/user/edit/1"))
+                .andExpect(flash().attributeCount(0));
+    }
 }
