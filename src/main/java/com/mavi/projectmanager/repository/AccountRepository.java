@@ -55,4 +55,25 @@ public class AccountRepository {
             return null;
         }
     }
+
+    public Account updatedAccount(Account updatedAccount){
+        String query = "UPDATE Account SET role = ?, password = ? WHERE id = ?";
+
+        int accountID = updatedAccount.getId();
+        int role = updatedAccount.getRole().getId();
+        String password = updatedAccount.getPassword();
+
+        int rowsAffected = jdbcTemplate.update(query, role, password, accountID);
+
+        if (rowsAffected > 1) {
+            throw new RuntimeException("Multiple users with id: " + accountID);
+        }
+        if (rowsAffected == 0) {
+            return null;
+        }
+
+        return updatedAccount;
+
+
+    }
 }
