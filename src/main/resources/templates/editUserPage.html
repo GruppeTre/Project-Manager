@@ -13,7 +13,7 @@
         <article>
             <form th:action="/user/editUser/{id}" th:object="${account}">
                 <label for="userName"></label>
-                <input id="userName" th:type="text" th:field="*{name}" readonly>
+                <input id="userName" th:type="text" th:field="*{mail}" readonly>
 
                 <label for="role"></label>
                 <select id="role" th:type="dropdown" th:field="*{role}">
