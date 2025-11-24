@@ -4,7 +4,6 @@ import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.service.AccountService;
 import jakarta.servlet.http.HttpSession;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
