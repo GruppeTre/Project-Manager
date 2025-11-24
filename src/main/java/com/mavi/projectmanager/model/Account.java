@@ -27,6 +27,10 @@ public class Account {
         this.role = role;
     }
 
+    public int getEmployeeId() {
+        return getEmployeeId();
+    }
+
     public String getFirstName() {
         return employee.getFirstName();
     }
