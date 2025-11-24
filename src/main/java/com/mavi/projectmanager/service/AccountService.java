@@ -15,4 +15,8 @@ public class AccountService {
     public Account getAccountByID(int id){
         return accountRepository.getAccountByID(id);
     }
+
+    public Account updatedAccount(Account updatedAccount){
+        return accountRepository.updatedAccount(updatedAccount);
+    }
 }
