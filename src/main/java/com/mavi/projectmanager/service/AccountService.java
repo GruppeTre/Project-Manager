@@ -2,6 +2,7 @@ package com.mavi.projectmanager.service;
 
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidFieldException;
+import com.mavi.projectmanager.exception.PageNotFoundException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.repository.AccountRepository;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,19 @@ public class AccountService {
     }
 
     public Account getAccountByID(int id){
-        return accountRepository.getAccountByID(id);
+        if(id == accountRepository.getAccountByID(id).getId()) {
+            return accountRepository.getAccountByID(id);
+        } else {
+            throw new PageNotFoundException("Account with ID:" + id + " do not exist");
+        }
     }
 
     public Account updatedAccount(Account updatedAccount){
-        if (checkPassword(updatedAccount.getPassword())) return accountRepository.updatedAccount(updatedAccount);
-        else return null;
+        if (checkPassword(updatedAccount.getPassword())) {
+            return accountRepository.updatedAccount(updatedAccount);
+        }
+        else {
+            return null;
+        }
     }
 }
