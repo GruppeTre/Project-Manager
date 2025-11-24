@@ -22,7 +22,7 @@ public class AccountRepository {
     //Inserts an account in the database
     public Account createAccount(Account account) {
 
-        String query = "INSERT IGNORE INTO account (id, role, password, employee) VALUES (?,?,?,?)";
+        String query = "INSERT IGNORE INTO account (id, role, password, emp_id) VALUES (?,?,?,?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
@@ -31,9 +31,7 @@ public class AccountRepository {
                 ps.setInt(1, account.getId());
                 ps.setObject(1, account.getRole());
                 ps.setString(2, account.getPassword());
-                ps.setString(3, account.getFirstName());
-                ps.setString(4, account.getLastName());
-                ps.setString(4, account.getMail());
+                ps.setInt(3, account.getEmployeeId());
 
                 return ps;
             }, keyHolder);
