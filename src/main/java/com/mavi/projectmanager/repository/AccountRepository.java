@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
@@ -18,9 +17,8 @@ public class AccountRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
     //Inserts an account in the database
-    public Account createAccount(Account account) {
+    public Account createUser(Account account) {
 
         String query = "INSERT IGNORE INTO account (id, role, password, emp_id) VALUES (?,?,?,?)";
 
@@ -29,12 +27,13 @@ public class AccountRepository {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, account.getId());
-                ps.setObject(1, account.getRole());
-                ps.setString(2, account.getPassword());
-                ps.setInt(3, account.getEmployeeId());
+                ps.setObject(2, account.getRole());
+                ps.setString(3, account.getPassword());
+                ps.setInt(4, account.getEmployeeId());
 
                 return ps;
             }, keyHolder);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
