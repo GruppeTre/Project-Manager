@@ -10,7 +10,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class AccountRepository {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    public AccountRepository(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public final RowMapper<Account> accountRowMapper = ((rs, rowNum) -> {
         Account account = new Account();

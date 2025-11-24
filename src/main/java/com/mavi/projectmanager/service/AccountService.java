@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 public class AccountService {
     private AccountRepository accountRepository;
 
+    public AccountService(AccountRepository accountRepository){
+        this.accountRepository = accountRepository;
+    }
+
     public Account getAccountByID(int id){
         return accountRepository.getAccountByID(id);
     }
