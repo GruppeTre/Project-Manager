@@ -11,20 +11,20 @@
 <main>
     <section>
         <article>
-            <form th:action="/user/editUser/{id}" th:object="${account}">
-                <label for="userName"></label>
+            <form th:object="${account}">
+                <label for="userName" th:text="#{form.label.username}"></label>
                 <input id="userName" th:type="text" th:field="*{mail}" readonly>
 
-                <label for="role"></label>
+                <label for="role" th:text="#{form.label.role}"></label>
                 <select id="role" th:type="dropdown" th:field="*{role}">
                     <option th:each="roles : ${roles}" th:value="${roles.id}" th:text="${roles.value}" />
                 </select>
-                <label for="password"></label>
+                <label for="password" th:text="#{form.label.password}"></label>
                 <input id="password" th:type="password" th:field="*{password}">
 
                 <button th:type="submit">Submit</button>
             </form>
-                <a th:href="/user/overviewPage">Cancel</a>
+                <a href="#">Cancel</a>
         </article>
     </section>
 </main>
