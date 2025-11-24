@@ -11,9 +11,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AccountRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final EmployeeRepository employeeRepository;
 
-    public AccountRepository(JdbcTemplate jdbcTemplate){
+    public AccountRepository(JdbcTemplate jdbcTemplate, EmployeeRepository employeeRepository){
         this.jdbcTemplate = jdbcTemplate;
+        this.employeeRepository = employeeRepository;
     }
 
     public final RowMapper<Account> accountRowMapper = ((rs, rowNum) -> {
