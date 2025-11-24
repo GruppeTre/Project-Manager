@@ -16,8 +16,8 @@
                 <input id="userName" th:type="text" th:field="*{name}" readonly>
 
                 <label for="role"></label>
-                <select id="role" th:type="dropdown" th:field="@{EnumRoles}">
-                    <option th:each="roles : ${EnumRoles}" th:value="${EnumRoleName}" th:text="${EnumRoleName}" />
+                <select id="role" th:type="dropdown" th:field="*{role}">
+                    <option th:each="roles : ${roles}" th:value="${roles.id}" th:text="${roles.value}" />
                 </select>
                 <label for="password"></label>
                 <input id="password" th:type="password" th:field="*{password}">
