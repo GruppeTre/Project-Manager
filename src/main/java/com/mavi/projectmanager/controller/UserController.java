@@ -7,12 +7,10 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("user")
+@RequestMapping("/user")
 public class UserController {
 
     private AccountService accountService;
@@ -21,7 +19,7 @@ public class UserController {
         this.accountService = accountService;
     }
 
-    @GetMapping("edit/{id}")
+    @GetMapping("/edit/{id}")
     public String getEditUser(@PathVariable int id, Model model, HttpSession httpSession){
         Account account = accountService.getAccountByID(id);
 
@@ -29,5 +27,12 @@ public class UserController {
         model.addAttribute("roles", Role.values());
 
         return "editUserPage";
+    }
+
+    @PostMapping("/editUser")
+    public String editUser(@ModelAttribute Account updatedAccount){
+        accountService.updatedAccount(updatedAccount);
+
+        return "redirect:/user/overview";
     }
 }
