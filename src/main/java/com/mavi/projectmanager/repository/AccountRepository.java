@@ -17,11 +17,21 @@ public class AccountRepository {
         account.setId(rs.getInt("id"));
         account.setRole(Role.values()[rs.getInt("role")]);
         account.setPassword(rs.getString("password"));
-        account.setEmployee(getEmployeeByID());
+        account.setEmployee(getEmployeeByID(rs.getInt("emp_id")));
 
         return account;
     });
 
+    public final RowMapper<Employee> employeeRowMapper = ((rs, rowNum) -> {
+        Employee employee = new Employee();
+        employee.setId(rs.getInt("id"));
+        employee.setPosition(rs.getString("position"));
+        employee.setMail(rs.getString("mail"));
+        employee.setFirstName("firstName");
+        employee.setLastName("lastName");
+
+        return employee;
+    });
 
     public Employee getEmployeeByID(int id){
         String query = "SELECT * FROM Employee WHERE id = ?";
