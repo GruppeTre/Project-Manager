@@ -10,9 +10,9 @@ public class AccountService {
     private AccountRepository accountRepository;
 
     //Registers a user
-    public Account createAccount(Account account) {
+    public Account createUser(Account account) {
 
-        return accountRepository.createAccount(account);
+        return accountRepository.createUser(account);
     }
 
 }
