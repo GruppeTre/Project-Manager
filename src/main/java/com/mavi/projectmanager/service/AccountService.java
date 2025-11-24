@@ -1,5 +1,7 @@
 package com.mavi.projectmanager.service;
 
+import com.mavi.projectmanager.exception.Field;
+import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.repository.AccountRepository;
 import org.springframework.stereotype.Service;
@@ -12,11 +14,18 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
+    public boolean checkPassword(String str){
+        if(str.isEmpty()){
+            throw new InvalidFieldException("Password cannot be empty", Field.PASSWORD);
+        } else return true;
+    }
+
     public Account getAccountByID(int id){
         return accountRepository.getAccountByID(id);
     }
 
     public Account updatedAccount(Account updatedAccount){
-        return accountRepository.updatedAccount(updatedAccount);
+        if (checkPassword(updatedAccount.getPassword())) return accountRepository.updatedAccount(updatedAccount);
+        else return null;
     }
 }
