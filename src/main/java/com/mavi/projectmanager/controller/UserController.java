@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("edit/{id}")
     public String getEditUser(@PathVariable int id, Model model, HttpSession httpSession){
-        Account account = accountService.getAccountByID();
+        Account account = accountService.getAccountByID(id);
 
         model.addAttribute("account", account);
         model.addAttribute("roles", Role.values());
