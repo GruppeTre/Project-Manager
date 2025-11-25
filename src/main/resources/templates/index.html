@@ -8,6 +8,23 @@
     <link rel="stylesheet" th:href="@{/style/custom.css}">
 </head>
 <body>
+    <main>
+        <header></header>
+        <section>
+            <article>
+                <form th:action="@{/overview}">
+                    <label for="username" th:text="#{form.label.username}"></label>
+                    <input id="username" th:type="text" th:placeholder="#{form.input.username.placeholder}"/>
+                    <label for="password" th:text="#{form.label.password}"></label>
+                    <input id="password" th:type="password" />
 
+                    <button th:type="submit" th:text="#{form.button.submit.login}"></button>
+                </form>
+            </article>
+            <article>
+                <p th:text="#{login.p.missingUser}"></p>
+            </article>
+        </section>
+    </main>
 </body>
 </html>
