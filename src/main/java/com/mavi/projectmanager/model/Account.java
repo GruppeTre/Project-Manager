@@ -1,5 +1,7 @@
 package com.mavi.projectmanager.model;
 
+import java.util.Objects;
+
 public class Account {
 
     private int id;
@@ -53,5 +55,17 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return id == account.id && role == account.role && Objects.equals(password, account.password) && Objects.equals(employee, account.employee);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, role, password, employee);
     }
 }

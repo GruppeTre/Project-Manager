@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Overview</title>
+    <link rel="stylesheet" th:href="@{/style/normalize.css}">
+    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/style/custom.css}">
+</head>
+
+<body>
+
+<!-- Navigation links for switching between sections -->
+<nav>
+    <a href="#">Projects</a>
+    <a th:href="@{/overview}">Accounts</a>
+</nav>
+
+<!-- Accounts table -->
+<div th:if="${accounts}">
+    <h2>Users</h2>
+
+    <a th:href="@{/user/create}">
+        <button type="button">Create user</button>
+    </a>
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+<!-- ERROR(?): first_name and last_name resides in the nested employee object -->
+        <tr th:each="a : ${account}">
+            <td th:text="${a.name}"></td>
+            <td th:text="${a.email}"></td>
+            <td th:text="${a.first_name + ' ' + a.last_name}"></td>
+            <td>
+                <a th:href="@{/user/edit/{id}(id=${a.id})}">
+                    <button type="button">Edit</button>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Projects table -->
+<div th:if="${projects}">
+    <h2>Projects</h2>
+
+    <a th:href="@{/project/create}">
+        <button type="button">Create project</button>
+    </a>
+
+    <table>
+        <tr>
+            <th>Project name</th>
+            <th>Project-lead</th>
+            <th>Deadline</th>
+        </tr>
+
+        <tr th:each="p : ${projects}">
+            <td th:text="${p.name}"></td>
+            <td th:text="${p.end_date}"></td>
+            <td th:text="${p.email}"></td>
+
+            <td>
+                <a th:href="@{/project/edit/{id}(id=${p.id})}">
+                    <button type="button">Edit</button>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

@@ -4,6 +4,9 @@ import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.repository.AccountRepository;
 import org.springframework.stereotype.Repository;
+import com.mavi.projectmanager.exception.Field;
+import com.mavi.projectmanager.exception.InvalidFieldException;
+import com.mavi.projectmanager.exception.PageNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +18,12 @@ public class AccountService {
     public AccountService(AccountRepository accountRepository, EmployeeService employeeService) {
         this.accountRepository = accountRepository;
         this.employeeService = employeeService;
+    }
+  
+    public boolean isValidPassword(String str){
+        if(str.isEmpty()){
+            throw new InvalidFieldException("Password cannot be empty", Field.PASSWORD);
+        } else return true;
     }
 
     //Registers a user
@@ -35,5 +44,29 @@ public class AccountService {
             }
         }
         return account;
+    }
+
+    public Account getAccountByID(int id){
+        Account account = accountRepository.getAccountByID(id);
+
+        if(account == null){
+            throw new PageNotFoundException("The account with id: " + id + " does not exist!");
+        }
+
+        return account;
+    }
+
+    public Account updatedAccount(Account updatedAccount){
+        if (isValidPassword(updatedAccount.getPassword())) {
+            return accountRepository.updatedAccount(updatedAccount);
+        }
+        else {
+            return null;
+        }
+    }
+
+    //Get all accounts stored in a List
+    public List<Account> getAllAccounts() {
+        return accountRepository.getAllAccounts();
     }
 }

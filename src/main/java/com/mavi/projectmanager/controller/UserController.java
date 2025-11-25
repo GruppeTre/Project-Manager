@@ -18,7 +18,7 @@ import com.mavi.projectmanager.controller.utils.SessionUtils;
 
 
 @Controller
-@RequestMapping("/account")
+@RequestMapping("/")
 public class UserController {
     private final AccountService service;
 
@@ -66,5 +66,34 @@ public class UserController {
         }
 
         return "redirect:/account/create";
+    }
+
+    @GetMapping("/overview")
+    public String getOverviewPage(HttpSession session, Model model) {
+
+        /*if (!sessionUtils.isloggedIn(session)) {
+            return "redirect:/login";
+            }
+        }*/
+        model.addAttribute("users", accountService.getAllAccounts());
+
+        return "overviewPage";
+    }
+  
+    @GetMapping("/edit/{id}")
+    public String getEditUser(@PathVariable int id, Model model, HttpSession httpSession){
+        Account account = accountService.getAccountByID(id);
+
+        model.addAttribute("account", account);
+        model.addAttribute("roles", Role.values());
+
+        return "editUserPage";
+    }
+
+    @PostMapping("/editUser")
+    public String editUser(@ModelAttribute Account updatedAccount){
+        accountService.updatedAccount(updatedAccount);
+
+        return "redirect:/user/edit/1";
     }
 }

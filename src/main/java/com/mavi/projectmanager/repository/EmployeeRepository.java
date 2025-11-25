@@ -15,7 +15,7 @@ public class EmployeeRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public final RowMapper<Employee> employeeRowMapper = ((rs, rowNUm) -> {
+    public final RowMapper<Employee> employeeRowMapper = ((rs, rowNum) -> {
         Employee employee = new Employee();
         employee.setId(rs.getInt("id"));
         employee.setPosition(rs.getString("position"));
@@ -25,7 +25,7 @@ public class EmployeeRepository {
 
         return employee;
     });
-
+  
     public Employee getEmployeeByMail(String mail) {
 
         String query = "SELECT * FROM employee WHERE mail = ?";
@@ -38,5 +38,13 @@ public class EmployeeRepository {
         }
     }
 
+    public Employee getEmployeeByID(int id){
+        String query = "SELECT * FROM Employee WHERE id = ?";
 
+        try{
+            return jdbcTemplate.queryForObject(query, employeeRowMapper, id);
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
+    }
 }
