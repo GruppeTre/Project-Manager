@@ -12,4 +12,7 @@ public enum Role {
         this.id = id;
         this.value = value;
     }
+
+
+
 }
