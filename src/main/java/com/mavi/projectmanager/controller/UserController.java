@@ -1,6 +1,5 @@
 package com.mavi.projectmanager.controller;
 
-import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
@@ -10,11 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import com.mavi.projectmanager.controller.utils.SessionUtils;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -75,14 +70,14 @@ public class UserController {
             return "redirect:/login";
             }
         }*/
-        model.addAttribute("users", accountService.getAllAccounts());
+        model.addAttribute("users", service.getAllAccounts());
 
         return "overviewPage";
     }
   
     @GetMapping("/edit/{id}")
     public String getEditUser(@PathVariable int id, Model model, HttpSession httpSession){
-        Account account = accountService.getAccountByID(id);
+        Account account = service.getAccountByID(id);
 
         model.addAttribute("account", account);
         model.addAttribute("roles", Role.values());
@@ -92,7 +87,7 @@ public class UserController {
 
     @PostMapping("/editUser")
     public String editUser(@ModelAttribute Account updatedAccount){
-        accountService.updatedAccount(updatedAccount);
+        service.updatedAccount(updatedAccount);
 
         return "redirect:/user/edit/1";
     }
