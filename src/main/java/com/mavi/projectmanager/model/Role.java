@@ -8,11 +8,29 @@ public enum Role {
     private int id;
     private String value;
 
-    private Role (int id, String value) {
+    Role (int id, String value) {
         this.id = id;
         this.value = value;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    //Converter
+    public static Role getRoleByID(int id){
+        for(Role role : Role.values()){
+            if(role.id == id){
+                return role;
+            }
+        }
+
+        throw new IllegalArgumentException("No role found with id: " + id);
+    }
 
 
 }
