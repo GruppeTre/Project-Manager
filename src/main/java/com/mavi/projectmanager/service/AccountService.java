@@ -23,7 +23,7 @@ public class AccountService {
 
     public Account getAccountByID(int id){
         Account account = accountRepository.getAccountByID(id);
-gt
+
         if(account == null){
             throw new PageNotFoundException("The account with id: " + id + " does not exist!");
         }
