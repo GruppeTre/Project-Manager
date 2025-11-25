@@ -20,8 +20,8 @@ public class EmployeeRepository {
         employee.setId(rs.getInt("id"));
         employee.setPosition(rs.getString("position"));
         employee.setMail(rs.getString("mail"));
-        employee.setFirstName("firstName");
-        employee.setLastName("lastName");
+        employee.setFirstName(rs.getString("firstName"));
+        employee.setLastName(rs.getString("lastName"));
 
         return employee;
     });

@@ -22,11 +22,13 @@ public class AccountService {
     }
 
     public Account getAccountByID(int id){
-        if(id == accountRepository.getAccountByID(id).getId()) {
-            return accountRepository.getAccountByID(id);
-        } else {
-            throw new PageNotFoundException("Account with ID:" + id + " do not exist");
+        Account account = accountRepository.getAccountByID(id);
+gt
+        if(account == null){
+            throw new PageNotFoundException("The account with id: " + id + " does not exist!");
         }
+
+        return account;
     }
 
     public Account updatedAccount(Account updatedAccount){

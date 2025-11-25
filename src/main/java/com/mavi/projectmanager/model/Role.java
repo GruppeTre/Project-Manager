@@ -21,6 +21,7 @@ public enum Role {
         return value;
     }
 
+    //Converter
     public static Role getRoleByID(int id){
         for(Role role : Role.values()){
             if(role.id == id){
