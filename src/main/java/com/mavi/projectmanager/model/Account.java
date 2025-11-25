@@ -11,6 +11,10 @@ public class Account {
         return id;
     }
 
+    public Employee getEmployee() {
+        return employee;
+    }
+
     public void setEmployee(Employee emp) {
         this.employee = emp;
     }

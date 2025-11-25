@@ -8,50 +8,38 @@
     <link rel="stylesheet" th:href="@{/style/custom.css}">
 </head>
 <body>
-    <form th:action="@{/account/add}" th:object="${account}" method="post">
+    <form th:action="@{/account/create}" th:object="${account}" method="post">
 
         <div>
-            <h2 th:text="New account"></h2>
+            <h2 th:text="'New account'"></h2>
         </div>
 
-        <!-- Error messages -->
-        <div th:if="${error}" class="form-error-container">
-            <label th:if="${invalidField == ''}" th:text="#{form.error.link}"></label>
-            <label th:if="${invalidField == 'description'}" th:text="#{form.error.description.blank}"></label>
-        </div>
 
-        <!-- EMAIL SEARCHBAR-->
         <div class="row">
-            <label for="email" class="form-label" th:text="#{form.user.label.mail}"></label>
-            <select id="email" name="email" th:field="*{emails}">
-                <option value="" disabled selected>Vælg...</option>
-                <option th:each="email : ${emails}"
-                        th:value="${email}"
-                        th:text="${email}">
-                </option>
-            </select>
+            <label for="mail" class="form-label" th:text="Mail"></label>
+            <input id="mail" type="email" th:field="${employee.mail}">
         </div>
 
         <!-- password -->
 
         <div class="row">
-            <label for="password" class="form-label" th:text="#{form.user.label.password.withMinimum}"></label>
-            <input id="password" type="password" th:field="*{password}" th:placeholder="#{form.user.label.password}" required minlength="8" maxlength="20" th:title="#{form.warning.empty}" onchange="onChange()">
+            <label for="password" class="form-label" th:text="Password"></label>
+            <input id="password" type="password" th:field="*{password}" th:placeholder="password">
         </div>
 
-        <div class="row">
-            <label for="confirm-password" class="form-label" th:text="#{form.user.label.password.repeat}"></label>
-            <input id="confirm-password" type="password" th:placeholder="#{form.user.label.password.repeat}" required th:title="#{form.warning.empty}" onchange="onChange()">
-        </div>
+        <!-- role -->
 
         <div class="row">
-            <label for="link" th:text="#{form.wish.label.link}"></label>
-            <input type="text" id="link" th:field="*{link}" required pattern=".*\S.*" th:title="#{form.warning.empty}"/>
+            <label for="role" class="form-label">Role</label>
+            <select id="role" th:type="dropdown" th:field="*{role}">
+                <option th:each="roles : ${roles}" th:value="${roles.name()}" th:text="${roles.value}"/>
+            </select>
+
         </div>
 
         <!-- BUTTONS -->
         <div class="row">
-            <a class="button" href="/wishlist/view" th:text="#{form.button.back}"></a>
+            <a class="button" href="/" th:text="Tilbage"></a>
             <button class="button" type="submit" th:text="submit"></button>
         </div>
     </form>

@@ -1,6 +1,7 @@
 package com.mavi.projectmanager.repository;
 
 import com.mavi.projectmanager.model.Account;
+import com.mavi.projectmanager.model.Employee;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -18,18 +19,17 @@ public class AccountRepository {
     }
 
     //Inserts an account in the database
-    public Account createUser(Account account) {
+    public Account createUser(Account account, Employee employee) {
 
-        String query = "INSERT IGNORE INTO account (id, role, password, emp_id) VALUES (?,?,?,?)";
+        String query = "INSERT IGNORE INTO account (role, password, emp_id) VALUES (?,?,?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-                ps.setInt(1, account.getId());
-                ps.setObject(2, account.getRole());
-                ps.setString(3, account.getPassword());
-                ps.setInt(4, account.getEmployeeId());
+                ps.setObject(1, account.getRole().getId());
+                ps.setString(2, account.getPassword());
+                ps.setInt(3, employee.getId());
 
                 return ps;
             }, keyHolder);
