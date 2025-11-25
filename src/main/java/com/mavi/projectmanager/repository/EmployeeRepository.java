@@ -25,6 +25,18 @@ public class EmployeeRepository {
 
         return employee;
     });
+  
+    public Employee getEmployeeByMail(String mail) {
+
+        String query = "SELECT * FROM employee WHERE mail = ?";
+
+        try {
+            return jdbcTemplate.queryForObject(query, employeeRowMapper, mail);
+        }
+        catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 
     public Employee getEmployeeByID(int id){
         String query = "SELECT * FROM Employee WHERE id = ?";

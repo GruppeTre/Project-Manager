@@ -13,6 +13,10 @@ public class Account {
         return id;
     }
 
+    public Employee getEmployee() {
+        return employee;
+    }
+
     public void setEmployee(Employee emp) {
         this.employee = emp;
     }
@@ -27,6 +31,10 @@ public class Account {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public int getEmployeeId() {
+        return getEmployeeId();
     }
 
     public String getFirstName() {
