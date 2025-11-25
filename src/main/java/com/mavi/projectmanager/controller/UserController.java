@@ -60,7 +60,7 @@ public class UserController {
             return "createUserPage";
         }
 
-        return "redirect:/account/create";
+        return "redirect:/overview";
     }
 
     @GetMapping("/overview")
