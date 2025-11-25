@@ -39,4 +39,9 @@ public class AccountService {
             return null;
         }
     }
+
+    //Get all accounts stored in a List
+    public List<Account> getAllAccounts() {
+        return accountRepository.getAllAccounts();
+    }
 }

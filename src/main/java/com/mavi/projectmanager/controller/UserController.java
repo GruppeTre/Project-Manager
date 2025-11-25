@@ -9,15 +9,31 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/")
 public class UserController {
 
-    private final AccountService accountService;
+    private AccountService accountService;
 
-    public UserController (AccountService accountService){
+    private ProjectService projectService;
+
+    //Note: there can only be one constructor, as Spring only wants a single autowiring per class.
+    public UserController(AccountService accountService) {
         this.accountService = accountService;
+        this.projectService = projectService;
     }
 
+    @GetMapping("/overview")
+    public String getOverviewPage(HttpSession session, Model model) {
+
+        /*if (!sessionUtils.isloggedIn(session)) {
+            return "redirect:/login";
+            }
+        }*/
+        model.addAttribute("users", accountService.getAllAccounts());
+
+        return "overviewPage";
+    }
+  
     @GetMapping("/edit/{id}")
     public String getEditUser(@PathVariable int id, Model model, HttpSession httpSession){
         Account account = accountService.getAccountByID(id);
