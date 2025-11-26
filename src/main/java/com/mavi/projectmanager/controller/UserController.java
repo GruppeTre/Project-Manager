@@ -37,7 +37,7 @@ public class UserController {
         if(!service.accountLogin(employee, account)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
-            return "redirect:/index";
+            return "redirect:/";
         }
 
         account = service.getAccountByMail(account, employee.getMail());
@@ -93,7 +93,7 @@ public class UserController {
     public String getOverviewPage(HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         model.addAttribute("users", service.getAllAccounts());
@@ -120,7 +120,7 @@ public class UserController {
     public String editUser(HttpSession session, @ModelAttribute Account updatedAccount){
 
         if (!SessionUtils.isLoggedIn(session)) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         service.updatedAccount(updatedAccount);
