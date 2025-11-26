@@ -72,8 +72,8 @@ public class AccountService {
     }
 
     //Get all accounts stored in a List
-    public List<Account> getAllAccounts() {
-        return accountRepository.getAllAccounts();
+    public List<Account> getAccounts() {
+        return accountRepository.getAccounts();
     }
 
     public boolean accountLogin(Employee employee, Account account){

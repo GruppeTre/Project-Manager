@@ -123,7 +123,9 @@ public class AccountRepository {
         return account;
     }
   
-    public List<Account> getAllAccounts() {
-        return null;
+    public List<Account> getAccounts() {
+        String query = "SELECT * FROM Account";
+
+        return jdbcTemplate.query(query, accountRowMapper);
     }
 }
