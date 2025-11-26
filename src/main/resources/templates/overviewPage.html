@@ -17,36 +17,38 @@
     </nav>
 
     <!-- Accounts table -->
-    <div th:if="${accounts}">
-        <h2>Users</h2>
+    <section>
+        <article>
+            <h2>Users</h2>
 
-        <a th:href="@{/user/create}">
-            <button type="button">Create user</button>
-        </a>
+            <a th:href="@{/create}">
+                <button type="button">Create user</button>
+            </a>
 
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-    <!-- ERROR(?): first_name and last_name resides in the nested employee object -->
-            <tr th:each="a : ${accounst}">
-                <td th:text="${a.name}"></td>
-                <td th:text="${a.email}"></td>
-                <td th:text="${a.first_name + ' ' + a.last_name}"></td>
-                <td>
-                    <a th:href="@{/user/edit/{id}(id=${a.id})}">
-                        <button type="button">Edit</button>
-                    </a>
-                </td>
-            </tr>
-        </table>
-    </div>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+        <!-- ERROR(?): first_name and last_name resides in the nested employee object -->
+                <tr th:each="a : ${accounts}">
+                    <td th:text="${a.firstName + ' ' + a.lastName}"></td>
+                    <td th:text="${a.mail}"></td>
+                    <td th:text="${a.role.value}"></td>
+                    <td>
+                        <a th:href="@{/edit/{id}(id=${a.id})}">
+                            <button type="button">Edit</button>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </article>
+    </section>
 
     <!-- Projects table -->
-    <div th:if="${projects}">
+    <!--<div th:if="${projects}">
         <h2>Projects</h2>
 
         <a th:href="@{/project/create}">
@@ -72,7 +74,7 @@
                 </td>
             </tr>
         </table>
-    </div>
+    </div>-->
 </main>
 </body>
 </html>

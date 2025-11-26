@@ -104,7 +104,7 @@ public class UserController {
     public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
 
         if (!SessionUtils.isLoggedIn(session)) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         Account account = service.getAccountByID(id);
