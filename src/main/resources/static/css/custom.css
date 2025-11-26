@@ -1,0 +1,107 @@
+:root {
+    --light: #DCDCDD;
+    --ash: #C5C3C6;
+    --dark-ash: #CCCBCB;
+    --dark-blue: #4C5C68;
+    --accent: #1985A1;
+    --gray: #46494C;
+    --warning-red: #C51E3A;
+    --bg-color: var(--light);
+}
+
+html {
+    background-color: var(--bg-color);
+    color: var(--gray);
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.login-container {
+    max-width: 600px;
+}
+
+.login-form {
+    margin: 0;
+}
+
+button, .button {
+    margin: 0;
+}
+
+header {
+    background-color: var(--gray);
+    max-width: 1200px;
+    margin: 2em auto 2em;
+    padding: 1em 1.5em;
+    border-radius: 15px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header a, header a:hover {
+    color: transparent;
+    background-color: transparent;
+}
+
+#header-title {
+    color: var(--light);
+    display: inline;
+    margin-bottom: 0;
+}
+
+#index-text p {
+    font-size: larger;
+    margin: 0;
+}
+.content-wrapper {
+    box-sizing: border-box;
+    background-color: var(--ash);
+    border-radius: 15px;
+    padding: 1.5em;
+    margin-bottom: 2em;
+}
+
+/* skeleton overrides */
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover,
+.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+    color: #333;
+    border-color: #888;
+    outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+    color: var(--light);
+    background-color: var(--accent);
+    border-color: var(--accent); }
+.button.button-primary:hover,
+button.button-primary:hover,
+input[type="submit"].button-primary:hover,
+input[type="reset"].button-primary:hover,
+input[type="button"].button-primary:hover,
+.button.button-primary:focus,
+button.button-primary:focus,
+input[type="submit"].button-primary:focus,
+input[type="reset"].button-primary:focus,
+input[type="button"].button-primary:focus {
+    color: var(--light);
+    background-color: var(--accent);
+    border-color: var(--dark-blue); }
+
+input, label {
+    width: 25em;
+    color: var(--gray);
+}
