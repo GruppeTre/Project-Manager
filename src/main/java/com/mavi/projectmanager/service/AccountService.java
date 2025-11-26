@@ -15,7 +15,7 @@ import java.util.List;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     public AccountService(AccountRepository accountRepository, EmployeeService employeeService) {
         this.accountRepository = accountRepository;
@@ -58,8 +58,8 @@ public class AccountService {
         return account;
     }
 
-    public Account getAccountByMail(Account account, String mail){
-        return accountRepository.getAccountByEmployeeMail(account, mail);
+    public Account getAccountByMail(String mail){
+        return accountRepository.getAccountByMail(mail);
     }
 
     public Account updatedAccount(Account updatedAccount){
@@ -76,9 +76,8 @@ public class AccountService {
         return accountRepository.getAccounts();
     }
 
-    public boolean accountLogin(Employee employee, Account account){
-        Employee getEmployee = employeeService.getEmployeeByMail(employee.getMail());
-        Account getAccount = accountRepository.getAccountByEmployeeID(account, getEmployee.getId());
+    public boolean accountLogin(Employee employee){
+        Account getAccount = accountRepository.getAccountByMail(employee.getMail());
 
         if(getAccount == null){
             throw new InvalidFieldException("Password is incorrect", Field.PASSWORD);

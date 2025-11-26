@@ -34,13 +34,13 @@ public class UserController {
     }
     @PostMapping("/login")
     public String login(HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
-        if(!service.accountLogin(employee, account)){
+        if(!service.accountLogin(employee)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
             return "redirect:/";
         }
 
-        account = service.getAccountByMail(account, employee.getMail());
+        account = service.getAccountByMail(employee.getMail());
 
         session.setAttribute("account", account);
 

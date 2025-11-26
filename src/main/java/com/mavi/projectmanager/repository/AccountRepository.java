@@ -30,10 +30,10 @@ public class AccountRepository {
     public final RowMapper<Account> accountRowMapper = ((rs, rowNum) -> {
         Employee employee = new Employee();
         employee.setId(rs.getInt("employee_id"));
-        employee.setPosition("position");
-        employee.setMail("mail");
-        employee.setFirstName("firstName");
-        employee.setLastName("lastName");
+        employee.setPosition(rs.getString("position"));
+        employee.setMail(rs.getString("mail"));
+        employee.setFirstName(rs.getString("firstName"));
+        employee.setLastName(rs.getString("lastName"));
 
         Account account = new Account();
         int roleId = rs.getInt("role");
@@ -78,9 +78,10 @@ public class AccountRepository {
 
     public Account getAccountByID(int id){
         String query= """
-                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a" +
-                        INNER JOIN Employee ON a.id = employee.id
-                        WHERE a.id = ?""";
+                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
+                        INNER JOIN Employee e ON a.emp_id = e.id
+                        WHERE a.id = ?
+                      """;
 
         try{
             return jdbcTemplate.queryForObject(query, accountRowMapper, id);
@@ -110,22 +111,14 @@ public class AccountRepository {
 
     }
 
-    public Account getAccountByEmployeeID(Account account, int id){
-        String query = "SELECT * FROM Account WHERE id = ?";
-
+    public Account getAccountByMail(String mail) {
+        String query = """
+                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
+                        INNER JOIN Employee e ON a.id = e.id
+                        WHERE e.mail = ?
+                      """;
         try{
-            return jdbcTemplate.queryForObject(query, accountRowMapper, id);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
-    public Account getAccountByEmployeeMail(Account account, String mail) {
-        String query = "SELECT * FROM Account WHERE emp_id = ?";
-        Employee employee = employeeRepository.getEmployeeByMail(mail);
-
-        try{
-            return jdbcTemplate.queryForObject(query, accountRowMapper, employee.getId());
+            return jdbcTemplate.queryForObject(query, accountRowMapper, mail);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
