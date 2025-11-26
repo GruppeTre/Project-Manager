@@ -114,12 +114,10 @@ public class AccountRepository {
         String query = "SELECT * FROM Account WHERE id = ?";
 
         try{
-            jdbcTemplate.queryForObject(query, accountRowMapper, id);
+            return jdbcTemplate.queryForObject(query, accountRowMapper, id);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
-
-        return account;
     }
 
     public Account getAccountByEmployeeMail(Account account, String mail) {
