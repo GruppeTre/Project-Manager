@@ -28,13 +28,20 @@ public class AccountRepository {
     }
 
     public final RowMapper<Account> accountRowMapper = ((rs, rowNum) -> {
+        Employee employee = new Employee();
+        employee.setId(rs.getInt("employee_id"));
+        employee.setPosition("position");
+        employee.setMail("mail");
+        employee.setFirstName("firstName");
+        employee.setLastName("lastName");
+
         Account account = new Account();
         int roleId = rs.getInt("role");
 
         account.setId(rs.getInt("id"));
         account.setRole(Role.getRoleByID(roleId));
         account.setPassword(rs.getString("password"));
-        account.setEmployee(employeeRepository.getEmployeeByID(rs.getInt("emp_id")));
+        account.setEmployee(employee);
 
         return account;
     });
@@ -70,7 +77,7 @@ public class AccountRepository {
     }
 
     public Account getAccountByID(int id){
-        String query= "SELECT * FROM Account WHERE id = ?";
+        String query= "SELECT * FROM Account a WHERE id = ?";
 
         try{
             return jdbcTemplate.queryForObject(query, accountRowMapper, id);
@@ -124,7 +131,11 @@ public class AccountRepository {
     }
   
     public List<Account> getAccounts() {
-        String query = "SELECT * FROM Account";
+        String query = """
+                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName
+                        FROM Account a
+                        INNER JOIN Employee e ON a.emp_id = e.id
+                       """;
 
         List<Account> accounts = jdbcTemplate.query(query, accountRowMapper);
 
