@@ -97,6 +97,31 @@ public class AccountRepository {
 
 
     }
+
+    public Account getAccountByEmployeeID(Account account, int id){
+        String query = "SELECT * FROM Account WHERE id = ?";
+
+        try{
+            jdbcTemplate.queryForObject(query, accountRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+
+        return account;
+    }
+
+    public Account getAccountByEmployeeMail(Account account, String mail) {
+        String query = "SELECT * FROM Account WHERE emp_id = ?";
+        Employee employee = employeeRepository.getEmployeeByMail(mail);
+
+        try{
+            jdbcTemplate.queryForObject(query, accountRowMapper, employee.getId());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+
+        return account;
+    }
   
     public List<Account> getAllAccounts() {
         return null;

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/style/normalize.css}">
+    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/style/custom.css}">
+</head>
+<body>
+    <main>
+        <header></header>
+        <section>
+            <article>
+                <form th:object="${account}" th:action="@{/login}" method="post">
+                    <div class="row">
+                        <label for="username" th:text="#{form.label.username}"></label>
+                        <input id="username" th:field="${employee.mail}" th:type="email" th:placeholder="#{form.input.username.placeholder}"/>
+                    </div>
+                    <div class="row">
+                        <label for="password" th:text="#{form.label.password}"></label>
+                        <input id="password" th:field="*{password}" th:type="password" />
+                    </div>
+                    <div class="row">
+                        <button th:type="submit" th:text="#{form.button.submit.login}"></button>
+                    </div>
+                </form>
+            </article>
+            <article>
+                <p th:text="#{login.p.missingUser}"></p>
+            </article>
+        </section>
+    </main>
+</body>
+</html>

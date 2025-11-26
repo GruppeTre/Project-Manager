@@ -58,6 +58,10 @@ public class AccountService {
         return account;
     }
 
+    public Account getAccountByMail(Account account, String mail){
+        return accountRepository.getAccountByEmployeeMail(account, mail);
+    }
+
     public Account updatedAccount(Account updatedAccount){
         if (isValidPassword(updatedAccount.getPassword())) {
             return accountRepository.updatedAccount(updatedAccount);
@@ -70,5 +74,16 @@ public class AccountService {
     //Get all accounts stored in a List
     public List<Account> getAllAccounts() {
         return accountRepository.getAllAccounts();
+    }
+
+    public boolean accountLogin(Employee employee, Account account){
+        Employee getEmployee = employeeService.getEmployeeByMail(employee.getMail());
+        Account getAccount = accountRepository.getAccountByEmployeeID(account, getEmployee.getId());
+
+        if(getAccount == null){
+            throw new InvalidFieldException("Password is incorrect", Field.PASSWORD);
+        }
+
+        return true;
     }
 }

@@ -28,7 +28,7 @@ public class EmployeeRepository {
   
     public Employee getEmployeeByMail(String mail) {
 
-        String query = "SELECT * FROM employee WHERE mail = ?";
+        String query = "SELECT * FROM Employee WHERE mail = ?";
 
         try {
             return jdbcTemplate.queryForObject(query, employeeRowMapper, mail);
