@@ -65,6 +65,19 @@ header a, header a:hover {
     margin-bottom: 2em;
 }
 
+.form-error-container {
+    box-sizing: border-box;
+    width: 25em;
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin-bottom: 1.5rem;
+    background-color: var(--warning-red);
+}
+
+.form-error-container label {
+    color: var(--light);
+}
+
 /* skeleton overrides */
 .button:hover,
 button:hover,
