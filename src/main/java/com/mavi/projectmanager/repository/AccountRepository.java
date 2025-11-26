@@ -77,7 +77,10 @@ public class AccountRepository {
     }
 
     public Account getAccountByID(int id){
-        String query= "SELECT * FROM Account a WHERE id = ?";
+        String query= """
+                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a" +
+                        INNER JOIN Employee ON a.id = employee.id
+                        WHERE a.id = ?""";
 
         try{
             return jdbcTemplate.queryForObject(query, accountRowMapper, id);
