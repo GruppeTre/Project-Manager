@@ -20,10 +20,10 @@
     <section>
         <article>
             <div>
-                <<div>>
+                <div>
                     <h2>Users</h2>
                 </div>
-                <div>
+                <div th:if="${session.account.role.name() == 'ADMIN'}">
                     <a th:href="@{/create}">
                         <button type="button">Create user</button>
                     </a>

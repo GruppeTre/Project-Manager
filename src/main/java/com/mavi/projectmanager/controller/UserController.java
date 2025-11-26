@@ -96,6 +96,7 @@ public class UserController {
             return "redirect:/";
         }
         model.addAttribute("accounts", service.getAccounts());
+        model.addAttribute("session", session.getAttribute("account"));
 
         return "overviewPage";
     }

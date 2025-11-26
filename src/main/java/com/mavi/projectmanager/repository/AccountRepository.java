@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Comparator;
 import java.util.List;
 
 import com.mavi.projectmanager.model.Role;
@@ -19,6 +20,7 @@ public class AccountRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private EmployeeRepository employeeRepository;
+    private static final Comparator<Account> ACCOUNT_COMPARATOR = Comparator.comparingInt((Account a) -> a.getRole().getId()).thenComparing(Account::getFirstName).thenComparing(Account::getLastName);
 
     public AccountRepository(JdbcTemplate jdbcTemplate, EmployeeRepository employeeRepository){
         this.jdbcTemplate = jdbcTemplate;
@@ -115,17 +117,19 @@ public class AccountRepository {
         Employee employee = employeeRepository.getEmployeeByMail(mail);
 
         try{
-            jdbcTemplate.queryForObject(query, accountRowMapper, employee.getId());
+            return jdbcTemplate.queryForObject(query, accountRowMapper, employee.getId());
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
-
-        return account;
     }
   
     public List<Account> getAccounts() {
         String query = "SELECT * FROM Account";
 
-        return jdbcTemplate.query(query, accountRowMapper);
+        List<Account> accounts = jdbcTemplate.query(query, accountRowMapper);
+
+        accounts.sort(ACCOUNT_COMPARATOR);
+
+        return accounts;
     }
 }
