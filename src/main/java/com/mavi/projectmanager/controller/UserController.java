@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -33,11 +34,14 @@ public class UserController {
         return "index";
     }
     @PostMapping("/login")
-    public String login(HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
+    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
+
         if(!service.accountLogin(employee, account)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
-            return "redirect:/";
+            model.addAttribute("error", true);
+            model.addAttribute("account", account);
+            model.addAttribute("employee", employee);
+            return "index";
         }
 
         account = service.getAccountByMail(account, employee.getMail());
