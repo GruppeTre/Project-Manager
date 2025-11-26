@@ -3,47 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Overview</title>
-    <link rel="stylesheet" th:href="@{/style/normalize.css}">
-    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
-    <link rel="stylesheet" th:href="@{/style/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 
 <body>
 <main>
     <!-- Navigation links for switching between sections -->
-    <nav>
-        <a th:href="@{/overview}">Accounts</a>
-        <a href="#">Projects</a>
-    </nav>
-
     <!-- Accounts table -->
-    <section>
+    <section class="overview">
+        <nav class="top-nav">
+            <a th:href="@{/overview}" th:text="#{nav.a.account}"></a>
+            <a href="#" th:text="#{nav.a.project}">Projects</a>
+        </nav>
         <article>
             <div>
-                <div>
-                    <h2 th:text="#{overview.h2.account}"></h2>
+                <div class="inline-block">
+                    <label for="search_bar"></label>
+                    <input id="search_bar" type="search" th:placeholder="#{overview.search.placeholder}"></h2>
                 </div>
-                <div th:if="${session.account.role.name() == 'ADMIN'}">
+                <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block">
                     <a th:href="@{/create}" th:text="#{overview.button.createAccount}"></a>
                 </div>
             </div>
             <div>
-                <table th:object="${accounts}">
-                    <tr>
-                        <th th:text="#{overview.text.label.name}"></th>
-                        <th th:text="#{overview.text.label.mail}"></th>
-                        <th th:text="#{overview.text.label.role}"></th>
-                        <th th:text="#{overview.text.label.actions}"></th>
-                    </tr>
-            <!-- ERROR(?): first_name and last_name resides in the nested employee object -->
-                    <tr th:each="a : ${accounts}">
-                        <td th:if="${session.account.id != a.id}" th:text="${a.firstName + ' ' + a.lastName}"></td>
-                        <td th:if="${session.account.id != a.id}" th:text="${a.mail}"></td>
-                        <td th:if="${session.account.id != a.id}" th:text="${a.role.value}"></td>
-                        <td>
-                            <a th:if="${session.account.id != a.id}" th:href="@{/edit/{id}(id=${a.id})}" th:text="#{overview.button.edit}"></a>
-                        </td>
-                    </tr>
+                <table class="overview_table" th:object="${accounts}">
+                    <thead>
+                        <tr>
+                            <th th:text="#{overview.text.label.name}"></th>
+                            <th th:text="#{overview.text.label.mail}"></th>
+                            <th th:text="#{overview.text.label.role}"></th>
+                            <th th:text="#{overview.text.label.actions}"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="a : ${accounts}" th:if="${session.account.id != a.id}">
+                            <td th:text="${a.firstName + ' ' + a.lastName}"></td>
+                            <td th:text="${a.mail}"></td>
+                            <td th:text="${a.role.value}"></td>
+                            <td>
+                                <a th:href="@{/edit/{id}(id=${a.id})}" th:text="#{overview.button.edit}"></a>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </article>
