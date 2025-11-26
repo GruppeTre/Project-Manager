@@ -32,7 +32,7 @@
                 <th>Actions</th>
             </tr>
     <!-- ERROR(?): first_name and last_name resides in the nested employee object -->
-            <tr th:each="a : ${account}">
+            <tr th:each="a : ${accounst}">
                 <td th:text="${a.name}"></td>
                 <td th:text="${a.email}"></td>
                 <td th:text="${a.first_name + ' ' + a.last_name}"></td>
