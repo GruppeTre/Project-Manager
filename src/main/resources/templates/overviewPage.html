@@ -21,21 +21,19 @@
         <article>
             <div>
                 <div>
-                    <h2>Users</h2>
+                    <h2 th:text="#{overview.h2.account}"></h2>
                 </div>
                 <div th:if="${session.account.role.name() == 'ADMIN'}">
-                    <a th:href="@{/create}">
-                        <button type="button">Create user</button>
-                    </a>
+                    <a th:href="@{/create}" th:text="#{overview.button.createAccount}"></a>
                 </div>
             </div>
             <div>
                 <table th:object="${accounts}">
                     <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Actions</th>
+                        <th th:text="#{overview.text.label.name}"></th>
+                        <th th:text="#{overview.text.label.mail}"></th>
+                        <th th:text="#{overview.text.label.role}"></th>
+                        <th th:text="#{overview.text.label.actions}"></th>
                     </tr>
             <!-- ERROR(?): first_name and last_name resides in the nested employee object -->
                     <tr th:each="a : ${accounts}">
@@ -43,9 +41,7 @@
                         <td th:if="${session.account.id != a.id}" th:text="${a.mail}"></td>
                         <td th:if="${session.account.id != a.id}" th:text="${a.role.value}"></td>
                         <td>
-                            <a th:if="${session.account.id != a.id}" th:href="@{/edit/{id}(id=${a.id})}">
-                                <button type="button">Edit</button>
-                            </a>
+                            <a th:if="${session.account.id != a.id}" th:href="@{/edit/{id}(id=${a.id})}" th:text="#{overview.button.edit}"></a>
                         </td>
                     </tr>
                 </table>
