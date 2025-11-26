@@ -12,8 +12,8 @@
 <main>
     <!-- Navigation links for switching between sections -->
     <nav>
-        <a href="#">Projects</a>
         <a th:href="@{/overview}">Accounts</a>
+        <a href="#">Projects</a>
     </nav>
 
     <!-- Accounts table -->
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div>
-                <table>
+                <table th:object="${accounts}">
                     <tr>
                         <th>Name</th>
                         <th>Email</th>
@@ -39,11 +39,11 @@
                     </tr>
             <!-- ERROR(?): first_name and last_name resides in the nested employee object -->
                     <tr th:each="a : ${accounts}">
-                        <td th:text="${a.firstName + ' ' + a.lastName}"></td>
-                        <td th:text="${a.mail}"></td>
-                        <td th:text="${a.role.value}"></td>
+                        <td th:if="${session.account.id != a.id}" th:text="${a.firstName + ' ' + a.lastName}"></td>
+                        <td th:if="${session.account.id != a.id}" th:text="${a.mail}"></td>
+                        <td th:if="${session.account.id != a.id}" th:text="${a.role.value}"></td>
                         <td>
-                            <a th:href="@{/edit/{id}(id=${a.id})}">
+                            <a th:if="${session.account.id != a.id}" th:href="@{/edit/{id}(id=${a.id})}">
                                 <button type="button">Edit</button>
                             </a>
                         </td>
