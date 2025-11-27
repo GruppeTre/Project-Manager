@@ -47,7 +47,7 @@ public class AccountRepository {
     });
 
     //Inserts an account in the database
-    public Account createUser(Account account, Employee employee) {
+    public Account createUser(Account account) {
 
         String query = "INSERT INTO account (role, password, emp_id) VALUES (?,?,?)";
 

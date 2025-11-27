@@ -40,9 +40,11 @@ public class AccountService {
             throw new RuntimeException();
         }
 
+        account.setEmployee(checkEmployee);
+
         if(isValidPassword(account.getPassword())){
             try {
-                accountRepository.createUser(account, checkEmployee);
+                accountRepository.createUser(account);
             }
             catch (RuntimeException e) {
                 System.out.println("Failed to insert");

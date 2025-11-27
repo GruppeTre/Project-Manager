@@ -20,27 +20,48 @@ class AccountRepositoryTest {
 
     @Autowired
     private AccountRepository repository;
-    private JdbcTemplate jdbcTemplate;
+    private Account newAccount;
+    private Employee empWithAccount;
+    private Employee empWithoutAcc;
 
     @BeforeEach
     void setUp() {
+        newAccount = new Account();
+
+        empWithoutAcc = new Employee();
+        empWithoutAcc.setPosition("Udvikler");
+        empWithoutAcc.setFirstName("Ida");
+        empWithoutAcc.setLastName("Sørensen");
+        empWithoutAcc.setMail("idso@alphasolutions.com");
+        empWithoutAcc.setId(2);
+
+        empWithAccount = new Employee();
+        empWithAccount.setPosition("Manager");
+        empWithAccount.setFirstName("Anders");
+        empWithAccount.setLastName("Nielsen");
+        empWithAccount.setMail("admin@alphasolutions.com");
+        empWithAccount.setId(1);
     }
 
     @Test
     void shouldCreateUser() {
 
-        Account newAccount = new Account();
-        newAccount.setPassword("1234");
-        newAccount.setRole(Role.ADMIN);
+        String password = "1234";
 
-        Employee employee = new Employee();
-        employee.setId(2);
-        newAccount.setEmployee(employee);
+        Role role = Role.ADMIN;
 
-        Account account = repository.createUser(newAccount, employee);
+        newAccount.setPassword(password);
+        newAccount.setRole(role);
 
-        assertThat(account).isNotNull();
-        assertThat(account.getPassword()).isEqualTo("1234");
-        assertThat(account.getRole()).isEqualTo(Role.ADMIN);
+        newAccount.setEmployee(empWithoutAcc);
+
+        Account account = repository.createUser(newAccount);
+
+        assertNotNull(account);
+        assertEquals(password, account.getPassword());
+        assertEquals(role, account.getRole());
+        assertEquals(empWithoutAcc.getFirstName(), account.getFirstName());
+        assertEquals(empWithoutAcc.getLastName(), account.getLastName());
+        assertEquals(empWithoutAcc.getMail(), account.getMail());
     }
 }
