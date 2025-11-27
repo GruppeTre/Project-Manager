@@ -3,45 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
-    <link rel="stylesheet" th:href="@{/style/normalize.css}">
-    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
-    <link rel="stylesheet" th:href="@{/style/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
-    <form th:action="@{/account/create}" th:object="${account}" method="post">
+    <header th:replace="~{fragments/_commonElements :: header}"></header>
+    <main class="container">
+        <form th:action="@{/create}" th:object="${account}" method="post">
 
-        <div>
-            <h2 th:text="'New account'"></h2>
-        </div>
+            <div>
+                <h2 th:text="'New account'"></h2>
+            </div>
 
 
-        <div class="row">
-            <label for="mail" class="form-label" th:text="Mail"></label>
-            <input id="mail" type="email" th:field="${employee.mail}">
-        </div>
+            <div class="row">
+                <label for="mail" class="form-label" th:text="#{form.label.email}"></label>
+                <input id="mail" type="email" th:field="${employee.mail}" th:placeholder="#{form.input.email.placeholder}">
+            </div>
 
-        <!-- password -->
+            <!-- password -->
 
-        <div class="row">
-            <label for="password" class="form-label" th:text="Password"></label>
-            <input id="password" type="password" th:field="*{password}" th:placeholder="password">
-        </div>
+            <div class="row">
+                <label for="password" class="form-label" th:text="#{form.input.password.placeholder}"></label>
+                <input id="password" type="password" th:field="*{password}" th:placeholder="#{form.input.password.placeholder}">
+            </div>
 
-        <!-- role -->
+            <!-- role -->
 
-        <div class="row">
-            <label for="role" class="form-label">Role</label>
-            <select id="role" th:type="dropdown" th:field="*{role}">
-                <option th:each="roles : ${roles}" th:value="${roles.name()}" th:text="${roles.value}"/>
-            </select>
+            <div class="row">
+                <label for="role" class="form-label">Role</label>
+                <select id="role" th:type="dropdown" th:field="*{role}">
+                    <option th:each="roles : ${roles}" th:value="${roles.name()}" th:text="${roles.value}"/>
+                </select>
 
-        </div>
+            </div>
 
-        <!-- BUTTONS -->
-        <div class="row">
-            <a class="button" href="/" th:text="Tilbage"></a>
-            <button class="button" type="submit" th:text="submit"></button>
-        </div>
-    </form>
+            <!-- BUTTONS -->
+            <div class="row">
+                <a class="button" href="/overview" th:text="Tilbage"></a>
+                <button class="button" type="submit" th:text="submit"></button>
+            </div>
+        </form>
+    </main>
+    <footer th:replace="~{fragments/_commonElements :: footer}"></footer>
 </body>
 </html>
