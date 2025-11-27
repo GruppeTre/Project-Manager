@@ -1,19 +1,24 @@
 package com.mavi.projectmanager.controller;
 
+import com.mavi.projectmanager.controller.utils.SessionUtils;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.internal.matchers.Any;
 import org.mockito.internal.matchers.InstanceOf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.View;
@@ -22,10 +27,12 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @WebMvcTest
 class UserControllerTest {
@@ -39,10 +46,13 @@ class UserControllerTest {
     private ProjectService projectService;
     @MockitoBean
     private EmployeeService employeeService;
+    @MockitoBean
+    private HttpSession session;
 
     private Account testAccount;
     private Employee testEmployee;
     private Account emptyAccount;
+    private List<Account> accountList;
     private Employee emptyEmployee;
 
     @BeforeEach
@@ -61,6 +71,11 @@ class UserControllerTest {
         testAccount.setEmployee(testEmployee);
 
         emptyAccount = new Account();
+
+        accountList = new ArrayList<>();
+        accountList.add(testAccount);
+
+        session.setAttribute("account", testAccount);
         emptyEmployee = new Employee();
     }
 
@@ -84,11 +99,29 @@ class UserControllerTest {
 
         when(accountService.getAccountByID(1)).thenReturn(testAccount);
 
-        mockMvc.perform(get("/user/edit/{id}", 1))
+        mockMvc.perform(get("/edit/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("editUserPage"))
                 .andExpect(model().attribute("account", testAccount))
                 .andExpect(model().attribute("roles", Role.values()));
+    }
+
+    @Test
+    void shouldShowOverviewPage() throws Exception {
+        Mockito.when(accountService.getAccounts()).thenReturn(accountList);
+
+        //Required for the static isLoggedIn method in Session utils.
+        //Creates a mocked static and as long as it's a HttpSession.class it will pass as true.
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(get("/overview").sessionAttr("account", testAccount))
+                .andExpect(status().isOk())
+                .andExpect(view().name("overviewPage"))
+                .andExpect(model().attribute("accounts", accountList))
+                .andExpect(model().attribute("session", testAccount));
+        mockedStatic.close();
     }
 
     /*
@@ -102,10 +135,10 @@ class UserControllerTest {
     void shouldLogInUser() throws Exception{
 
         //mock correct log in details by forcing service class to return true on login method call
-        when(accountService.accountLogin(any(Employee.class), any(Account.class))).thenReturn(true);
+        when(accountService.accountLogin(any(Account.class), any(Employee.class))).thenReturn(true);
 
         //mock getting full account details out of service
-        when(accountService.getAccountByMail(any(Account.class), eq(testEmployee.getMail()))).thenReturn(testAccount);
+        when(accountService.getAccountByMail(testAccount.getMail())).thenReturn(testAccount);
 
         mockMvc.perform(post("/login")
                         .param("mail", testEmployee.getMail())
@@ -120,7 +153,7 @@ class UserControllerTest {
     void shouldRedirectUserToLoginPageOnWrongCredentials() throws Exception {
 
         //mock wrong log in credentials by forcing service class to return false
-        when(accountService.accountLogin(any(Employee.class), any(Account.class))).thenReturn(false);
+        when(accountService.accountLogin(any(Account.class), any(Employee.class))).thenReturn(false);
 
         mockMvc.perform(post("/login")
                         .param("mail", testEmployee.getMail())

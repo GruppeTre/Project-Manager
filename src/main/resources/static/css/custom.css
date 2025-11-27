@@ -73,6 +73,59 @@ header a, header a:hover {
     margin-bottom: 1.5rem;
     background-color: var(--warning-red);
 }
+body {
+    background-color: #dcdcdd;
+}
+
+thead tr {
+    background-color: #4c5d68;
+    color: #dcdcdd;
+}
+
+thead th {
+    text-align: center;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #cccbcb;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #dcdcdd;
+}
+
+tbody td {
+    text-align: center;
+}
+
+.inline-block{
+    display: inline-block;
+}
+
+.overview {
+    width:90%;
+    margin: auto;
+}
+
+.overview article {
+    width:90%;
+    margin: auto;
+}
+
+.overview_table {
+    width: 100%;
+    position: relative;
+    margin: auto;
+}
+
+.top-nav a{
+    display: flex;
+    border-right-style: solid;
+    border-right-color: #c5c3c6;
+    border-right-width: 2px;
+    padding: 5px;
+    text-align: center;
+}
 
 .form-error-container label {
     color: var(--light);
@@ -117,4 +170,17 @@ input[type="button"].button-primary:focus {
 input, label {
     width: 25em;
     color: var(--gray);
+}
+.top-nav a:last-child{
+    border-right-style: none;
+}
+
+.top-nav {
+    display: flex;
+    background-color: #4c5d68;
+    width:100%;
+    justify-content: space-evenly;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+
 }

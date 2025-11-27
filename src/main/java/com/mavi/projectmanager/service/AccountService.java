@@ -17,7 +17,7 @@ import java.util.List;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
     public AccountService(AccountRepository accountRepository, EmployeeService employeeService) {
@@ -61,8 +61,8 @@ public class AccountService {
         return account;
     }
 
-    public Account getAccountByMail(Account account, String mail){
-        return accountRepository.getAccountByEmployeeMail(account, mail);
+    public Account getAccountByMail(String mail){
+        return accountRepository.getAccountByMail(mail);
     }
 
     public Account updatedAccount(Account updatedAccount){
@@ -75,13 +75,13 @@ public class AccountService {
     }
 
     //Get all accounts stored in a List
-    public List<Account> getAllAccounts() {
-        return accountRepository.getAllAccounts();
+    public List<Account> getAccounts() {
+        return accountRepository.getAccounts();
     }
 
-    public boolean accountLogin(Employee employee, Account account){
+    public boolean accountLogin(Account account, Employee employee){
         try {
-            Account getAccount = accountRepository.getAccountByEmployeeMail(account, employee.getMail());
+        Account getAccount = accountRepository.getAccountByMail(employee.getMail());
 
             return encoder.matches(account.getPassword(), getAccount.getPassword());
         } catch (RuntimeException e) {

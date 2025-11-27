@@ -11,7 +11,7 @@
 <main>
     <section>
         <article>
-            <form th:action="@{/user/editUser}" th:object="${account}" th:method="post">
+            <form th:action="@{/editUser}" th:object="${account}" th:method="post">
                 <input th:type="hidden" th:field="*{id}">
                 <label for="userName" th:text="#{form.label.username}"></label>
                 <input id="userName" th:type="text" th:field="*{mail}" readonly>

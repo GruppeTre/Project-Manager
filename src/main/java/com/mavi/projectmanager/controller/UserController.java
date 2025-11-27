@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping("/login")
     public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
 
-        if(!service.accountLogin(employee, account)){
+        if(!service.accountLogin(account, employee)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("error", true);
             model.addAttribute("account", account);
@@ -44,7 +44,7 @@ public class UserController {
             return "index";
         }
 
-        account = service.getAccountByMail(account, employee.getMail());
+        account = service.getAccountByMail(employee.getMail());
 
         session.setAttribute("account", account);
 
@@ -99,8 +99,8 @@ public class UserController {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-
-        model.addAttribute("users", service.getAllAccounts());
+        model.addAttribute("accounts", service.getAccounts());
+        model.addAttribute("session", session.getAttribute("account"));
 
         return "overviewPage";
     }
@@ -109,7 +109,7 @@ public class UserController {
     public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
 
         if (!SessionUtils.isLoggedIn(session)) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         Account account = service.getAccountByID(id);

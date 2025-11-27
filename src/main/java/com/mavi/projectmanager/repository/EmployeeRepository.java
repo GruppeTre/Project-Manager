@@ -37,14 +37,4 @@ public class EmployeeRepository {
             return null;
         }
     }
-
-    public Employee getEmployeeByID(int id){
-        String query = "SELECT * FROM Employee WHERE id = ?";
-
-        try{
-            return jdbcTemplate.queryForObject(query, employeeRowMapper, id);
-        } catch (EmptyResultDataAccessException e){
-            return null;
-        }
-    }
 }
