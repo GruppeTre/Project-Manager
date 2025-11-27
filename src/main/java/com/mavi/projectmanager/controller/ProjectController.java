@@ -19,18 +19,15 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    public String getProjectOverviewPage(@RequestParam("viewMode") String viewMode, @RequestParam("perm") int perm, Model model, HttpSession session){
+    public String getProjectOverviewPage(@RequestParam("viewMode") String viewMode, Model model, HttpSession session){
         if(!SessionUtils.isLoggedIn(session)){
             return "redirect:/";
         }
 
-        if(viewMode.equals("projects") && perm == 1){
+        if(viewMode.equals("projects")){
             model.addAttribute("projects", projectService.getProjects());
-
-            return "overviewPage";
-        } else {
-            return "overviewPage";
         }
+        return "overviewPage";
 
     }
 }

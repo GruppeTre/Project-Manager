@@ -90,13 +90,15 @@ public class UserController {
     }
 
     @GetMapping("/overview")
-    public String getOverviewPage(HttpSession session, Model model) {
+    public String getOverviewPage(@RequestParam("viewMode") String viewMode, HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
 
-        model.addAttribute("users", service.getAllAccounts());
+        if(viewMode.equals("accounts")) {
+            model.addAttribute("users", service.getAllAccounts());
+        }
 
         return "overviewPage";
     }
