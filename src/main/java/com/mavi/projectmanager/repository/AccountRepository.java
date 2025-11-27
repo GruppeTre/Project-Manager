@@ -114,9 +114,10 @@ public class AccountRepository {
     public Account getAccountByMail(String mail) {
         String query = """
                         SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
-                        INNER JOIN Employee e ON a.id = e.id
+                        INNER JOIN Employee e ON a.emp_id = e.id
                         WHERE e.mail = ?
                       """;
+
         try{
             return jdbcTemplate.queryForObject(query, accountRowMapper, mail);
         } catch (EmptyResultDataAccessException e) {
