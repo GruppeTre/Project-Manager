@@ -3,33 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
-    <link rel="stylesheet" th:href="@{/style/normalize.css}">
-    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
-    <link rel="stylesheet" th:href="@{/style/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
-    <main>
-        <header></header>
-        <section>
-            <article>
-                <form th:object="${account}" th:action="@{/login}" method="post">
-                    <div class="row">
-                        <label for="username" th:text="#{form.label.username}"></label>
-                        <input id="username" th:field="${employee.mail}" th:type="email" th:placeholder="#{form.input.username.placeholder}"/>
-                    </div>
-                    <div class="row">
-                        <label for="password" th:text="#{form.label.password}"></label>
-                        <input id="password" th:field="*{password}" th:type="password" />
-                    </div>
-                    <div class="row">
-                        <button th:type="submit" th:text="#{form.button.submit.login}"></button>
-                    </div>
-                </form>
-            </article>
-            <article>
-                <p th:text="#{login.p.missingUser}"></p>
-            </article>
-        </section>
+    <header th:replace="~{fragments/_commonElements :: header}"></header>
+    <main class="container login-container">
+        <article class="content-wrapper">
+            <form class="login-form" th:object="${account}" th:action="@{/login}" method="post">
+                <!-- Error messages -->
+                <div th:if="${error}" class="form-error-container">
+                    <label th:text="#{form.error.wrongCredentials}"></label>
+                </div>
+
+                <div class="row">
+                    <label for="username" th:text="#{form.label.username}"></label>
+                    <input id="username" th:field="${employee.mail}" th:type="email" th:placeholder="#{form.input.username.placeholder}" required/>
+                </div>
+
+                <div class="row">
+                    <label for="password" th:text="#{form.label.password}"></label>
+                    <input id="password" th:field="*{password}" th:type="password" th:placeholder="#{form.input.password.placeholder}" required/>
+                </div>
+
+                <div class="row">
+                    <button th:type="submit" class="button-primary" th:text="#{form.button.submit.login}"></button>
+                </div>
+            </form>
+        </article>
+
+        <article id="index-text" class="content-wrapper">
+            <h5 th:text="#{login.missingUser.header}"></h5>
+            <p th:text="#{login.missingUser.text}"></p>
+        </article>
+
     </main>
+    <footer th:replace="~{fragments/_commonElements :: footer}"></footer>
 </body>
 </html>
