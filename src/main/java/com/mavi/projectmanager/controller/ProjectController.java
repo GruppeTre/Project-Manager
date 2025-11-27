@@ -26,6 +26,7 @@ public class ProjectController {
 
         if(viewMode.equals("projects")){
             model.addAttribute("projects", projectService.getProjects());
+            model.addAttribute("viewMode", viewMode);
         }
         return "overviewPage";
 

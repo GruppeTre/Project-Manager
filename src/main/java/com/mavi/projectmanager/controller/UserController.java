@@ -104,8 +104,12 @@ public class UserController {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-        model.addAttribute("accounts", service.getAccounts());
-        model.addAttribute("session", session.getAttribute("account"));
+
+        if(viewMode.equals("accounts")) {
+            model.addAttribute("accounts", service.getAccounts());
+            model.addAttribute("session", session.getAttribute("account"));
+            model.addAttribute("viewMode", viewMode);
+        }
 
         return "overviewPage";
     }
