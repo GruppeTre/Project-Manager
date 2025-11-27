@@ -94,7 +94,8 @@ CREATE TABLE employee_task_junction (
 );
 
 INSERT INTO employee (position, mail, firstName, lastName)
-VALUES ('Manager', 'admin@alphasolutions.com','Anders', 'Nielsen');
+VALUES ('Manager', 'admin@alphasolutions.com','Anders', 'Nielsen'),
+       ('Udvikler', 'ida.sorensen@hotmail.com', 'Ida', 'Sorensen');
 
 INSERT INTO account(role, password, emp_id)
 -- admin account with email 'admin@alphasolutions.com' password: 'admin'

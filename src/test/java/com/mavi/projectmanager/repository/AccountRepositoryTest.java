@@ -34,7 +34,7 @@ class AccountRepositoryTest {
         newAccount.setRole(Role.ADMIN);
 
         Employee employee = new Employee();
-        employee.setId(1);
+        employee.setId(2);
         newAccount.setEmployee(employee);
 
         Account account = repository.createUser(newAccount, employee);
