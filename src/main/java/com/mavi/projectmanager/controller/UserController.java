@@ -36,7 +36,8 @@ public class UserController {
     @PostMapping("/login")
     public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
 
-        if(!service.accountLogin(account, employee)){
+        account.setEmployee(employee);
+        if(!service.accountLogin(account)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("error", true);
             model.addAttribute("account", account);
@@ -79,7 +80,8 @@ public class UserController {
 
         //Check to see if all fields are filled correctly
         try{
-            service.createUser(newAccount, employee.getMail());
+            newAccount.setEmployee(employee);
+            service.createUser(newAccount);
 
         } catch (InvalidFieldException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

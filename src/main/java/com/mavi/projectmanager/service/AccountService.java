@@ -32,9 +32,9 @@ public class AccountService {
     }
 
     //Registers a user
-    public Account createUser(Account account, String mail) {
+    public Account createUser(Account account) {
 
-        Employee checkEmployee = employeeService.getEmployeeByMail(mail);
+        Employee checkEmployee = employeeService.getEmployeeByMail(account.getMail());
 
         if(checkEmployee == null) {
             throw new RuntimeException();
@@ -79,9 +79,9 @@ public class AccountService {
         return accountRepository.getAccounts();
     }
 
-    public boolean accountLogin(Account account, Employee employee){
+    public boolean accountLogin(Account account){
         try {
-        Account getAccount = accountRepository.getAccountByMail(employee.getMail());
+        Account getAccount = accountRepository.getAccountByMail(account.getMail());
 
             return encoder.matches(account.getPassword(), getAccount.getPassword());
         } catch (RuntimeException e) {
