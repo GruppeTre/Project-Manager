@@ -19,7 +19,7 @@ import org.springframework.jdbc.core.RowMapper;
 public class AccountRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
     private static final Comparator<Account> ACCOUNT_COMPARATOR = Comparator.comparingInt((Account a) -> a.getRole().getId()).thenComparing(Account::getFirstName).thenComparing(Account::getLastName);
 
     public AccountRepository(JdbcTemplate jdbcTemplate, EmployeeRepository employeeRepository){

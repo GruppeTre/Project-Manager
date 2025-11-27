@@ -3,12 +3,14 @@ package com.mavi.projectmanager.service;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.repository.AccountRepository;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.exception.PageNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.management.RuntimeErrorException;
 import java.util.List;
 
 @Service
@@ -16,6 +18,7 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final EmployeeService employeeService;
+    private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
     public AccountService(AccountRepository accountRepository, EmployeeService employeeService) {
         this.accountRepository = accountRepository;
@@ -76,13 +79,13 @@ public class AccountService {
         return accountRepository.getAccounts();
     }
 
-    public boolean accountLogin(Employee employee){
+    public boolean accountLogin(Account account, Employee employee){
+        try {
         Account getAccount = accountRepository.getAccountByMail(employee.getMail());
 
-        if(getAccount == null){
-            throw new InvalidFieldException("Password is incorrect", Field.PASSWORD);
+            return encoder.matches(account.getPassword(), getAccount.getPassword());
+        } catch (RuntimeException e) {
+            return false;
         }
-
-        return true;
     }
 }
