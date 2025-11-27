@@ -176,4 +176,16 @@ class UserControllerTest {
                 .andExpect(redirectedUrl("/user/edit/1"))
                 .andExpect(flash().attributeCount(0));
     }
+
+    @Test
+    void shouldCreateUser() throws Exception {
+        Account createdTestAccount = testAccount;
+
+        Mockito.when(accountService.createUser(createdTestAccount, testAccount.getEmployee().getMail())).thenReturn(createdTestAccount);
+
+        mockMvc.perform(post("/create"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview"));
+
+    }
 }
