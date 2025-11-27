@@ -41,8 +41,8 @@ class UserControllerTest {
     private EmployeeService employeeService;
 
     private Account testAccount;
-    private Account emptyAccount;
     private Employee testEmployee;
+    private Account emptyAccount;
     private Employee emptyEmployee;
 
     @BeforeEach
@@ -75,8 +75,8 @@ class UserControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
-                .andExpect(model().attribute("account", instanceOf(Account.class)))
-                .andExpect(model().attribute("employee", instanceOf(Employee.class)));
+                .andExpect(model().attribute("account", emptyAccount))
+                .andExpect(model().attribute("employee", emptyEmployee));
     }
 
     @Test
