@@ -40,7 +40,7 @@ public class AccountRepository {
     //Inserts an account in the database
     public Account createUser(Account account, Employee employee) {
 
-        String query = "INSERT IGNORE INTO account (role, password, emp_id) VALUES (?,?,?)";
+        String query = "INSERT INTO account (role, password, emp_id) VALUES (?,?,?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
@@ -48,7 +48,7 @@ public class AccountRepository {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setObject(1, account.getRole().getId());
                 ps.setString(2, account.getPassword());
-                ps.setInt(3, employee.getId());
+                ps.setInt(3, account.getEmployee().getId());
 
                 return ps;
             }, keyHolder);
