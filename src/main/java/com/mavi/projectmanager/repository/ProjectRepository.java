@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
-    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing((Project p) -> p. )
+    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
 
     public ProjectRepository(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
@@ -29,7 +29,7 @@ public class ProjectRepository {
                        """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
 
-        projects.sort(ACCOUNT_COMPARATOR);
+        projects.sort(PROJECT_COMPARATOR);
 
         return accounts;
     }
