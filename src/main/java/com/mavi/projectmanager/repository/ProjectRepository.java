@@ -1,15 +1,18 @@
 package com.mavi.projectmanager.repository;
 
 
+import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Project;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Repository
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
+    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing((Project p) -> p. )
 
     public ProjectRepository(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
@@ -24,6 +27,10 @@ public class ProjectRepository {
                         INNER JOIN account_project_junction apj ON Projects p.id = apj.project_id
                         INNER JOIN Account a ON account_project_junction ON Account a.account_id = apj.account_id
                        """;
+        List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
 
+        projects.sort(ACCOUNT_COMPARATOR);
+
+        return accounts;
     }
 }
