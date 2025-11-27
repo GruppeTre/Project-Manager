@@ -1,7 +1,7 @@
 DROP ALL OBJECTS;
 
 CREATE TABLE employee (
-                          id INT PRIMARY KEY AUTO_INCREMENT,
+                          id INT NOT NULL UNIQUE AUTO_INCREMENT,
                           position VARCHAR(50) NOT NULL,
                           mail VARCHAR(100) NOT NULL UNIQUE,
                           firstName VARCHAR(50) NOT NULL,
@@ -50,56 +50,52 @@ CREATE TABLE task (
 );
 
 CREATE TABLE account_project_junction (
-                      account_id INT NOT NULL,
-                      project_id INT NOT NULL,
+                                          account_id INT NOT NULL,
+                                          project_id INT NOT NULL,
 
-                      PRIMARY KEY(account_id, project_id),
-                      FOREIGN KEY(account_id) REFERENCES account(id)
-                          ON DELETE CASCADE,
-                      FOREIGN KEY(project_id) REFERENCES project(id)
-                          ON DELETE CASCADE
+                                          PRIMARY KEY(account_id, project_id),
+                                          FOREIGN KEY(account_id) REFERENCES account(id)
+                                              ON DELETE CASCADE,
+                                          FOREIGN KEY(project_id) REFERENCES project(id)
+                                              ON DELETE CASCADE
 );
 
 CREATE TABLE project_subproject_junction (
-                         project_id INT NOT NULL,
-                         subproject_id INT NOT NULL,
+                                             project_id INT NOT NULL,
+                                             subproject_id INT NOT NULL,
 
-                         PRIMARY KEY(project_id, subproject_id),
-                         FOREIGN KEY(project_id) REFERENCES project(id)
-                             ON DELETE CASCADE,
-                         FOREIGN KEY(subproject_id) REFERENCES subproject(id)
-                             ON DELETE CASCADE
+                                             PRIMARY KEY(project_id, subproject_id),
+                                             FOREIGN KEY(project_id) REFERENCES project(id)
+                                                 ON DELETE CASCADE,
+                                             FOREIGN KEY(subproject_id) REFERENCES subproject(id)
+                                                 ON DELETE CASCADE
 );
 
 CREATE TABLE subproject_task_junction (
-                      subproject_id INT NOT NULL,
-                      task_id INT NOT NULL,
+                                          subproject_id INT NOT NULL,
+                                          task_id INT NOT NULL,
 
-                      PRIMARY KEY(subproject_id, task_id),
-                      FOREIGN KEY(subproject_id) REFERENCES subproject(id)
-                          ON DELETE CASCADE,
-                      FOREIGN KEY(task_id) REFERENCES task(id)
-                          ON DELETE CASCADE
+                                          PRIMARY KEY(subproject_id, task_id),
+                                          FOREIGN KEY(subproject_id) REFERENCES subproject(id)
+                                              ON DELETE CASCADE,
+                                          FOREIGN KEY(task_id) REFERENCES task(id)
+                                              ON DELETE CASCADE
 );
 
 CREATE TABLE employee_task_junction (
-                    employee_id INT NOT NULL,
-                    task_id INT NOT NULL,
+                                        employee_id INT NOT NULL,
+                                        task_id INT NOT NULL,
 
-                    PRIMARY KEY(employee_id, task_id),
-                    FOREIGN KEY(employee_id) REFERENCES employee(id)
-                        ON DELETE CASCADE,
-                    FOREIGN KEY(task_id) REFERENCES task(id)
-                        ON DELETE CASCADE
+                                        PRIMARY KEY(employee_id, task_id),
+                                        FOREIGN KEY(employee_id) REFERENCES employee(id)
+                                            ON DELETE CASCADE,
+                                        FOREIGN KEY(task_id) REFERENCES task(id)
+                                            ON DELETE CASCADE
 );
 
 INSERT INTO employee (position, mail, firstName, lastName)
-VALUES ('Manager', 'adam@company.com', 'Adam', 'Adamsen'),
-       ('Udvikler', 'ida.sorensen@hotmail.com', 'Ida', 'Sorensen');
+VALUES ('Manager', 'admin@alphasolutions.com','Anders', 'Nielsen');
 
-
-
-
-
-
-
+INSERT INTO account(role, password, emp_id)
+-- admin account with email 'admin@alphasolutions.com' password: 'admin'
+VALUES (1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 1);

@@ -8,11 +8,13 @@ public enum Field {
 
     private final String value;
 
-    private Field(String value) {
+    Field(String value) {
         this.value = value;
     }
 
     public String getValue() {
         return value;
     }
+
+
 }

@@ -3,19 +3,22 @@ package com.mavi.projectmanager.service;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.repository.AccountRepository;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.exception.PageNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.management.RuntimeErrorException;
 import java.util.List;
 
 @Service
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
+    private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
     public AccountService(AccountRepository accountRepository, EmployeeService employeeService) {
         this.accountRepository = accountRepository;
@@ -58,6 +61,10 @@ public class AccountService {
         return account;
     }
 
+    public Account getAccountByMail(String mail){
+        return accountRepository.getAccountByMail(mail);
+    }
+
     public Account updatedAccount(Account updatedAccount){
         if (isValidPassword(updatedAccount.getPassword())) {
             return accountRepository.updatedAccount(updatedAccount);
@@ -68,7 +75,17 @@ public class AccountService {
     }
 
     //Get all accounts stored in a List
-    public List<Account> getAllAccounts() {
-        return accountRepository.getAllAccounts();
+    public List<Account> getAccounts() {
+        return accountRepository.getAccounts();
+    }
+
+    public boolean accountLogin(Account account, Employee employee){
+        try {
+        Account getAccount = accountRepository.getAccountByMail(employee.getMail());
+
+            return encoder.matches(account.getPassword(), getAccount.getPassword());
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 }

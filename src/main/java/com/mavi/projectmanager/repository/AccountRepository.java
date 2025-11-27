@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Comparator;
 import java.util.List;
 
 import com.mavi.projectmanager.model.Role;
@@ -18,7 +19,8 @@ import org.springframework.jdbc.core.RowMapper;
 public class AccountRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    private static final Comparator<Account> ACCOUNT_COMPARATOR = Comparator.comparingInt((Account a) -> a.getRole().getId()).thenComparing(Account::getFirstName).thenComparing(Account::getLastName);
 
     public AccountRepository(JdbcTemplate jdbcTemplate, EmployeeRepository employeeRepository){
         this.jdbcTemplate = jdbcTemplate;
@@ -26,13 +28,20 @@ public class AccountRepository {
     }
 
     public final RowMapper<Account> accountRowMapper = ((rs, rowNum) -> {
+        Employee employee = new Employee();
+        employee.setId(rs.getInt("employee_id"));
+        employee.setPosition(rs.getString("position"));
+        employee.setMail(rs.getString("mail"));
+        employee.setFirstName(rs.getString("firstName"));
+        employee.setLastName(rs.getString("lastName"));
+
         Account account = new Account();
         int roleId = rs.getInt("role");
 
         account.setId(rs.getInt("id"));
         account.setRole(Role.getRoleByID(roleId));
         account.setPassword(rs.getString("password"));
-        account.setEmployee(employeeRepository.getEmployeeByID(rs.getInt("emp_id")));
+        account.setEmployee(employee);
 
         return account;
     });
@@ -68,7 +77,11 @@ public class AccountRepository {
     }
 
     public Account getAccountByID(int id){
-        String query= "SELECT * FROM Account WHERE id = ?";
+        String query= """
+                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
+                        INNER JOIN Employee e ON a.emp_id = e.id
+                        WHERE a.id = ?
+                      """;
 
         try{
             return jdbcTemplate.queryForObject(query, accountRowMapper, id);
@@ -97,8 +110,32 @@ public class AccountRepository {
 
 
     }
+
+    public Account getAccountByMail(String mail) {
+        String query = """
+                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
+                        INNER JOIN Employee e ON a.emp_id = e.id
+                        WHERE e.mail = ?
+                      """;
+
+        try{
+            return jdbcTemplate.queryForObject(query, accountRowMapper, mail);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
   
-    public List<Account> getAllAccounts() {
-        return null;
+    public List<Account> getAccounts() {
+        String query = """
+                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName
+                        FROM Account a
+                        INNER JOIN Employee e ON a.emp_id = e.id
+                       """;
+
+        List<Account> accounts = jdbcTemplate.query(query, accountRowMapper);
+
+        accounts.sort(ACCOUNT_COMPARATOR);
+
+        return accounts;
     }
 }
