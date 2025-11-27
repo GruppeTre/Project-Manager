@@ -44,7 +44,7 @@ public class UserController {
 
         session.setAttribute("account", account);
 
-        return "redirect:/overview";
+        return "redirect:/overview?viewMode=accounts";
     }
 
     //Shows the createUSerPage
