@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -33,14 +34,17 @@ public class UserController {
         return "index";
     }
     @PostMapping("/login")
-    public String login(HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
-        if(!service.accountLogin(employee, account)){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
 
-            return "redirect:/";
+        if(!service.accountLogin(account, employee)){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("error", true);
+            model.addAttribute("account", account);
+            model.addAttribute("employee", employee);
+            return "index";
         }
 
-        account = service.getAccountByMail(account, employee.getMail());
+        account = service.getAccountByMail(employee.getMail());
 
         session.setAttribute("account", account);
 
@@ -100,10 +104,8 @@ public class UserController {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-
-        if(viewMode.equals("accounts")) {
-            model.addAttribute("users", service.getAllAccounts());
-        }
+        model.addAttribute("accounts", service.getAccounts());
+        model.addAttribute("session", session.getAttribute("account"));
 
         return "overviewPage";
     }
@@ -112,7 +114,7 @@ public class UserController {
     public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
 
         if (!SessionUtils.isLoggedIn(session)) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         Account account = service.getAccountByID(id);

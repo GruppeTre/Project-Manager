@@ -3,47 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Overview</title>
-    <link rel="stylesheet" th:href="@{/style/normalize.css}">
-    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
-    <link rel="stylesheet" th:href="@{/style/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 
 <body>
 <main>
     <!-- Navigation links for switching between sections -->
-    <nav>
-        <a th:href="@{/overview/projects(viewMode='projects')}">Projects</a>
-        <a th:href="@{/overview(viewMode='accounts')}">Accounts</a>
-    </nav>
-
     <!-- Accounts table -->
-    <div th:if="${viewMode =='accounts'}">
-        <h2>Users</h2>
-
-        <a th:href="@{/user/create}">
-            <button type="button">Create user</button>
-        </a>
-
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-    <!-- ERROR(?): first_name and last_name resides in the nested employee object -->
-            <tr th:each="a : ${account}">
-                <td th:text="${a.name}"></td>
-                <td th:text="${a.email}"></td>
-                <td th:text="${a.first_name + ' ' + a.last_name}"></td>
-                <td>
-                    <a th:href="@{/user/edit/{id}(id=${a.id})}">
-                        <button type="button">Edit</button>
-                    </a>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <section class="overview">
+        <nav class="top-nav">
+            <a th:href="@{/overview/projects(viewMode='projects')}" th:text="#{nav.a.account}"></a>
+            <a th:href="@{/overview(viewMode='accounts')}" th:text="#{nav.a.project}">Projects</a>
+        </nav>
+        <article th:if="${viewMode == 'accounts'}">
+            <div>
+                <div class="inline-block">
+                    <label for="search_bar"></label>
+                    <input id="search_bar" type="search" th:placeholder="#{overview.search.placeholder}"></h2>
+                </div>
+                <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block">
+                    <a th:href="@{/create}" th:text="#{overview.button.createAccount}"></a>
+                </div>
+            </div>
+            <div>
+                <table class="overview_table" th:object="${accounts}">
+                    <thead>
+                        <tr>
+                            <th th:text="#{overview.text.label.name}"></th>
+                            <th th:text="#{overview.text.label.mail}"></th>
+                            <th th:text="#{overview.text.label.role}"></th>
+                            <th th:text="#{overview.text.label.actions}"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="a : ${accounts}" th:if="${session.account.id != a.id}">
+                            <td th:text="${a.firstName + ' ' + a.lastName}"></td>
+                            <td th:text="${a.mail}"></td>
+                            <td th:text="${a.role.value}"></td>
+                            <td>
+                                <a th:href="@{/edit/{id}(id=${a.id})}" th:text="#{overview.button.edit}"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </section>
 
     <!-- Projects table -->
     <div th:if="${viewMode == 'projects'}">
