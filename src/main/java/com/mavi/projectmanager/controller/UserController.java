@@ -25,27 +25,26 @@ public class UserController {
 
     @GetMapping
     public String getLogin(Model model){
-        Account account = new Account();
         Employee employee = new Employee();
+        Account account = new Account();
+
+        account.setEmployee(employee);
 
         model.addAttribute("account", account);
-        model.addAttribute("employee", employee);
 
         return "index";
     }
     @PostMapping("/login")
-    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
+    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account){
 
-        account.setEmployee(employee);
         if(!service.accountLogin(account)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("error", true);
             model.addAttribute("account", account);
-            model.addAttribute("employee", employee);
             return "index";
         }
 
-        account = service.getAccountByMail(employee.getMail());
+        account = service.getAccountByMail(account.getMail());
 
         session.setAttribute("account", account);
 
@@ -62,8 +61,9 @@ public class UserController {
 
         Account newAccount = new Account();
         Employee employee = new Employee();
+        newAccount.setEmployee(employee);
+
         model.addAttribute("account", newAccount);
-        model.addAttribute("employee", employee);
         model.addAttribute("roles", Role.values());
 
         return "createUserPage";
@@ -71,8 +71,7 @@ public class UserController {
 
     //Creates a new account
     @PostMapping("/create")
-    public String createNewUser(HttpSession session, Model model, @ModelAttribute Account newAccount, @ModelAttribute Employee employee,
-                                HttpServletResponse response) {
+    public String createNewUser(HttpSession session, Model model, @ModelAttribute Account newAccount, HttpServletResponse response) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -80,7 +79,6 @@ public class UserController {
 
         //Check to see if all fields are filled correctly
         try{
-            newAccount.setEmployee(employee);
             service.createUser(newAccount);
 
         } catch (InvalidFieldException e) {
@@ -88,7 +86,6 @@ public class UserController {
             model.addAttribute("error", true);
             model.addAttribute("invalidField", e.getField());
             model.addAttribute("newAccount", newAccount);
-            model.addAttribute("employee", employee);
             model.addAttribute("roles", Role.values());
             return "createUserPage";
         }
