@@ -47,13 +47,22 @@ public class UserController {
         account = service.getAccountByMail(employee.getMail());
 
         session.setAttribute("account", account);
-
-        String viewMode = "?viewMode=accounts";
         String redirect = "redirect:/overview";
 
-        redirect = redirect.concat(viewMode);
+        Account roleId = (Account) session.getAttribute("account");
+        if(roleId.getRole().getId() == 1) {
+            String viewMode = "?viewMode=accounts";
 
-        return redirect;
+            redirect = redirect.concat(viewMode);
+
+            return redirect;
+        }
+        else{
+            String viewMode = "?viewMode=projects";
+            redirect = redirect.concat(viewMode);
+
+            return redirect;
+        }
     }
 
     //Shows the createUSerPage
