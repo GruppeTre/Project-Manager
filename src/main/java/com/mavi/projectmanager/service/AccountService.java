@@ -52,8 +52,7 @@ public class AccountService {
         account.setPassword(encoder.encode(account.getPassword()));
 
         try {
-            System.out.println("creating user");
-            accountRepository.createUser(account);
+            account = accountRepository.createUser(account);
         }
         catch (RuntimeException e) {
             throw new RuntimeException("Account passed all checks but failed to insert!");
