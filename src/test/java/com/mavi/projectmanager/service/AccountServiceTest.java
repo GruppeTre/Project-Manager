@@ -136,6 +136,8 @@ class AccountServiceTest {
 
         when(employeeService.getEmployeeByMail(registerAccount.getMail())).thenReturn(dbEmployee);
 
+        when(repository.getAccountByMail(registerAccount.getMail())).thenReturn(dbAccount);
+
         Throwable exception = assertThrows(InvalidFieldException.class, () -> accountService.createUser(registerAccount));
 
         assertEquals("An account with that mail already exists!", exception.getMessage());
