@@ -27,7 +27,7 @@
 
             <div class="row">
                 <label for="mail" class="form-label" th:text="#{form.label.email}"></label>
-                <input id="mail" type="email" th:field="${employee.mail}" th:placeholder="#{form.input.email.placeholder}" required pattern="[A-Za-z0-9]+@alphasolutions\.com" th:title="#{form.warning.invalidMailFormat}">
+                <input id="mail" type="email" th:field="${account.employee.mail}" th:placeholder="#{form.input.email.placeholder}" required pattern="[A-Za-z0-9]+@alphasolutions\.com" th:title="#{form.warning.invalidMailFormat}">
             </div>
 
             <!-- password -->
