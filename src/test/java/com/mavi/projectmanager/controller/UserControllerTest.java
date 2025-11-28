@@ -66,19 +66,21 @@ class UserControllerTest {
         testEmployee.setLastName("Petersen");
         testEmployee.setMail("pepe@company.com");
 
+        emptyEmployee = new Employee();
+
+        emptyAccount = new Account();
+        emptyAccount.setEmployee(emptyEmployee);
+
         testAccount = new Account();
         testAccount.setId(1);
         testAccount.setRole(Role.ADMIN);
         testAccount.setPassword("1234");
         testAccount.setEmployee(testEmployee);
 
-        emptyAccount = new Account();
-
         accountList = new ArrayList<>();
         accountList.add(testAccount);
 
         session.setAttribute("account", testAccount);
-        emptyEmployee = new Employee();
     }
 
 
@@ -92,8 +94,7 @@ class UserControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
-                .andExpect(model().attribute("account", emptyAccount))
-                .andExpect(model().attribute("employee", emptyEmployee));
+                .andExpect(model().attribute("account", emptyAccount));
     }
 
     @Test
@@ -148,7 +149,7 @@ class UserControllerTest {
         when(accountService.getAccountByMail(testAccount.getMail())).thenReturn(testAccount);
 
         mockMvc.perform(post("/login")
-                        .param("mail", testEmployee.getMail())
+                        .param("employee.mail", testEmployee.getMail())
                         .param("password", testAccount.getPassword()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview"))
@@ -163,13 +164,12 @@ class UserControllerTest {
         when(accountService.accountLogin(any(Account.class))).thenReturn(false);
 
         mockMvc.perform(post("/login")
-                        .param("mail", testEmployee.getMail())
+                        .param("employee.mail", testEmployee.getMail())
                         .param("password", testAccount.getPassword()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("error", true))
-                .andExpect(model().attribute("account", Matchers.instanceOf(Account.class)))
-                .andExpect(model().attribute("employee", Matchers.instanceOf(Employee.class)));
+                .andExpect(model().attribute("account", Matchers.instanceOf(Account.class)));
     }
 
     @Test
@@ -220,7 +220,6 @@ class UserControllerTest {
                 .andExpect(model().attribute("error", true))
                 .andExpect(model().attribute("invalidField", "email"))
                 .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
-                .andExpect(model().attribute("employee", Matchers.instanceOf(Employee.class)))
                 .andExpect(model().attribute("roles", Role.values()));
         mockedStatic.close();
     }
@@ -240,7 +239,6 @@ class UserControllerTest {
                 .andExpect(model().attribute("error", true))
                 .andExpect(model().attribute("invalidField", "employee"))
                 .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
-                .andExpect(model().attribute("employee", Matchers.instanceOf(Employee.class)))
                 .andExpect(model().attribute("roles", Role.values()));
         mockedStatic.close();
     }
@@ -260,7 +258,6 @@ class UserControllerTest {
                 .andExpect(model().attribute("error", true))
                 .andExpect(model().attribute("invalidField", "password"))
                 .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
-                .andExpect(model().attribute("employee", Matchers.instanceOf(Employee.class)))
                 .andExpect(model().attribute("roles", Role.values()));
         mockedStatic.close();
     }
