@@ -2,6 +2,7 @@ package com.mavi.projectmanager.service;
 
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
+import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -75,12 +76,16 @@ public class AccountService {
     }
 
     public Account updatedAccount(Account updatedAccount){
-        if (isValidPassword(updatedAccount.getPassword())) {
-            return accountRepository.updatedAccount(updatedAccount);
-        }
-        else {
-            return null;
-        }
+
+        //save desired new role in temp variable
+        Role newRole = updatedAccount.getRole();
+
+        //Fill out Account data from repository (mainly to get ID from database)
+        updatedAccount = getAccountByMail(updatedAccount.getMail());
+        //Set the desired role from temp variable
+        updatedAccount.setRole(newRole);
+
+        return accountRepository.updatedAccount(updatedAccount);
     }
 
     //Get all accounts stored in a List
