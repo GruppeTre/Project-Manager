@@ -86,9 +86,10 @@ public class UserController {
         } catch (InvalidFieldException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("error", true);
-            model.addAttribute("InvalidField", e.getField());
+            model.addAttribute("invalidField", e.getField());
             model.addAttribute("newAccount", newAccount);
             model.addAttribute("employee", employee);
+            model.addAttribute("roles", Role.values());
             return "createUserPage";
         }
 

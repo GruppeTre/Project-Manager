@@ -12,6 +12,13 @@
     <main class="container">
         <form th:action="@{/create}" th:object="${account}" method="post">
 
+            <!-- Error messages -->
+            <div th:if="${error}" class="form-error-container">
+                <label th:if="${invalidField == 'email'}" th:text="#{form.error.duplicateMail}">TEST1</label>
+                <label th:if="${invalidField == 'employee'}" th:text="#{form.error.employeeNotFound}">TEST2</label>
+                <label th:if="${invalidField == 'password'}" th:text="#{form.error.invalidPassword}">TEST3</label>
+            </div>
+
             <div>
                 <h2 th:text="'New account'"></h2>
             </div>
@@ -19,14 +26,14 @@
 
             <div class="row">
                 <label for="mail" class="form-label" th:text="#{form.label.email}"></label>
-                <input id="mail" type="email" th:field="${employee.mail}" th:placeholder="#{form.input.email.placeholder}">
+                <input id="mail" type="email" th:field="${employee.mail}" th:placeholder="#{form.input.email.placeholder}" required pattern="[A-Za-z0-9]+@alphasolutions\.com" th:title="#{form.warning.invalidMailFormat}">
             </div>
 
             <!-- password -->
 
             <div class="row">
                 <label for="password" class="form-label" th:text="#{form.input.password.placeholder}"></label>
-                <input id="password" type="password" th:field="*{password}" th:placeholder="#{form.input.password.placeholder}">
+                <input id="password" type="password" th:field="*{password}" th:placeholder="#{form.input.password.placeholder}" required  th:title="#{form.warning.spaces}">
             </div>
 
             <!-- role -->

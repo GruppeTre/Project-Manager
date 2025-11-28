@@ -4,7 +4,8 @@ public enum Field {
     EMAIL("email"),
     FIRST_NAME("firstName"),
     SURNAME("surname"),
-    PASSWORD("password");
+    PASSWORD("password"),
+    EMPLOYEE("employee");
 
     private final String value;
 
