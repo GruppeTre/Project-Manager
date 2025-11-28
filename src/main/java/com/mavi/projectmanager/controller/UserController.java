@@ -112,6 +112,12 @@ public class UserController {
             return "redirect:/";
         }
 
+        //Reject user if user is not Admin
+        Account currentUser = (Account) session.getAttribute("account");
+        if (currentUser.getRole() != Role.ADMIN) {
+            return "redirect:/overview";
+        }
+
         Account account = service.getAccountByID(id);
 
         model.addAttribute("account", account);
@@ -125,6 +131,12 @@ public class UserController {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        Account currentUser = (Account) session.getAttribute("account");
+        if (currentUser.getRole() != Role.ADMIN) {
+            return "redirect:/overview";
         }
 
         service.updatedAccount(updatedAccount);
