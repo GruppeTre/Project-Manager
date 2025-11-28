@@ -100,7 +100,6 @@ class UserControllerTest {
                 .andExpect(view().name("editUserPage"))
                 .andExpect(model().attribute("account", testAccount))
                 .andExpect(model().attribute("roles", Role.values()));
-
         mockedStatic.close();
     }
 
@@ -133,7 +132,7 @@ class UserControllerTest {
     void shouldLogInUser() throws Exception{
 
         //mock correct log in details by forcing service class to return true on login method call
-        when(accountService.accountLogin(any(Account.class), any(Employee.class))).thenReturn(true);
+        when(accountService.accountLogin(any(Account.class))).thenReturn(true);
 
         //mock getting full account details out of service
         when(accountService.getAccountByMail(testAccount.getMail())).thenReturn(testAccount);
@@ -151,7 +150,7 @@ class UserControllerTest {
     void shouldRedirectUserToLoginPageOnWrongCredentials() throws Exception {
 
         //mock wrong log in credentials by forcing service class to return false
-        when(accountService.accountLogin(any(Account.class), any(Employee.class))).thenReturn(false);
+        when(accountService.accountLogin(any(Account.class))).thenReturn(false);
 
         mockMvc.perform(post("/login")
                         .param("mail", testEmployee.getMail())
@@ -177,7 +176,6 @@ class UserControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview"))
                 .andExpect(flash().attributeCount(0));
-
         mockedStatic.close();
     }
 
@@ -185,7 +183,7 @@ class UserControllerTest {
     void shouldCreateUser() throws Exception {
         Account createdTestAccount = testAccount;
 
-        Mockito.when(accountService.createUser(createdTestAccount, testAccount.getEmployee().getMail())).thenReturn(createdTestAccount);
+        Mockito.when(accountService.createUser(createdTestAccount)).thenReturn(createdTestAccount);
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
@@ -194,8 +192,6 @@ class UserControllerTest {
         mockMvc.perform(post("/create"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview"));
-
         mockedStatic.close();
-
     }
 }
