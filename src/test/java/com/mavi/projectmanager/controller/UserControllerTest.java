@@ -106,7 +106,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(get("/edit/{id}", 1))
+        mockMvc.perform(get("/edit/{id}", 1).sessionAttr("account", testAccount))
                 .andExpect(status().isOk())
                 .andExpect(view().name("editUserPage"))
                 .andExpect(model().attribute("account", testAccount))
@@ -182,7 +182,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/editUser"))
+        mockMvc.perform(post("/editUser").sessionAttr("account", testAccount))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview"))
                 .andExpect(flash().attributeCount(0));
