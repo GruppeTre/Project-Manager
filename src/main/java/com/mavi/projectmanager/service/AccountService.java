@@ -40,7 +40,6 @@ public class AccountService {
 
         //validate that account does not already exist
         if (getAccountByMail(account.getMail()) != null) {
-            System.out.println("found duplicate mail! throwing...");
             throw new InvalidFieldException("An account with that mail already exists!", Field.EMAIL);
         }
 
@@ -106,7 +105,6 @@ public class AccountService {
         //Insert password validation here (min amount of characters etc)
 
         if(containsWhitespace(str)) {
-            System.out.println("found whitespace in password");
             return false;
         }
 
@@ -121,8 +119,6 @@ public class AccountService {
         String regex = "^\\S+$";
 
         boolean found = str.matches(regex);
-
-        System.out.println("found whitespace: " + !found);
 
         return !found;
     }
