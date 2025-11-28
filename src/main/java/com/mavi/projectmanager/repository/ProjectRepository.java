@@ -30,7 +30,7 @@ public class ProjectRepository {
         LocalDate convertedStartDate = startDate.toLocalDate();
         project.setStart_date(convertedStartDate);
 
-        Date endDate = rs.getDate("start_date");
+        Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
         project.setEnd_date(convertedEndDate);
 
