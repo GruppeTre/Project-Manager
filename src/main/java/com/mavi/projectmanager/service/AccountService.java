@@ -49,6 +49,7 @@ public class AccountService {
         }
 
         account.setEmployee(checkEmployee);
+        account.setPassword(encoder.encode(account.getPassword()));
 
         try {
             System.out.println("creating user");
