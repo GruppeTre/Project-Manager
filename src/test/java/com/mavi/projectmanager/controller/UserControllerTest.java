@@ -1,6 +1,8 @@
 package com.mavi.projectmanager.controller;
 
 import com.mavi.projectmanager.controller.utils.SessionUtils;
+import com.mavi.projectmanager.exception.Field;
+import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Role;
@@ -200,6 +202,66 @@ class UserControllerTest {
         mockMvc.perform(post("/create"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview"));
+        mockedStatic.close();
+    }
+
+    @Test
+    void shouldNotCreateUserOnInvalidEmail() throws Exception {
+
+        when(accountService.createUser(any(Account.class))).thenThrow(new InvalidFieldException("error", Field.EMAIL));
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/create"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createUserPage"))
+                .andExpect(model().attribute("error", true))
+                .andExpect(model().attribute("invalidField", "email"))
+                .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
+                .andExpect(model().attribute("employee", Matchers.instanceOf(Employee.class)))
+                .andExpect(model().attribute("roles", Role.values()));
+        mockedStatic.close();
+    }
+
+    @Test
+    void shouldNotCreateUserOnDuplicateEmail() throws Exception {
+
+        when(accountService.createUser(any(Account.class))).thenThrow(new InvalidFieldException("error", Field.EMPLOYEE));
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/create"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createUserPage"))
+                .andExpect(model().attribute("error", true))
+                .andExpect(model().attribute("invalidField", "employee"))
+                .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
+                .andExpect(model().attribute("employee", Matchers.instanceOf(Employee.class)))
+                .andExpect(model().attribute("roles", Role.values()));
+        mockedStatic.close();
+    }
+
+    @Test
+    void shouldNotCreateUserOnInvalidPassword() throws Exception {
+
+        when(accountService.createUser(any(Account.class))).thenThrow(new InvalidFieldException("error", Field.PASSWORD));
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/create"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createUserPage"))
+                .andExpect(model().attribute("error", true))
+                .andExpect(model().attribute("invalidField", "password"))
+                .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
+                .andExpect(model().attribute("employee", Matchers.instanceOf(Employee.class)))
+                .andExpect(model().attribute("roles", Role.values()));
         mockedStatic.close();
     }
 }
