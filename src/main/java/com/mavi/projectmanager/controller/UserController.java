@@ -134,13 +134,53 @@ public class UserController {
         }
 
         //Reject user if user is not Admin
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser.getRole() != Role.ADMIN) {
+        if (!sessionUserIsAdmin(session)) {
             return "redirect:/overview";
         }
 
         service.updatedAccount(updatedAccount);
 
         return "redirect:/overview";
+    }
+
+    @PostMapping("/deleteUser")
+    public String deleteUser(HttpSession session, RedirectAttributes redirectAttributes, @ModelAttribute Account toDelete) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!sessionUserIsAdmin(session)) {
+            return "redirect:/overview";
+        }
+
+        toDelete.setId(this.service.getAccountByMail(toDelete.getMail()).getId());
+        System.out.println("set id of toDelete: " + toDelete.getId());
+
+        try {
+            toDelete = this.service.deleteAccount(toDelete);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute("admin-deletion", true);
+            return "redirect:/overview";
+        }
+
+        //redirect attributes to show feedback on operation on overview page (todo)
+        if (toDelete == null) {
+            redirectAttributes.addFlashAttribute("error", true);
+        } else {
+            redirectAttributes.addFlashAttribute("success", true);
+        }
+
+        return "redirect:/overview";
+    }
+
+    private Integer getUserIdFromSession(HttpSession session) {
+        return ((Account)session.getAttribute("account")).getId();
+    }
+
+    private boolean sessionUserIsAdmin(HttpSession session) {
+        return ((Account)session.getAttribute("account")).getRole() == Role.ADMIN;
     }
 }

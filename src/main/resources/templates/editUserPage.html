@@ -24,12 +24,23 @@
                         <option th:each="role : ${roles}" th:value="${role.name()}" th:text="${role.value}"/>
                     </select>
 
-                    <button class="button-primary" th:type="submit" th:text="#{form.button.submit}"></button>
+                    <input type="submit" id="hidden-submit" class="hidden">
                 </form>
                 <!-- BUTTONS -->
-                <a class="button button-primary" href="/overview" th:text="#{form.button.back}"></a>
-                <!--To do -->
-                <a class="button button-primary" href="#" th:text="#{form.button.resetPassword}"></a>
+
+                <!--options -->
+                <div class="row form-button-container">
+                    <label class="button button-primary" for="hidden-submit" th:text="#{form.button.submit}"></label>
+                    <a class="button button-primary" href="#" th:text="#{form.button.resetPassword}"></a>
+                    <form  class="button-container-form" th:action="@{/deleteUser}" th:object="${account}" th:method="post">
+                        <input id="hidden-mail" th:field="*{employee.mail}" hidden="hidden">
+                        <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>
+                    </form>
+                    <!-- delete button here -->
+                </div >
+                <div class="row form-button-container">
+                    <a class="button button-primary" href="/overview" th:text="#{form.button.back}"></a>
+                </div>
             </article>
         </section>
     </main>
