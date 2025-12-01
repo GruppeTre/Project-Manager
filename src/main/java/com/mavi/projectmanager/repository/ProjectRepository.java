@@ -49,7 +49,7 @@ public class ProjectRepository {
         return projects;
     }
 
-    public int deleteProject(Project toDelete) {
+    public int deleteProjectByProject(Project toDelete) {
 
         String sql = """
                 DELETE FROM project WHERE id = ?""";
