@@ -3,31 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
-    <link rel="stylesheet" th:href="@{/style/normalize.css}">
-    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
-    <link rel="stylesheet" th:href="@{/style/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
-<main>
-    <section>
-        <article>
-            <form th:action="@{/editUser}" th:object="${account}" th:method="post">
-                <input th:type="hidden" th:field="*{id}">
-                <label for="userName" th:text="#{form.label.username}"></label>
-                <input id="userName" th:type="text" th:field="*{mail}" readonly>
+    <header th:replace="~{fragments/_commonElements :: header}"></header>
+    <main class="container">
+        <section>
+            <article>
+                <form th:action="@{/editUser}" th:object="${account}" th:method="post">
 
-                <label for="role" th:text="#{form.label.role}"></label>
-                <select id="role" th:type="dropdown" th:field="*{role}">
-                    <option th:each="roles : ${roles}" th:value="${roles.name()}" th:text="${roles.value}" />
-                </select>
-                <label for="password" th:text="#{form.label.password}"></label>
-                <input id="password" th:type="password" th:field="*{password}">
+                    <input id="id" hidden="hidden" th:field="*{id}">
 
-                <button th:type="submit">Submit</button>
-            </form>
-                <a href="#">Cancel</a>
-        </article>
-    </section>
-</main>
+                    <label for="userName" th:text="#{form.label.email}"></label>
+                    <input id="userName" th:type="text" th:field="*{employee.mail}" readonly>
+
+                    <label for="role" th:text="#{form.label.role}"></label>
+                    <select id="role" th:type="dropdown" th:field="*{role}">
+                        <option th:each="role : ${roles}" th:value="${role.name()}" th:text="${role.value}"/>
+                    </select>
+
+                    <input type="submit" id="hidden-submit" class="hidden">
+                </form>
+                <!-- BUTTONS -->
+
+                <!--options -->
+                <div class="row form-button-container">
+                    <label class="button button-primary" for="hidden-submit" th:text="#{form.button.submit}"></label>
+                    <a class="button button-primary" href="#" th:text="#{form.button.resetPassword}"></a>
+                    <form  class="button-container-form" th:action="@{/deleteUser}" th:object="${account}" th:method="post">
+                        <input id="hidden-mail" th:field="*{employee.mail}" hidden="hidden">
+                        <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>
+                    </form>
+                    <!-- delete button here -->
+                </div >
+                <div class="row form-button-container">
+                    <a class="button button-primary" href="/overview" th:text="#{form.button.back}"></a>
+                </div>
+            </article>
+        </section>
+    </main>
+    <footer th:replace="~{fragments/_commonElements :: footer}"></footer>
 </body>
 </html>

@@ -1,35 +1,31 @@
 package com.mavi.projectmanager.controller;
 
 import com.mavi.projectmanager.controller.utils.SessionUtils;
+import com.mavi.projectmanager.exception.Field;
+import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Any;
-import org.mockito.internal.matchers.InstanceOf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.View;
-
-import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -64,19 +60,21 @@ class UserControllerTest {
         testEmployee.setLastName("Petersen");
         testEmployee.setMail("pepe@company.com");
 
+        emptyEmployee = new Employee();
+
+        emptyAccount = new Account();
+        emptyAccount.setEmployee(emptyEmployee);
+
         testAccount = new Account();
         testAccount.setId(1);
         testAccount.setRole(Role.ADMIN);
         testAccount.setPassword("1234");
         testAccount.setEmployee(testEmployee);
 
-        emptyAccount = new Account();
-
         accountList = new ArrayList<>();
         accountList.add(testAccount);
 
         session.setAttribute("account", testAccount);
-        emptyEmployee = new Employee();
     }
 
 
@@ -90,8 +88,7 @@ class UserControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
-                .andExpect(model().attribute("account", emptyAccount))
-                .andExpect(model().attribute("employee", emptyEmployee));
+                .andExpect(model().attribute("account", emptyAccount));
     }
 
     @Test
@@ -103,7 +100,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(get("/edit/{id}", 1))
+        mockMvc.perform(get("/edit/{id}", 1).sessionAttr("account", testAccount))
                 .andExpect(status().isOk())
                 .andExpect(view().name("editUserPage"))
                 .andExpect(model().attribute("account", testAccount))
@@ -121,7 +118,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(get("/overview").sessionAttr("account", testAccount))
+        mockMvc.perform(get("/overview").sessionAttr("account", testAccount).param("viewMode", "accounts"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("overviewPage"))
                 .andExpect(model().attribute("accounts", accountList))
@@ -146,10 +143,10 @@ class UserControllerTest {
         when(accountService.getAccountByMail(testAccount.getMail())).thenReturn(testAccount);
 
         mockMvc.perform(post("/login")
-                        .param("mail", testEmployee.getMail())
+                        .param("employee.mail", testEmployee.getMail())
                         .param("password", testAccount.getPassword()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/overview"))
+                .andExpect(redirectedUrl("/overview?viewMode=accounts"))
                 .andExpect(flash().attributeCount(0))
                 .andExpect(request().sessionAttribute("account", testAccount));
     }
@@ -161,13 +158,12 @@ class UserControllerTest {
         when(accountService.accountLogin(any(Account.class))).thenReturn(false);
 
         mockMvc.perform(post("/login")
-                        .param("mail", testEmployee.getMail())
+                        .param("employee.mail", testEmployee.getMail())
                         .param("password", testAccount.getPassword()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("error", true))
-                .andExpect(model().attribute("account", Matchers.instanceOf(Account.class)))
-                .andExpect(model().attribute("employee", Matchers.instanceOf(Employee.class)));
+                .andExpect(model().attribute("account", Matchers.instanceOf(Account.class)));
     }
 
     @Test
@@ -180,7 +176,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/editUser"))
+        mockMvc.perform(post("/editUser").sessionAttr("account", testAccount))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview"))
                 .andExpect(flash().attributeCount(0));
@@ -201,5 +197,127 @@ class UserControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview"));
         mockedStatic.close();
+    }
+
+    @Test
+    void shouldNotCreateUserOnInvalidEmail() throws Exception {
+
+        when(accountService.createUser(any(Account.class))).thenThrow(new InvalidFieldException("error", Field.EMAIL));
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/create"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createUserPage"))
+                .andExpect(model().attribute("error", true))
+                .andExpect(model().attribute("invalidField", "email"))
+                .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
+                .andExpect(model().attribute("roles", Role.values()));
+        mockedStatic.close();
+    }
+
+    @Test
+    void shouldNotCreateUserOnDuplicateEmail() throws Exception {
+
+        when(accountService.createUser(any(Account.class))).thenThrow(new InvalidFieldException("error", Field.EMPLOYEE));
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/create"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createUserPage"))
+                .andExpect(model().attribute("error", true))
+                .andExpect(model().attribute("invalidField", "employee"))
+                .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
+                .andExpect(model().attribute("roles", Role.values()));
+        mockedStatic.close();
+    }
+
+    @Test
+    void shouldNotCreateUserOnInvalidPassword() throws Exception {
+
+        when(accountService.createUser(any(Account.class))).thenThrow(new InvalidFieldException("error", Field.PASSWORD));
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/create"))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createUserPage"))
+                .andExpect(model().attribute("error", true))
+                .andExpect(model().attribute("invalidField", "password"))
+                .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
+                .andExpect(model().attribute("roles", Role.values()));
+        mockedStatic.close();
+    }
+
+    @Test
+    void shouldDeleteAccount() throws Exception {
+
+        when(accountService.getAccountByMail(testAccount.getMail())).thenReturn(testAccount);
+
+        when(accountService.deleteAccount(any(Account.class))).thenReturn(testAccount);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/deleteUser")
+                        .param("employee.mail", testAccount.getMail())
+                        .sessionAttr("account", testAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview"))
+                .andExpect(flash().attribute("success", true));
+        mockedStatic.close();
+
+        verify(accountService).deleteAccount(any(Account.class));
+    }
+
+    @Test
+    void shouldNotDeleteAccountIfUserIsNotAdmin() throws Exception {
+
+        testAccount.setRole(Role.PROJECT_LEAD);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/deleteUser")
+                        .param("employee.mail", testAccount.getMail())
+                        .sessionAttr("account", testAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview"));
+        mockedStatic.close();
+
+        //make sure that deleteAccount method was never called
+        verify(accountService, never()).deleteAccount(any(Account.class));
+    }
+
+    @Test
+    void shouldGiveErrorIfAccountWasNotDeleted() throws Exception {
+
+        when(accountService.getAccountByMail(testAccount.getMail())).thenReturn(testAccount);
+
+        when(accountService.deleteAccount(any(Account.class))).thenReturn(null);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/deleteUser")
+                        .param("employee.mail", testAccount.getMail())
+                        .sessionAttr("account", testAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview"))
+                .andExpect(flash().attribute("error", true));
+        mockedStatic.close();
+
+        //make sure that deleteAccount method was never called
+        verify(accountService).deleteAccount(any(Account.class));
     }
 }

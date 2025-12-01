@@ -91,13 +91,12 @@ public class AccountRepository {
     }
 
     public Account updatedAccount(Account updatedAccount){
-        String query = "UPDATE Account SET role = ?, password = ? WHERE id = ?";
+        String query = "UPDATE Account SET role = ? WHERE id = ?";
 
         int accountID = updatedAccount.getId();
         int role = updatedAccount.getRole().getId();
-        String password = updatedAccount.getPassword();
 
-        int rowsAffected = jdbcTemplate.update(query, role, password, accountID);
+        int rowsAffected = jdbcTemplate.update(query, role, accountID);
 
         if (rowsAffected > 1) {
             throw new RuntimeException("Multiple users with id: " + accountID);
@@ -137,5 +136,18 @@ public class AccountRepository {
         accounts.sort(ACCOUNT_COMPARATOR);
 
         return accounts;
+    }
+
+    public Account deleteAccount(Account toDelete) {
+
+        String sql = """
+                DELETE from Account
+                WHERE id = ?
+                """;
+
+        int rowsAffected = jdbcTemplate.update(sql, toDelete.getId());
+
+        //return null if no rows affected
+        return rowsAffected == 0 ? null : toDelete;
     }
 }

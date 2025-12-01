@@ -5,7 +5,6 @@ import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -55,5 +54,9 @@ public class ProjectService {
 
     public boolean hasProjectLead(Project projectToCheck) {
         return true;
+    }
+
+    public List<Project> getProjects(){
+        return projectRepository.getProjects();
     }
 }

@@ -25,31 +25,44 @@ public class UserController {
 
     @GetMapping
     public String getLogin(Model model){
-        Account account = new Account();
         Employee employee = new Employee();
+        Account account = new Account();
+
+        account.setEmployee(employee);
 
         model.addAttribute("account", account);
-        model.addAttribute("employee", employee);
 
         return "index";
     }
     @PostMapping("/login")
-    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account, @ModelAttribute Employee employee){
+    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account){
 
-        account.setEmployee(employee);
         if(!service.accountLogin(account)){
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("error", true);
             model.addAttribute("account", account);
-            model.addAttribute("employee", employee);
             return "index";
         }
 
-        account = service.getAccountByMail(employee.getMail());
+        account = service.getAccountByMail(account.getMail());
 
         session.setAttribute("account", account);
+        String redirect = "redirect:/overview";
 
-        return "redirect:/overview";
+        Account roleId = (Account) session.getAttribute("account");
+        if(roleId.getRole().getId() == 1) {
+            String viewMode = "?viewMode=accounts";
+
+            redirect = redirect.concat(viewMode);
+
+            return redirect;
+        }
+        else{
+            String viewMode = "?viewMode=projects";
+            redirect = redirect.concat(viewMode);
+
+            return redirect;
+        }
     }
 
     //Shows the createUSerPage
@@ -62,8 +75,9 @@ public class UserController {
 
         Account newAccount = new Account();
         Employee employee = new Employee();
+        newAccount.setEmployee(employee);
+
         model.addAttribute("account", newAccount);
-        model.addAttribute("employee", employee);
         model.addAttribute("roles", Role.values());
 
         return "createUserPage";
@@ -71,8 +85,7 @@ public class UserController {
 
     //Creates a new account
     @PostMapping("/create")
-    public String createNewUser(HttpSession session, Model model, @ModelAttribute Account newAccount, @ModelAttribute Employee employee,
-                                HttpServletResponse response) {
+    public String createNewUser(HttpSession session, Model model, @ModelAttribute Account newAccount, HttpServletResponse response) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -80,15 +93,14 @@ public class UserController {
 
         //Check to see if all fields are filled correctly
         try{
-            newAccount.setEmployee(employee);
             service.createUser(newAccount);
 
         } catch (InvalidFieldException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("error", true);
-            model.addAttribute("InvalidField", e.getField());
+            model.addAttribute("invalidField", e.getField());
             model.addAttribute("newAccount", newAccount);
-            model.addAttribute("employee", employee);
+            model.addAttribute("roles", Role.values());
             return "createUserPage";
         }
 
@@ -96,13 +108,17 @@ public class UserController {
     }
 
     @GetMapping("/overview")
-    public String getOverviewPage(HttpSession session, Model model) {
+    public String getOverviewPage(@RequestParam("viewMode") String viewMode, HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-        model.addAttribute("accounts", service.getAccounts());
-        model.addAttribute("session", session.getAttribute("account"));
+
+        if(viewMode.equals("accounts")) {
+            model.addAttribute("accounts", service.getAccounts());
+            model.addAttribute("session", session.getAttribute("account"));
+            model.addAttribute("viewMode", viewMode);
+        }
 
         return "overviewPage";
     }
@@ -112,6 +128,12 @@ public class UserController {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        Account currentUser = (Account) session.getAttribute("account");
+        if (currentUser.getRole() != Role.ADMIN) {
+            return "redirect:/overview";
         }
 
         Account account = service.getAccountByID(id);
@@ -129,8 +151,48 @@ public class UserController {
             return "redirect:/";
         }
 
+        //Reject user if user is not Admin
+        if (!sessionUserIsAdmin(session)) {
+            return "redirect:/overview";
+        }
+
         service.updatedAccount(updatedAccount);
 
         return "redirect:/overview";
+    }
+
+    @PostMapping("/deleteUser")
+    public String deleteUser(HttpSession session, RedirectAttributes redirectAttributes, @ModelAttribute Account toDelete) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!sessionUserIsAdmin(session)) {
+            return "redirect:/overview";
+        }
+
+        toDelete.setId(this.service.getAccountByMail(toDelete.getMail()).getId());
+
+        try {
+            toDelete = this.service.deleteAccount(toDelete);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("admin-deletion", true);
+            return "redirect:/overview";
+        }
+
+        // todo: redirect attributes to show feedback on operation on overview page
+        if (toDelete == null) {
+            redirectAttributes.addFlashAttribute("error", true);
+        } else {
+            redirectAttributes.addFlashAttribute("success", true);
+        }
+
+        return "redirect:/overview";
+    }
+
+    private boolean sessionUserIsAdmin(HttpSession session) {
+        return ((Account)session.getAttribute("account")).getRole() == Role.ADMIN;
     }
 }
