@@ -3,6 +3,7 @@ package com.mavi.projectmanager.repository;
 
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Project;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -47,4 +48,32 @@ public class ProjectRepository {
 
         return projects;
     }
+
+    public int deleteProject(Project toDelete) {
+
+        String sql = """
+                DELETE FROM project WHERE id = ?""";
+
+        int projectID = toDelete.getId();
+
+        try {
+
+            int rowsAffected = jdbcTemplate.update(sql, projectID);
+
+            //Signal, on whether the database is corrupt.
+            if (rowsAffected > 1) {
+                throw new RuntimeException("Multiple lists was found with this id: " + projectID + ", and it is unclear what Project to delete. Please contact dataspecialist");
+            }
+            if (rowsAffected == 0) {
+                return 0;
+            }
+
+            return rowsAffected;
+            //(jdbc template throws DataAccessException)
+        } catch (DataAccessException e) {
+            throw new RuntimeException("A database error occurred when trying to delete project with ID: " + projectID + ". Please contact data specialist.");
+        }
+    }
+
+
 }
