@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/style/normalize.css}">
+    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/style/custom.css}">
+</head>
+<body>
+<form th:action="@{/project/create}" th:object="${project}" method="post">
+
+    <div>
+        <h2 th:text="'New project'"></h2>
+    </div>
+
+
+    <div class="row">
+        <label for="name" class="form-label" th:text="Name"></label>
+        <input id="name" type="text" th:field="${name}">
+    </div>
+
+    <div class="row">
+        <label for="start-date" class="form-label" th:text="Start Date"></label>
+        <input id="start-date" type="date" th:field="*{start_date}">
+    </div>
+
+    <div class="row">
+        <label for="end-date" class="form-label" th:text="End Date"></label>
+        <input id="end-date" type="date" th:field="*{end_date}">
+    </div>
+
+
+    <!-- Skal kun hente project leads, alle account hvor role = 2 -->
+    <div class="row">
+        <label for="account" th:text="#{form.label.account}"></label>
+        <select id="account" th:type="dropdown" th:field="${account}">
+            <option th:each="account : ${accounts}" th:value="${mail}" th:text="${account.getMail}" />
+        </select>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="row">
+        <a class="button" href="/" th:text="Tilbage"></a>
+        <button class="button" type="submit" th:text="submit"></button>
+    </div>
+</form>
+</body>
+</html>
