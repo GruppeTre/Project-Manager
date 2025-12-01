@@ -156,12 +156,10 @@ public class UserController {
         }
 
         toDelete.setId(this.service.getAccountByMail(toDelete.getMail()).getId());
-        System.out.println("set id of toDelete: " + toDelete.getId());
 
         try {
             toDelete = this.service.deleteAccount(toDelete);
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", true);
             redirectAttributes.addFlashAttribute("admin-deletion", true);
             return "redirect:/overview";
         }
