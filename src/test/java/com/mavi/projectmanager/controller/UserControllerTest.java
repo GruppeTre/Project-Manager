@@ -9,25 +9,17 @@ import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Any;
-import org.mockito.internal.matchers.InstanceOf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.View;
-
-import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +116,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(get("/overview").sessionAttr("account", testAccount))
+        mockMvc.perform(get("/overview").sessionAttr("account", testAccount).param("viewMode", "accounts"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("overviewPage"))
                 .andExpect(model().attribute("accounts", accountList))
@@ -152,7 +144,7 @@ class UserControllerTest {
                         .param("employee.mail", testEmployee.getMail())
                         .param("password", testAccount.getPassword()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/overview"))
+                .andExpect(redirectedUrl("/overview?viewMode=accounts"))
                 .andExpect(flash().attributeCount(0))
                 .andExpect(request().sessionAttribute("account", testAccount));
     }

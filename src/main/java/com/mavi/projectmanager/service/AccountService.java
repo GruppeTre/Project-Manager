@@ -99,6 +99,7 @@ public class AccountService {
 
             return encoder.matches(account.getPassword(), getAccount.getPassword());
         } catch (RuntimeException e) {
+            System.out.println("Throwing");
             return false;
         }
     }
