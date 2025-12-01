@@ -47,8 +47,22 @@ public class UserController {
         account = service.getAccountByMail(account.getMail());
 
         session.setAttribute("account", account);
+        String redirect = "redirect:/overview";
 
-        return "redirect:/overview";
+        Account roleId = (Account) session.getAttribute("account");
+        if(roleId.getRole().getId() == 1) {
+            String viewMode = "?viewMode=accounts";
+
+            redirect = redirect.concat(viewMode);
+
+            return redirect;
+        }
+        else{
+            String viewMode = "?viewMode=projects";
+            redirect = redirect.concat(viewMode);
+
+            return redirect;
+        }
     }
 
     //Shows the createUSerPage
@@ -94,13 +108,17 @@ public class UserController {
     }
 
     @GetMapping("/overview")
-    public String getOverviewPage(HttpSession session, Model model) {
+    public String getOverviewPage(@RequestParam("viewMode") String viewMode, HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-        model.addAttribute("accounts", service.getAccounts());
-        model.addAttribute("session", session.getAttribute("account"));
+
+        if(viewMode.equals("accounts")) {
+            model.addAttribute("accounts", service.getAccounts());
+            model.addAttribute("session", session.getAttribute("account"));
+            model.addAttribute("viewMode", viewMode);
+        }
 
         return "overviewPage";
     }
