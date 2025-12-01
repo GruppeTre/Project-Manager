@@ -120,7 +120,7 @@ public class AccountService {
 
         int MIN_LENGTH;
 
-        //Insert password validation here (min amount of characters etc)
+        //todo: Insert password validation here (min amount of characters etc)
 
         if(containsWhitespace(str)) {
             return false;

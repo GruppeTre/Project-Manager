@@ -164,7 +164,7 @@ public class UserController {
             return "redirect:/overview";
         }
 
-        //redirect attributes to show feedback on operation on overview page (todo)
+        // todo: redirect attributes to show feedback on operation on overview page
         if (toDelete == null) {
             redirectAttributes.addFlashAttribute("error", true);
         } else {
@@ -172,10 +172,6 @@ public class UserController {
         }
 
         return "redirect:/overview";
-    }
-
-    private Integer getUserIdFromSession(HttpSession session) {
-        return ((Account)session.getAttribute("account")).getId();
     }
 
     private boolean sessionUserIsAdmin(HttpSession session) {
