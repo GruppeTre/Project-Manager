@@ -21,13 +21,12 @@ class AccountRepositoryTest {
     @Autowired
     private AccountRepository repository;
     private Account newAccount;
+    private Account dbAccount;
     private Employee empWithAccount;
     private Employee empWithoutAcc;
 
     @BeforeEach
     void setUp() {
-        newAccount = new Account();
-
         empWithoutAcc = new Employee();
         empWithoutAcc.setPosition("Udvikler");
         empWithoutAcc.setFirstName("Ida");
@@ -41,6 +40,13 @@ class AccountRepositoryTest {
         empWithAccount.setLastName("Nielsen");
         empWithAccount.setMail("admin@alphasolutions.com");
         empWithAccount.setId(1);
+
+        newAccount = new Account();
+
+        dbAccount = new Account();
+        dbAccount.setId(1);
+        dbAccount.setRole(Role.ADMIN);
+        dbAccount.setEmployee(empWithAccount);
     }
 
     @Test
@@ -63,5 +69,25 @@ class AccountRepositoryTest {
         assertEquals(empWithoutAcc.getFirstName(), account.getFirstName());
         assertEquals(empWithoutAcc.getLastName(), account.getLastName());
         assertEquals(empWithoutAcc.getMail(), account.getMail());
+    }
+
+    @Test
+    void shouldDeleteAccount() {
+
+        Account toDelete = this.repository.getAccountByMail(dbAccount.getMail());
+
+        assertNotNull(this.repository.deleteAccount(toDelete));
+
+        assertNull(this.repository.getAccountByMail(dbAccount.getMail()));
+    }
+
+    @Test
+    void shouldReturnNullWhenNoAccountIsDeleted() {
+
+        int nonExistentId = 2;
+
+        dbAccount.setId(nonExistentId);
+
+        assertNull(this.repository.deleteAccount(dbAccount));
     }
 }
