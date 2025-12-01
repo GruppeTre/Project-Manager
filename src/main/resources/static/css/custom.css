@@ -53,6 +53,10 @@ header a, header a:hover {
     margin-bottom: 0;
 }
 
+#logout-button {
+    width: 12em;
+}
+
 #index-text p {
     font-size: larger;
     margin: 0;

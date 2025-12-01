@@ -65,6 +65,13 @@ public class UserController {
         }
     }
 
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+
+        return "redirect:/";
+    }
+
     //Shows the createUSerPage
     @GetMapping("/create")
     public String getCreateUserPage(HttpSession session, Model model) {
