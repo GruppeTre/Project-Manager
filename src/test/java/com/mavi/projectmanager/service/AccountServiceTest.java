@@ -184,4 +184,24 @@ class AccountServiceTest {
 
         assertEquals("Invalid password", exception.getMessage());
     }
+
+    @Test
+    void shouldDeleteAccount() {
+
+        dbAccount.setId(2);
+
+        when(repository.deleteAccount(dbAccount)).thenReturn(dbAccount);
+
+        assertNotNull(this.accountService.deleteAccount(dbAccount));
+    }
+
+    @Test
+    void shouldNotDeleteSuperAdmin() {
+
+        when(repository.deleteAccount(dbAccount)).thenReturn(dbAccount);
+
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> this.accountService.deleteAccount(dbAccount));
+
+        assertEquals("The super admin account cannot be deleted!", exception.getMessage());
+    }
 }

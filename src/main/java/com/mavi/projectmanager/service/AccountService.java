@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 @Service
 public class AccountService {
 
+    private final int SUPER_ADMIN_ID = 1;
     private final AccountRepository accountRepository;
     private final EmployeeService employeeService;
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
@@ -104,11 +105,23 @@ public class AccountService {
         }
     }
 
+    public Account deleteAccount(Account toDelete) {
+
+        //User should not be able to delete every account
+        if (toDelete.getId() == SUPER_ADMIN_ID) {
+            throw new IllegalArgumentException("The super admin account cannot be deleted!");
+        }
+
+        //insert nullcheck for ID here
+
+        return this.accountRepository.deleteAccount(toDelete);
+    }
+
     private boolean isValidPassword(String str){
 
         int MIN_LENGTH;
 
-        //Insert password validation here (min amount of characters etc)
+        //todo: Insert password validation here (min amount of characters etc)
 
         if(containsWhitespace(str)) {
             return false;
