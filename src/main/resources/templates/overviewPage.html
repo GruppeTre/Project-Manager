@@ -7,8 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/skeleton.css}">
     <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
-
 <body>
+<header th:fragment=""></header>
 <main>
     <!-- Navigation links for switching between sections -->
     <!-- Accounts table -->
@@ -50,36 +50,39 @@
                 </table>
             </div>
         </article>
-    </section>
 
     <!-- Projects table -->
-    <div th:if="${viewMode == 'projects'}">
-        <h2>Projects</h2>
+        <article>
+            <div th:if="${viewMode == 'projects'}">
+                <h2>Projects</h2>
 
-        <a th:href="@{/project/create}">
-            <button type="button">Create project</button>
-        </a>
+                <a th:href="@{/project/create}">
+                    <button type="button">Create project</button>
+                </a>
 
-        <table>
-            <tr>
-                <th>Project name</th>
-                <th>Project-lead</th>
-                <th>Deadline</th>
-            </tr>
+                <table>
+                    <tr>
+                        <th>Project name</th>
+                        <th>Project-lead</th>
+                        <th>Deadline</th>
+                    </tr>
 
-            <tr th:each="p : ${projects}">
-                <td th:text="${p.name}"></td>
-                <td th:text="${p.end_date}"></td>
-                <td th:text="${p.email}"></td>
+                    <tr th:each="p : ${projects}">
+                        <td th:text="${p.name}"></td>
+                        <td th:text="${p.end_date}"></td>
+                        <td th:text="${p.email}"></td>
 
-                <td>
-                    <a th:href="@{/project/edit/{id}(id=${p.id})}">
-                        <button type="button">Edit</button>
-                    </a>
-                </td>
-            </tr>
-        </table>
-    </div>
+                        <td>
+                            <a th:href="@{/project/edit/{id}(id=${p.id})}">
+                                <button type="button">Edit</button>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </article>
+    </section>
+    <footer></footer>
 </main>
 </body>
 </html>
