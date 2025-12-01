@@ -2,6 +2,7 @@ package com.mavi.projectmanager.service;
 
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
+import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class AccountService {
@@ -24,32 +27,37 @@ public class AccountService {
         this.accountRepository = accountRepository;
         this.employeeService = employeeService;
     }
-  
-    public boolean isValidPassword(String str){
-        if(str.isEmpty()){
-            throw new InvalidFieldException("Password cannot be empty", Field.PASSWORD);
-        } else return true;
-    }
 
     //Registers a user
     public Account createUser(Account account) {
 
+        trimFields(account);
+
         Employee checkEmployee = employeeService.getEmployeeByMail(account.getMail());
 
         if(checkEmployee == null) {
-            throw new RuntimeException();
+            throw new InvalidFieldException("Employee not found", Field.EMPLOYEE);
+        }
+
+        //validate that account does not already exist
+        if (getAccountByMail(account.getMail()) != null) {
+            throw new InvalidFieldException("An account with that mail already exists!", Field.EMAIL);
+        }
+
+        if(!isValidPassword(account.getPassword())) {
+            throw new InvalidFieldException("Invalid password", Field.PASSWORD);
         }
 
         account.setEmployee(checkEmployee);
+        account.setPassword(encoder.encode(account.getPassword()));
 
-        if(isValidPassword(account.getPassword())){
-            try {
-                accountRepository.createUser(account);
-            }
-            catch (RuntimeException e) {
-                System.out.println("Failed to insert");
-            }
+        try {
+            account = accountRepository.createUser(account);
         }
+        catch (RuntimeException e) {
+            throw new RuntimeException("Account passed all checks but failed to insert!");
+        }
+
         return account;
     }
 
@@ -68,12 +76,16 @@ public class AccountService {
     }
 
     public Account updatedAccount(Account updatedAccount){
-        if (isValidPassword(updatedAccount.getPassword())) {
-            return accountRepository.updatedAccount(updatedAccount);
-        }
-        else {
-            return null;
-        }
+
+        //save desired new role in temp variable
+        Role newRole = updatedAccount.getRole();
+
+        //Fill out Account data from repository (mainly to get ID from database)
+        updatedAccount = getAccountByMail(updatedAccount.getMail());
+        //Set the desired role from temp variable
+        updatedAccount.setRole(newRole);
+
+        return accountRepository.updatedAccount(updatedAccount);
     }
 
     //Get all accounts stored in a List
@@ -90,5 +102,34 @@ public class AccountService {
             System.out.println("Throwing");
             return false;
         }
+    }
+
+    private boolean isValidPassword(String str){
+
+        int MIN_LENGTH;
+
+        //Insert password validation here (min amount of characters etc)
+
+        if(containsWhitespace(str)) {
+            return false;
+        }
+
+        if(str.isBlank()){
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean containsWhitespace(String str) {
+        String regex = "^\\S+$";
+
+        boolean found = str.matches(regex);
+
+        return !found;
+    }
+
+    private void trimFields(Account account) {
+        account.getEmployee().setMail(account.getMail().trim());
     }
 }

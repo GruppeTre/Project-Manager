@@ -12,21 +12,21 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-    public boolean isValidMail(Employee employee){
-        return employee != null;
-    }
-
     public EmployeeService(EmployeeRepository employeeRepository){
         this.employeeRepository = employeeRepository;
     }
 
     public Employee getEmployeeByMail(String mail) {
 
-        Employee employee = employeeRepository.getEmployeeByMail(mail);
+        //har lige udkommenteret exceptionen her, ved ikke om det er det rigtige sted at throwe i en getter
+//        if (employee == null) {
+//            throw new InvalidFieldException("Mail does not exist", Field.EMAIL);
+//        }
 
-        if (!isValidMail(employee)) {
-            throw new InvalidFieldException("Mail does not exist", Field.EMAIL);
-        }
-        return employee;
+        return employeeRepository.getEmployeeByMail(mail);
+    }
+
+    private boolean isValidMail(Employee employee){
+        return employee != null;
     }
 }
