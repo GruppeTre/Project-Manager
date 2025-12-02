@@ -92,11 +92,11 @@ public class ProjectRepository {
                         LEFT JOIN account_project_junction apj ON p.id = apj.project_id
                         LEFT JOIN Account a ON apj.account_id = a.id
                         LEFT JOIN Employee e ON a.emp_id = e.id
-                        WHERE p.id = 3
+                        WHERE p.id = ?
                         GROUP BY p.id, p.name, p.start_date, p.end_date;
                 """;
 
-        return jdbcTemplate.queryForObject(query, projectRowMapper);
+        return jdbcTemplate.queryForObject(query, projectRowMapper, id);
     }
 
     //Inserts a project in the database
