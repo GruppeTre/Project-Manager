@@ -53,6 +53,10 @@ header a, header a:hover {
     margin-bottom: 0;
 }
 
+#logout-button {
+    width: 12em;
+}
+
 #index-text p {
     font-size: larger;
     margin: 0;
@@ -73,6 +77,7 @@ header a, header a:hover {
     margin-bottom: 1.5rem;
     background-color: var(--warning-red);
 }
+
 body {
     background-color: #dcdcdd;
 }
@@ -158,8 +163,43 @@ tbody td {
 
 }
 
+.button-container-form {
+    margin: 0;
+    display: inline-block;
+}
+
 .form-error-container label {
     color: var(--light);
+}
+
+.form-button-container {
+    margin-bottom: 1em;
+}
+
+.form-button-container .button-primary {
+    width: 17em;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+input, label {
+    width: 25em;
+    color: var(--gray);
+}
+.top-nav a:last-child{
+    border-right-style: none;
+}
+
+.top-nav {
+    display: flex;
+    background-color: #4c5d68;
+    width:100%;
+    justify-content: space-evenly;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+
 }
 
 /* skeleton overrides */
@@ -198,7 +238,12 @@ input[type="button"].button-primary:focus {
     background-color: var(--accent);
     border-color: var(--dark-blue); }
 
-input, label {
-    width: 25em;
-    color: var(--gray);
+button.delete-button {
+    background-color: var(--warning-red);
+    border-color: var(--warning-red);
+}
+
+button.delete-button:focus, button.delete-button:hover {
+    background-color: var(--warning-red);
+    border-color: var(--dark-blue);
 }

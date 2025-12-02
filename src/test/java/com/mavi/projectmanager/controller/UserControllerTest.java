@@ -20,10 +20,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -252,5 +254,70 @@ class UserControllerTest {
                 .andExpect(model().attribute("newAccount", Matchers.instanceOf(Account.class)))
                 .andExpect(model().attribute("roles", Role.values()));
         mockedStatic.close();
+    }
+
+    @Test
+    void shouldDeleteAccount() throws Exception {
+
+        when(accountService.getAccountByMail(testAccount.getMail())).thenReturn(testAccount);
+
+        when(accountService.deleteAccount(any(Account.class))).thenReturn(testAccount);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/deleteUser")
+                        .param("employee.mail", testAccount.getMail())
+                        .sessionAttr("account", testAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview"))
+                .andExpect(flash().attribute("success", true));
+        mockedStatic.close();
+
+        verify(accountService).deleteAccount(any(Account.class));
+    }
+
+    @Test
+    void shouldNotDeleteAccountIfUserIsNotAdmin() throws Exception {
+
+        testAccount.setRole(Role.PROJECT_LEAD);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/deleteUser")
+                        .param("employee.mail", testAccount.getMail())
+                        .sessionAttr("account", testAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview"));
+        mockedStatic.close();
+
+        //make sure that deleteAccount method was never called
+        verify(accountService, never()).deleteAccount(any(Account.class));
+    }
+
+    @Test
+    void shouldGiveErrorIfAccountWasNotDeleted() throws Exception {
+
+        when(accountService.getAccountByMail(testAccount.getMail())).thenReturn(testAccount);
+
+        when(accountService.deleteAccount(any(Account.class))).thenReturn(null);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        mockMvc.perform(post("/deleteUser")
+                        .param("employee.mail", testAccount.getMail())
+                        .sessionAttr("account", testAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview"))
+                .andExpect(flash().attribute("error", true));
+        mockedStatic.close();
+
+        //make sure that deleteAccount method was never called
+        verify(accountService).deleteAccount(any(Account.class));
     }
 }

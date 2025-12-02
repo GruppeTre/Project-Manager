@@ -137,4 +137,17 @@ public class AccountRepository {
 
         return accounts;
     }
+
+    public Account deleteAccount(Account toDelete) {
+
+        String sql = """
+                DELETE from Account
+                WHERE id = ?
+                """;
+
+        int rowsAffected = jdbcTemplate.update(sql, toDelete.getId());
+
+        //return null if no rows affected
+        return rowsAffected == 0 ? null : toDelete;
+    }
 }
