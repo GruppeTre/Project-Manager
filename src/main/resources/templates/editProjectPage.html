@@ -10,29 +10,4 @@
 
 <body>
 
-    <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block">
-        <a th:href="@{/delete}" th:text="#{editproject.button.delete}"></a>
-    </div>
-
-<!-- JavaScript script for showing warning to user, whether he or she wants to delete the project in question -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const link = document.querySelector('a[th\\:href="@{/delete}"]');
-
-            if (link) {
-                link.addEventListener("click", function (event) {
-                    event.preventDefault();
-
-                    const confirmed = confirm("Are you sure you want to delete this project?");
-
-                    if (confirmed) {
-                        window.location.href = link.getAttribute("href");
-                    }
-                });
-            }
-        });
-    </script>
-
 </body>
-
-</html>
