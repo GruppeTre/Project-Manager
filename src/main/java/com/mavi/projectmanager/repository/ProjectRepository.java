@@ -4,6 +4,7 @@ import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.model.Role;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -28,9 +29,11 @@ import java.util.List;
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
+    private final AccountRepository accountRepository;
 
-    public ProjectRepository(JdbcTemplate jdbcTemplate){
+    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository) {
         this.jdbcTemplate = jdbcTemplate;
+        this.accountRepository = accountRepository;
     }
 
     public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
@@ -59,6 +62,22 @@ public class ProjectRepository {
 
         return project;
     });
+    //RowMapper with only with fields: ID, Name, Start_Date, End_Date.
+    public RowMapper<Project> projectExclusiveRowMapper = ((rs, rowNum) -> {
+        Project projectExclusive = new Project();
+        projectExclusive.setId(rs.getInt("id"));
+        projectExclusive.setName(rs.getString("name"));
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+
+        return projectExclusive;
+    });
+
+
 
     public List<Project> getProjects(){
         String query = """
@@ -155,6 +174,16 @@ public class ProjectRepository {
                     projectID + ". Please contact data specialist.");
         }
     }
-
-
+    //Retrieves a project, but only with fields: name, start_date and end_date - no arraylist or nested object.
+    public Project getProjectById(int id) {
+        String sql = """
+                SELECT p.id p.name, p.start_date, p.end_date FROM project WHERE p.id = ?
+                """;
+        try {
+            return jdbcTemplate.queryForObject(sql, projectExclusiveRowMapper, id);
+        }
+        catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 }
