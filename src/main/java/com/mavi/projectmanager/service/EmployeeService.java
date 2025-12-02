@@ -30,7 +30,9 @@ public class EmployeeService {
     }
 
     //Get all accounts with specific role
-    public List<Employee> getEmployeesByRole() {return employeeRepository.getEmployeesByRole();}
+    public List<Employee> getEmployeesByRole() {
+        return employeeRepository.getEmployeesByRole();
+    }
 
     private boolean isValidMail(Employee employee){
         return employee != null;
