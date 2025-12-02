@@ -131,14 +131,14 @@ public class UserController {
     }
   
     @GetMapping("/edit/{id}")
-    public String getEditUser(@PathVariable int id, Model model, HttpSession httpSession){
+    public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
 
-        if (!SessionUtils.isLoggedIn(httpSession)) {
+        if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
 
         //Reject user if user is not Admin
-        Account currentUser = (Account) httpSession.getAttribute("account");
+        Account currentUser = (Account) session.getAttribute("account");
         if (currentUser.getRole() != Role.ADMIN) {
             return "redirect:/overview";
         }
@@ -180,7 +180,6 @@ public class UserController {
             return "redirect:/overview";
         }
 
-        //Hello! This a safety measure to prevent the ID tampering with html document?
         toDelete.setId(this.service.getAccountByMail(toDelete.getMail()).getId());
 
         try {
