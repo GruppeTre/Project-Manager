@@ -10,9 +10,9 @@
 
 <body>
 
-
-
-
+    <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block">
+        <a th:href="@{/delete}" th:text="#{editproject.button.delete}"></a>
+    </div>
 
 </body>
 
