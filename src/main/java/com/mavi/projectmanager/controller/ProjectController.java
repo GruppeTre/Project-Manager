@@ -87,6 +87,33 @@ import java.util.List;
         return "overviewPage";
 
     }
+
+    @PostMapping("/delete")
+    public String deleteProjectByProject(HttpSession httpSession, @ModelAttribute Project toDelete, RedirectAttributes redirectAttributes) {
+
+        if (!SessionUtils.isLoggedIn(httpSession)) {
+            return "redirect:/";
+        }
+        //Reject user if user is not Admin
+        Account currentUser = (Account) httpSession.getAttribute("account");
+        if (currentUser.getRole() != Role.ADMIN) {
+            return "redirect:/overview";
         }
 
+        try {
+            int rowsAffected = projectService.deleteProjectByProject(toDelete);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("admin-deletion", true);
+            return "redirect:/overview";
+        }
 
+        if (toDelete == null) {
+            redirectAttributes.addFlashAttribute("error", true);
+        } else {
+            redirectAttributes.addFlashAttribute("success", true);
+        }
+        return "redirect:/overviewPage";
+
+
+    }
+}
