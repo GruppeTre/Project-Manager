@@ -19,9 +19,8 @@ import java.time.LocalDate;
 import java.util.Comparator;
 
 import java.time.LocalDate;
-import java.util.Comparator;
+import java.util.*;
 import java.sql.Date;
-import java.util.List;
 
 @Repository
 public class ProjectRepository {
@@ -45,12 +44,32 @@ public class ProjectRepository {
         LocalDate convertedEndDate = endDate.toLocalDate();
         project.setEnd_date(convertedEndDate);
 
+        String projectLeads = rs.getString("leads");
+
+        if(projectLeads != null){
+            List<String> projectLeadsList = Arrays.asList(projectLeads.split(","));
+            project.setLeadsList(projectLeadsList);
+
+        }
+        else {
+            project.setLeadsList(Collections.emptyList());
+        }
+
         return project;
     });
 
     public List<Project> getProjects(){
         String query = """
-                        SELECT * FROM Project;
+                        SELECT p.id, p.name, p.start_date, p.end_date, 
+                               GROUP_CONCAT(
+                                   CONCAT(e.firstName, ' ', e.lastName)
+                                   SEPARATOR','
+                               ) AS leads  
+                        FROM Project p 
+                        LEFT JOIN account_project_junction apj ON p.id = apj.project_id 
+                        LEFT JOIN Account a ON apj.account_id = a.id 
+                        LEFT JOIN Employee e ON a.emp_id = e.id 
+                        GROUP BY p.id, p.name, p.start_date, p.end_date;
                        """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
 

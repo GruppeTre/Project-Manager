@@ -81,6 +81,7 @@ import java.util.List;
 
         if(viewMode.equals("projects")){
             model.addAttribute("projects", projectService.getProjects());
+            model.addAttribute("accounts", accountService.getAccounts());
             model.addAttribute("viewMode", viewMode);
         }
         return "overviewPage";

@@ -9,7 +9,9 @@
     <!-- HEADER -->
     <header th:fragment="header">
         <a href="#"><h1 id="header-title" th:text="#{header.title}"></h1></a>
-        <a class="button button-primary" href="/login" th:text="#{header.button.login}"></a>
+        <form class="button-container-form" th:if="${session != null and session.get('account') != null}" th:action="@{/logout}" method="post">
+            <input class="button button-primary" id="logout-button" type="submit" th:value="#{header.button.logout}">
+        </form>
     </header>
 
     <!-- FOOTER -->

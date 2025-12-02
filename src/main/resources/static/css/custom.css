@@ -53,6 +53,10 @@ header a, header a:hover {
     margin-bottom: 0;
 }
 
+#logout-button {
+    width: 12em;
+}
+
 #index-text p {
     font-size: larger;
     margin: 0;
@@ -76,6 +80,10 @@ header a, header a:hover {
 
 body {
     background-color: #dcdcdd;
+}
+
+article {
+    padding-bottom: 20px;
 }
 
 thead tr {
@@ -106,6 +114,12 @@ tbody td {
 .overview {
     width:90%;
     margin: auto;
+    background-color: #c5c3c6;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+
 }
 
 .overview article {
@@ -117,15 +131,36 @@ tbody td {
     width: 100%;
     position: relative;
     margin: auto;
+    border-collapse: separate;
+    overflow: hidden;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-style: none;
 }
 
 .top-nav a{
-    display: flex;
+    display: inline-block;
     border-right-style: solid;
     border-right-color: #c5c3c6;
     border-right-width: 2px;
     padding: 5px;
     text-align: center;
+    flex-grow: 1;
+}
+
+.top-nav a:last-child{
+    border-right-style: none;
+}
+
+.top-nav {
+    display: flex;
+    background-color: #4c5d68;
+    width:100%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+
 }
 
 .button-container-form {

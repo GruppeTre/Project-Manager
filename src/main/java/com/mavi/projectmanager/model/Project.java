@@ -1,6 +1,7 @@
 package com.mavi.projectmanager.model;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class Project {
@@ -8,6 +9,8 @@ public class Project {
     private String name;
     private LocalDate start_date;
     private LocalDate end_date;
+    private List<String> leadsList;
+    private List<SubProject> subProjectsList;
 
 
     public int getId() {
@@ -40,6 +43,22 @@ public class Project {
 
     public void setEnd_date(LocalDate end_date) {
         this.end_date = end_date;
+    }
+
+    public List<String> getLeadsList() {
+        return leadsList;
+    }
+
+    public void setLeadsList(List<String> leadsList) {
+        this.leadsList = leadsList;
+    }
+
+    public List<SubProject> getSubProjectsList() {
+        return subProjectsList;
+    }
+
+    public void setSubProjectsList(List<SubProject> subProjectsList) {
+        this.subProjectsList = subProjectsList;
     }
 
     @Override
