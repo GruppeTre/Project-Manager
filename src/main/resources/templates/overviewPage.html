@@ -15,7 +15,7 @@
     <section class="overview">
         <nav class="top-nav">
                 <a th:if="${session.account.role.id == 1}" th:href="@{/overview(viewMode='accounts')}" th:text="#{nav.a.account}"></a>
-                <a th:if="${session.account.role.id == 1 || 2}" th:href="@{/overview/projects(viewMode='projects')}" th:text="#{nav.a.project}"></a>
+                <a th:if="${session.account.role.id == 1 || 2}" th:href="@{/projects(viewMode='projects')}" th:text="#{nav.a.project}"></a>
         </nav>
         <article th:if="${viewMode == 'accounts'}">
             <div>

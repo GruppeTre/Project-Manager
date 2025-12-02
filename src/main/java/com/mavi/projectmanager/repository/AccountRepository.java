@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import com.mavi.projectmanager.model.Role;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -120,6 +121,7 @@ public class AccountRepository {
         try{
             return jdbcTemplate.queryForObject(query, accountRowMapper, mail);
         } catch (EmptyResultDataAccessException e) {
+
             return null;
         }
     }
