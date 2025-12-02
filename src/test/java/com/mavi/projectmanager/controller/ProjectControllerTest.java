@@ -78,7 +78,7 @@ class ProjectControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(get("/overview/projects").sessionAttr("account", testAccount).param("viewMode", "projects"))
+        mockMvc.perform(get("/projects").sessionAttr("account", testAccount).param("viewMode", "projects"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("overviewPage"))
                 .andExpect(model().attribute("projects", projectList))

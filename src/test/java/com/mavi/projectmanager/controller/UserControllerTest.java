@@ -195,7 +195,7 @@ class UserControllerTest {
 
         mockMvc.perform(post("/create"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/overview"));
+                .andExpect(redirectedUrl("/overview?viewMode=accounts"));
         mockedStatic.close();
     }
 
