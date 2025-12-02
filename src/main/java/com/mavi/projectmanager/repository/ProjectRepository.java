@@ -47,7 +47,10 @@ public class ProjectRepository {
     public List<Project> getProjects(){
         String query = """
                         SELECT p.id, p.name, p.start_date, p.end_date, 
-                               GROUP_CONCAT(e.mail SEPARATOR',') AS leads  
+                               GROUP_CONCAT(
+                                   CONCAT(e.firstName, ' ', e.lastName)
+                                   SEPARATOR','
+                               ) AS leads  
                         FROM Project p 
                         LEFT JOIN account_project_junction apj ON p.id = apj.project_id 
                         LEFT JOIN Account a ON apj.account_id = a.id 
