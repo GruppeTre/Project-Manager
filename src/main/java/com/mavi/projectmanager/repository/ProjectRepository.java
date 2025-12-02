@@ -26,9 +26,11 @@ import java.sql.Date;
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
+    private final AccountRepository accountRepository;
 
-    public ProjectRepository(JdbcTemplate jdbcTemplate){
+    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository){
         this.jdbcTemplate = jdbcTemplate;
+        this.accountRepository = accountRepository;
     }
 
     public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
@@ -79,9 +81,11 @@ public class ProjectRepository {
     }
 
     //Inserts a project in the database
-    public Project createProject(Project project, Account account) {
+    public int createProject(Project project, Employee employee) {
 
         String query = "INSERT INTO project (name, start_date, end_date) VALUES (?,?,?)";
+
+        Account account = accountRepository.getAccountByMail(employee.getMail());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
@@ -105,7 +109,22 @@ public class ProjectRepository {
 
         project.setId(keyHolder.getKey().intValue());
 
-        return project;
+        return keyHolder.getKey().intValue();
     }
 
+    public int updateAccountProjectJunction(int accountId, int projectId) {
+
+        int rowsAffected;
+
+        String query = "INSERT INTO account_project_junction (account_id, project_id) VALUES (?, ?)";
+
+        rowsAffected = jdbcTemplate.update(query, accountId, projectId);
+
+        if(rowsAffected != 1) {
+            throw new RuntimeException("Could not insert into junction table");
+        }
+
+       return rowsAffected;
+
+    }
 }

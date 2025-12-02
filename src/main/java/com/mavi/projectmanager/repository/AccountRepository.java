@@ -121,6 +121,7 @@ public class AccountRepository {
         try{
             return jdbcTemplate.queryForObject(query, accountRowMapper, mail);
         } catch (EmptyResultDataAccessException e) {
+
             return null;
         }
     }

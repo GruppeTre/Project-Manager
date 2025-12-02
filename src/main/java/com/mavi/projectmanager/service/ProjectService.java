@@ -1,10 +1,13 @@
 package com.mavi.projectmanager.service;
 
 import com.mavi.projectmanager.model.Account;
+import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -13,13 +16,21 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final AccountRepository accountRepository;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, AccountRepository accountRepository) {
         this.projectRepository = projectRepository;
+        this.accountRepository = accountRepository;
     }
 
+    @Transactional
+    public Project createProject(Project project, Employee employee) {
 
-    public Project createProject(Project project, Account account) {
+        int projectId = this.projectRepository.createProject(project, employee);
+        Account accountId = this.accountRepository.getAccountByMail(employee.getMail());
+
+        this.projectRepository.updateAccountProjectJunction(accountId.getId(), projectId);
+
         return project;
     }
 

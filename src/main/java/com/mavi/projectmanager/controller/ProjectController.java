@@ -23,7 +23,7 @@ import java.util.List;
 
 
 @Controller
-    @RequestMapping("/overview")
+
     public class ProjectController {
 
     private final ProjectService projectService;
@@ -51,14 +51,14 @@ import java.util.List;
         }
 
         @PostMapping("project/create")
-        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Account account, HttpServletResponse response) {
+        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Employee employee, HttpServletResponse response) {
 
             if(!SessionUtils.isLoggedIn(session)) {
                 return "redirect:/";
             }
 
             try {
-                projectService.createProject(newProject, account);
+                projectService.createProject(newProject, employee);
 
             } catch(InvalidFieldException e) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -70,7 +70,7 @@ import java.util.List;
                     return "createProjectPage";
                 }
 
-                return "redirect:/overviewPage";
+                return "redirect:/overview?viewMode=projects";
             }
 
     @GetMapping("/projects")
