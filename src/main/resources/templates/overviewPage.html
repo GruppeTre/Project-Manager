@@ -8,14 +8,14 @@
     <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
-<header th:fragment=""></header>
+<header th:replace="~{fragments/_commonElements :: Header}"></header>
 <main>
     <!-- Navigation links for switching between sections -->
     <!-- Accounts table -->
     <section class="overview">
         <nav class="top-nav">
-            <a th:if="${session.account.role.id == 1}" th:href="@{/overview(viewMode='accounts')}" th:text="#{nav.a.account}"></a>
-            <a th:if="${session.account.role.id == 1 || 2}" th:href="@{/overview/projects(viewMode='projects')}" th:text="#{nav.a.project}"></a>
+                <a th:if="${session.account.role.id == 1}" th:href="@{/overview(viewMode='accounts')}" th:text="#{nav.a.account}"></a>
+                <a th:if="${session.account.role.id == 1 || 2}" th:href="@{/overview/projects(viewMode='projects')}" th:text="#{nav.a.project}"></a>
         </nav>
         <article th:if="${viewMode == 'accounts'}">
             <div>
@@ -43,7 +43,7 @@
                             <td th:text="${a.mail}"></td>
                             <td th:text="${a.role.value}"></td>
                             <td>
-                                <a th:href="@{/edit/{id}(id=${a.id})}" th:text="#{overview.button.edit}"></a>
+                                <a class="button button-primary" th:href="@{/edit/{id}(id=${a.id})}" th:text="#{overview.button.edit}"></a>
                             </td>
                         </tr>
                     </tbody>
@@ -52,8 +52,8 @@
         </article>
 
     <!-- Projects table -->
-        <article>
-            <div th:if="${viewMode == 'projects'}">
+        <article th:if="${viewMode == 'projects'}">
+            <div>
                 <h2>Projects</h2>
 
                 <a th:href="@{/project/create}">
@@ -63,26 +63,25 @@
                 <table>
                     <tr>
                         <th>Project name</th>
-                        <th>Project-lead</th>
+                        <th>Project Leader(s)</th>
                         <th>Deadline</th>
+                        <th>Actions</th>
                     </tr>
 
                     <tr th:each="p : ${projects}">
                         <td th:text="${p.name}"></td>
+                        <td th:if="${!p.leadsList.isEmpty()}" th:text="${#strings.listJoin(p.leadsList, ', ')}"></td>
+                        <td th:if="${p.leadsList.isEmpty()}" th:text="'No project leader(s)'"></td>
                         <td th:text="${p.end_date}"></td>
-                        <td th:text="${p.email}"></td>
-
                         <td>
-                            <a th:href="@{/project/edit/{id}(id=${p.id})}">
-                                <button type="button">Edit</button>
-                            </a>
+                            <a class="button button-primary" th:href="@{/project/edit/{id}(id=${p.id})}" th:text="Edit"></a>
                         </td>
                     </tr>
                 </table>
             </div>
         </article>
     </section>
-    <footer></footer>
+    <footer th:replace="~{fragments/_commonElements :: Footer}"></footer>
 </main>
 </body>
 </html>

@@ -77,6 +77,10 @@ body {
     background-color: #dcdcdd;
 }
 
+article {
+    padding-bottom: 20px;
+}
+
 thead tr {
     background-color: #4c5d68;
     color: #dcdcdd;
@@ -105,6 +109,12 @@ tbody td {
 .overview {
     width:90%;
     margin: auto;
+    background-color: #c5c3c6;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+
 }
 
 .overview article {
@@ -116,15 +126,36 @@ tbody td {
     width: 100%;
     position: relative;
     margin: auto;
+    border-collapse: separate;
+    overflow: hidden;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-style: none;
 }
 
 .top-nav a{
-    display: flex;
+    display: inline-block;
     border-right-style: solid;
     border-right-color: #c5c3c6;
     border-right-width: 2px;
     padding: 5px;
     text-align: center;
+    flex-grow: 1;
+}
+
+.top-nav a:last-child{
+    border-right-style: none;
+}
+
+.top-nav {
+    display: flex;
+    background-color: #4c5d68;
+    width:100%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+
 }
 
 .form-error-container label {
@@ -170,17 +201,4 @@ input[type="button"].button-primary:focus {
 input, label {
     width: 25em;
     color: var(--gray);
-}
-.top-nav a:last-child{
-    border-right-style: none;
-}
-
-.top-nav {
-    display: flex;
-    background-color: #4c5d68;
-    width:100%;
-    justify-content: space-evenly;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-
 }

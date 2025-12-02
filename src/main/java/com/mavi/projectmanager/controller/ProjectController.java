@@ -1,6 +1,7 @@
 package com.mavi.projectmanager.controller;
 
 import com.mavi.projectmanager.controller.utils.SessionUtils;
+import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.ProjectService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/overview")
 public class ProjectController {
     private final ProjectService projectService;
+    private final AccountService accountService;
 
-    public ProjectController(ProjectService projectService){
+    public ProjectController(ProjectService projectService, AccountService accountService){
         this.projectService = projectService;
+        this.accountService = accountService;
     }
 
     @GetMapping("/projects")
@@ -26,6 +29,7 @@ public class ProjectController {
 
         if(viewMode.equals("projects")){
             model.addAttribute("projects", projectService.getProjects());
+            model.addAttribute("accounts", accountService.getAccounts());
             model.addAttribute("viewMode", viewMode);
         }
         return "overviewPage";
