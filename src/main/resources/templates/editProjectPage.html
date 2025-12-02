@@ -6,6 +6,12 @@
     <link rel="stylesheet" th:href="@{/style/normalize.css}">
     <link rel="stylesheet" th:href="@{/style/skeleton.css}">
     <link rel="stylesheet" th:href="@{/style/custom.css}">
+
+    <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block">
+        <a th:href="@{/delete}" th:text="#{editproject.button.delete}"></a>
+    </div>
+
+
 </head>
 
 <body>
