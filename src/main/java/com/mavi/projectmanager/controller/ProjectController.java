@@ -58,7 +58,7 @@ public class ProjectController {
         } else {
             redirectAttributes.addFlashAttribute("success", true);
         }
-        return "redirect:/overview";
+        return "redirect:/overviewPage";
 
 
     }
