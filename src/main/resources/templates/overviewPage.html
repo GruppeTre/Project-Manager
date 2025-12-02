@@ -62,10 +62,10 @@
 
                 <table>
                     <tr>
-                        <th>Project name</th>
-                        <th>Project Leader(s)</th>
-                        <th>Deadline</th>
-                        <th>Actions</th>
+                        <th th:text="#{overview.text.label.projectName}"></th>
+                        <th th:text="#{overview.text.label.projectLead}"></th>
+                        <th th:text="#{overview.text.label.deadline}"></th>
+                        <th th:text="#{overview.text.label.actions}"></th>
                     </tr>
 
                     <tr th:each="p : ${projects}">
