@@ -4,6 +4,7 @@ import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
@@ -40,7 +41,7 @@ import java.util.List;
         public String getCreateProjectPage(Model model) {
             Project project = new Project();
 
-            List<Employee> employees = employeeService.getEmployeesByRole();
+            List<Employee> employees = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
             Employee employee = new Employee();
 
             model.addAttribute("project", project);
@@ -65,7 +66,7 @@ import java.util.List;
                     model.addAttribute("error", true);
                     model.addAttribute("InvalidField", e.getField());
                     model.addAttribute("newproject", newProject);
-                    List<Employee> employees = employeeService.getEmployeesByRole();
+                    List<Employee> employees = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
                     model.addAttribute("employees", employees);
                     return "createProjectPage";
                 }
