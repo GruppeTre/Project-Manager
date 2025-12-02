@@ -62,15 +62,15 @@ public class ProjectRepository {
 
     public List<Project> getProjects(){
         String query = """
-                        SELECT p.id, p.name, p.start_date, p.end_date, 
+                        SELECT p.id, p.name, p.start_date, p.end_date,
                                GROUP_CONCAT(
                                    CONCAT(e.firstName, ' ', e.lastName)
                                    SEPARATOR','
-                               ) AS leads  
-                        FROM Project p 
-                        LEFT JOIN account_project_junction apj ON p.id = apj.project_id 
-                        LEFT JOIN Account a ON apj.account_id = a.id 
-                        LEFT JOIN Employee e ON a.emp_id = e.id 
+                               ) AS leads
+                        FROM Project p
+                        LEFT JOIN account_project_junction apj ON p.id = apj.project_id
+                        LEFT JOIN Account a ON apj.account_id = a.id
+                        LEFT JOIN Employee e ON a.emp_id = e.id
                         GROUP BY p.id, p.name, p.start_date, p.end_date;
                        """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
@@ -78,6 +78,25 @@ public class ProjectRepository {
         projects.sort(PROJECT_COMPARATOR);
 
         return projects;
+    }
+
+    public Project getProjectById(int id) {
+
+        String query = """
+                 SELECT p.id, p.name, p.start_date, p.end_date,
+                               GROUP_CONCAT(
+                                   CONCAT(e.firstName, ' ', e.lastName)
+                                   SEPARATOR','
+                               ) AS leads
+                        FROM Project p
+                        LEFT JOIN account_project_junction apj ON p.id = apj.project_id
+                        LEFT JOIN Account a ON apj.account_id = a.id
+                        LEFT JOIN Employee e ON a.emp_id = e.id
+                        WHERE p.id = 3
+                        GROUP BY p.id, p.name, p.start_date, p.end_date;
+                """;
+
+        return jdbcTemplate.queryForObject(query, projectRowMapper);
     }
 
     //Inserts a project in the database
