@@ -4,6 +4,8 @@ import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.service.AccountService;
+import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -16,26 +18,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Controller
     @RequestMapping("/overview")
     public class ProjectController {
 
-        private final ProjectService projectService;
+    private final ProjectService projectService;
+    private final AccountService accountService;
+    private final EmployeeService employeeService;
 
-        public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, AccountService accountService, EmployeeService employeeService) {
             this.projectService = projectService;
-        }
+        this.accountService = accountService;
+        this.employeeService = employeeService;
+    }
 
         @GetMapping("project/create")
         public String getCreateProjectPage(Model model) {
             Project project = new Project();
-            Account account = new Account();
+
+            List<Employee> employees = employeeService.getEmployeesByRole();
             Employee employee = new Employee();
 
-            account.setEmployee(employee);
-
             model.addAttribute("project", project);
+            model.addAttribute("employees", employees);
+            model.addAttribute("employee", employee);
 
             return "createProjectPage";
         }
@@ -55,6 +65,8 @@ import org.springframework.web.bind.annotation.RequestParam;
                     model.addAttribute("error", true);
                     model.addAttribute("InvalidField", e.getField());
                     model.addAttribute("newproject", newProject);
+                    List<Employee> employees = employeeService.getEmployeesByRole();
+                    model.addAttribute("employees", employees);
                     return "createProjectPage";
                 }
 
