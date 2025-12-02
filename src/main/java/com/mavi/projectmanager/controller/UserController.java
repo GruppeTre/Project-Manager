@@ -131,14 +131,14 @@ public class UserController {
     }
   
     @GetMapping("/edit/{id}")
-    public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
+    public String getEditUser(@PathVariable int id, Model model, HttpSession httpSession){
 
-        if (!SessionUtils.isLoggedIn(session)) {
+        if (!SessionUtils.isLoggedIn(httpSession)) {
             return "redirect:/";
         }
 
         //Reject user if user is not Admin
-        Account currentUser = (Account) session.getAttribute("account");
+        Account currentUser = (Account) httpSession.getAttribute("account");
         if (currentUser.getRole() != Role.ADMIN) {
             return "redirect:/overview";
         }
