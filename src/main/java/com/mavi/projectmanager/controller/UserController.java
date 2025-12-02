@@ -111,7 +111,7 @@ public class UserController {
             return "createUserPage";
         }
 
-        return "redirect:/overview";
+        return "redirect:/overview?viewMode=accounts";
     }
 
     @GetMapping("/overview")

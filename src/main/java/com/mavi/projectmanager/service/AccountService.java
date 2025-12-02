@@ -94,6 +94,7 @@ public class AccountService {
         return accountRepository.getAccounts();
     }
 
+
     public boolean accountLogin(Account account){
         try {
         Account getAccount = accountRepository.getAccountByMail(account.getMail());

@@ -1,10 +1,13 @@
 package com.mavi.projectmanager.repository;
 
+import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class EmployeeRepository {
@@ -36,5 +39,18 @@ public class EmployeeRepository {
         catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public List<Employee> getEmployeesByRole() {
+        String query = """
+                        SELECT e.*
+                        FROM employee e
+                        LEFT JOIN account a ON e.id = a.emp_id
+                        WHERE a.role = 2
+                       """;
+
+        List<Employee> employees = jdbcTemplate.query(query, employeeRowMapper);
+
+        return employees;
     }
 }
