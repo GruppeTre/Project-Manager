@@ -174,6 +174,8 @@ public class ProjectRepository {
                     projectID + ". Please contact data specialist.");
         }
     }
+
+    //Helper method:
     //Retrieves a project, but only with fields: name, start_date and end_date - no arraylist or nested object.
     public Project getProjectById(int id) {
         String sql = """
