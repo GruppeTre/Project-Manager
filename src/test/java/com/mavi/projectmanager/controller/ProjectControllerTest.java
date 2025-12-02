@@ -86,4 +86,12 @@ class ProjectControllerTest {
 
         mockedStatic.close();
     }
+
+    //todo: shouldShowCreateProjectPage
+
+    //todo: shouldCreateValidProject
+
+    //todo: shouldRejectProjectWithEndDateInThePast
+
+    //todo: shouldRejectProjectWithEndDateBeforeStartDate
 }
