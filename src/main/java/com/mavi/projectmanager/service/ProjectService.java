@@ -9,7 +9,6 @@ import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +37,10 @@ public class ProjectService {
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new IllegalArgumentException("Failed to get exactly one result for project id " + id);
         }
+    }
+
+    public List<Project> getProjectsByLead(int id){
+        return projectRepository.getProjectsByLead(id);
     }
 
     @Transactional
@@ -106,5 +109,4 @@ public class ProjectService {
     private boolean hasProjectLead(Project projectToCheck) {
         return true;
     }
-
 }

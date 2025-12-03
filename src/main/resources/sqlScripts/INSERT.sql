@@ -24,7 +24,11 @@ VALUES ('Manager', 'admin@alphasolutions.com', 'Anders', 'Nielsen'),
 INSERT INTO account(role, password, emp_id)
 VALUES
 -- sysadmin--
-(1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 1);
+(1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 1),
+(1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 2),
+(2, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 3),
+(2, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 4);
+
 
 
 

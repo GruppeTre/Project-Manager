@@ -19,8 +19,8 @@ import java.sql.Date;
 @Repository
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
+    private AccountRepository accountRepository;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
-    private final AccountRepository accountRepository;
 
     public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository){
         this.jdbcTemplate = jdbcTemplate;
@@ -29,7 +29,8 @@ public class ProjectRepository {
 
     public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
-        project.setId(rs.getInt("id"));
+        int projectId = rs.getInt("id");
+        project.setId(projectId);
         project.setName(rs.getString("name"));
 
         Date startDate = rs.getDate("start_date");
@@ -40,38 +41,39 @@ public class ProjectRepository {
         LocalDate convertedEndDate = endDate.toLocalDate();
         project.setEnd_date(convertedEndDate);
 
-        String projectLeads = rs.getString("leads");
+        List<Account> projectLeads = accountRepository.getAccountsByProjectId(projectId);
 
-        if(projectLeads != null){
-            List<String> projectLeadsList = Arrays.asList(projectLeads.split(","));
-            project.setLeadsList(projectLeadsList);
-
-        }
-        else {
-            project.setLeadsList(Collections.emptyList());
-        }
+        project.setLeadsList(projectLeads);
 
         return project;
     });
 
     public List<Project> getProjects(){
         String query = """
-                        SELECT p.id, p.name, p.start_date, p.end_date,
-                               GROUP_CONCAT(
-                                   CONCAT(e.firstName, ' ', e.lastName)
-                                   SEPARATOR','
-                               ) AS leads
+                        SELECT p.id, p.name, p.start_date, p.end_date  
                         FROM Project p
-                        LEFT JOIN account_project_junction apj ON p.id = apj.project_id
-                        LEFT JOIN Account a ON apj.account_id = a.id
-                        LEFT JOIN Employee e ON a.emp_id = e.id
-                        GROUP BY p.id, p.name, p.start_date, p.end_date;
                        """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
 
         projects.sort(PROJECT_COMPARATOR);
 
         return projects;
+    }
+
+    public List<Project> getProjectsByLead(int id){
+        String query = """
+                        SELECT
+                            p.id,
+                            p.name,
+                            p.start_date,
+                            p.end_date
+                        FROM Project p
+                        INNER JOIN account_project_junction apj
+                            ON p.id = apj.project_id
+                        WHERE apj.account_id = ?
+                """;
+
+        return jdbcTemplate.query(query, projectRowMapper, id);
     }
 
     public Project getProjectById(int id) {
