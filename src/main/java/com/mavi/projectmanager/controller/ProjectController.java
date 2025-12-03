@@ -79,10 +79,15 @@ import java.util.List;
             return "redirect:/";
         }
 
-        if(viewMode.equals("projects")){
+        model.addAttribute("accounts", accountService.getAccounts());
+        model.addAttribute("viewMode", viewMode);
+
+        if(viewMode.equals("projects") && !SessionUtils.userIsProjectLead(session)){
             model.addAttribute("projects", projectService.getProjects());
-            model.addAttribute("accounts", accountService.getAccounts());
-            model.addAttribute("viewMode", viewMode);
+        }
+        if(viewMode.equals("projects") && SessionUtils.userIsProjectLead(session)){
+            int projectLeadId = ((Account) session.getAttribute("account")).getId();
+            model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
         }
         return "overviewPage";
 

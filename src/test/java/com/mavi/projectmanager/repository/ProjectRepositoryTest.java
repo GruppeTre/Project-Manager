@@ -36,6 +36,5 @@ class ProjectRepositoryTest {
         assertEquals("Projekt Alpha", projectsList.getFirst().getName());
         assertEquals(LocalDate.of(2025, 11, 28), projectsList.getFirst().getStart_date());
         assertEquals(LocalDate.of(2025, 11, 30), projectsList.getFirst().getEnd_date());
-
     }
 }

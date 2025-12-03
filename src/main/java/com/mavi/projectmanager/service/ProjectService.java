@@ -72,5 +72,7 @@ public class ProjectService {
         return projectRepository.getProjects();
     }
 
-
+    public List<Project> getProjectsByLead(int id){
+        return projectRepository.getProjectsByLead(id);
+    }
 }
