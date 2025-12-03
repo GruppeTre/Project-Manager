@@ -3,6 +3,7 @@ package com.mavi.projectmanager.repository;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.model.SubProject;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -44,6 +45,24 @@ public class ProjectRepository {
         List<Account> projectLeads = accountRepository.getAccountsByProjectId(projectId);
 
         project.setLeadsList(projectLeads);
+
+        return project;
+    });
+
+    public RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
+        Project project = new Project();
+        int projectId = rs.getInt(rs.getInt("id"));
+        project.setId(projectId);
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        project.setStart_date(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        project.setEnd_date(convertedEndDate);
+
+        List<SubProject> subProjectsList = getSubProjectsByProjectId(projectId);
 
         return project;
     });
@@ -127,6 +146,7 @@ public class ProjectRepository {
         return keyHolder.getKey().intValue();
     }
 
+    // Todo: Should probably be return rowsAffected
     public Project updateProject(Project project) {
 
         String query = """
@@ -170,5 +190,13 @@ public class ProjectRepository {
         if (rowsAffected != 1) {
             throw new RuntimeException("unexpected amount of rows deleted! Expected : 1, actual: " + rowsAffected);
         }
+    }
+
+    public List<Project> getFullProjectById(int id){
+        String query = """
+                SELECT * FROM Project WHERE id = ?
+                """;
+
+        return jdbcTemplate.query(query, fullProjectRowMapper, id)
     }
 }

@@ -6,6 +6,7 @@ import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.model.SubProject;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -78,6 +79,10 @@ public class ProjectService {
         this.projectRepository.insertIntoAccountProjectJunction(leadAccount.getId(), project.getId());
 
         return project;
+    }
+
+    public List<SubProject> getSubProjectsById(int id){
+        return this.projectRepository.getSubProjectsById(id);
     }
 
     private boolean hasValidName(Project projectToCheck) {

@@ -161,6 +161,17 @@ import java.util.List;
 
         return "redirect:/projects?viewMode=projects";
     }
+
+    @GetMapping("/view/{id}")
+    public String getProjectOverview(@PathVariable("id") int id, Model model, HttpSession session) {
+        if(!SessionUtils.isLoggedIn(session)){
+            return "redirect:/";
+        }
+
+        model.addAttribute("subProject", projectService.getSubProjectsById(id));
+
+        return "projectOverviewPage";
+    }
 }
 
 
