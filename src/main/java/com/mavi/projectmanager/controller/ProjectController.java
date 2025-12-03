@@ -168,7 +168,7 @@ import java.util.List;
             return "redirect:/";
         }
 
-        model.addAttribute("subProject", projectService.getSubProjectsById(id));
+        model.addAttribute("subProject", projectService.getFullProjectById(id));
 
         return "projectOverviewPage";
     }

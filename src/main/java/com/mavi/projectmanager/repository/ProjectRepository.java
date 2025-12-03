@@ -72,6 +72,7 @@ public class ProjectRepository {
         int subProjectId = rs.getInt("id");
         subProject.setId(subProjectId);
         subProject.setName(rs.getString("name"));
+
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
         subProject.setStart_date(convertedStartDate);
@@ -84,6 +85,25 @@ public class ProjectRepository {
         subProject.setTaskList(taskList);
 
         return subProject;
+    });
+
+    public RowMapper<Task> taskRowMapper = ((rs, rowNum) -> {
+        Task task = new Task();
+
+        task.setId(rs.getInt("id"));
+        task.setName(rs.getString("name"));
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        task.setStart_date(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        task.setEnd_date(convertedEndDate);
+
+        task.setDuration(rs.getInt("duration"));
+
+        return task;
     });
 
     public List<Project> getProjects(){

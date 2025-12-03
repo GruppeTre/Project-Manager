@@ -81,8 +81,8 @@ public class ProjectService {
         return project;
     }
 
-    public List<SubProject> getSubProjectsById(int id){
-        return this.projectRepository.getSubProjectsById(id);
+    public List<Project> getFullProjectById(int id){
+        return this.projectRepository.getFullProjectById(id);
     }
 
     private boolean hasValidName(Project projectToCheck) {
