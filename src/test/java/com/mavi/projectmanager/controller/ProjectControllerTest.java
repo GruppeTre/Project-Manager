@@ -126,4 +126,12 @@ class ProjectControllerTest {
             verify(projectService, never()).getProjects();
         }
     }
+
+    //todo: shouldShowCreateProjectPage
+
+    //todo: shouldCreateValidProject
+
+    //todo: shouldRejectProjectWithEndDateInThePast
+
+    //todo: shouldRejectProjectWithEndDateBeforeStartDate
 }
