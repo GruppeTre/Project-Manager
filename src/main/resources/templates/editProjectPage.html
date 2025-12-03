@@ -14,8 +14,10 @@
 
             <div>
                 <h2 th:text="#{form.label.updateProject}"></h2>
+                <h2 th:text="'start date: ' + ${project.start_date}"></h2>
             </div>
 
+            <input id="hidden_id" th:field="*{id}" hidden="hidden">
 
             <div class="row">
                 <label for="name" class="form-label" th:text="#{form.label.projectName}"></label>
@@ -23,13 +25,25 @@
             </div>
 
             <div class="row">
-                <label for="start-date" class="form-label" th:text="#{form.label.startDate}"></label>
-                <input id="start-date" type="date" th:field="*{start_date}">
+                <label for="start_date" class="form-label" th:text="#{form.label.startDate}"></label>
+                <input id="start_date" type="date" name="start_date" th:value="*{start_date}">
             </div>
 
             <div class="row">
-                <label for="end-date" class="form-label" th:text="#{form.label.endDate}"></label>
-                <input id="end-date" type="date" th:field="*{end_date}">
+                <label for="end_date" class="form-label" th:text="#{form.label.endDate}"></label>
+                <input id="end_date" type="date" name="end_date" th:value="*{end_date}">
+            </div>
+
+            <!-- todo: fix input field not displaying current project lead (needs leads to be assigned field in project objects) -->
+            <div class="row">
+                <label for="project_lead">Project Lead:</label>
+                <select id="project_lead" th:field="${assignedLead.mail}">
+                    <option value="" disabled selected th:text="'Choose Account'">Vælg konto…</option>
+                    <option th:each="lead : ${allLeads}"
+                            th:value="${lead.mail}"
+                            th:text="|${lead.firstName} ${lead.lastName}|">
+                    </option>
+                </select>
             </div>
 
             <!-- todo: add multiselect for project leads -->

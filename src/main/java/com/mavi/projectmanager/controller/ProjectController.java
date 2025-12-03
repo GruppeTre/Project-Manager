@@ -110,12 +110,37 @@ import java.util.List;
 
         List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
 
+        System.out.println("editing project with start date: " + toEdit.getStart_date().toString());
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);
+        model.addAttribute("assignedLead", new Employee());
         //todo: add list of assigned leads (or fix project object to contain list of assigned leads)
 
 
         return "editProjectPage";
+    }
+
+    @PostMapping("/project/update")
+    public String updateProject(RedirectAttributes redirectAttributes, HttpSession session, @ModelAttribute Project project, @ModelAttribute Employee assignedLead) {
+
+        System.out.println("updating project with name: " + project.getName() + "\n");
+        System.out.println("with new start date of: " + project.getStart_date().toString());
+        System.out.println("project id: " + project.getId());
+
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        Account currentUser = (Account) session.getAttribute("account");
+        if (currentUser.getRole() != Role.ADMIN) {
+            return "redirect:/overview";
+        }
+
+        this.projectService.updateProject(project, assignedLead);
+
+        return "redirect:/projects?viewMode=projects";
     }
 }
 

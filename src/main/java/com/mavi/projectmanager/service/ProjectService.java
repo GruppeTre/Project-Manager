@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Service
@@ -22,17 +21,6 @@ public class ProjectService {
     public ProjectService(ProjectRepository projectRepository, AccountRepository accountRepository) {
         this.projectRepository = projectRepository;
         this.accountRepository = accountRepository;
-    }
-
-    @Transactional
-    public Project createProject(Project project, Employee employee) {
-
-        int projectId = this.projectRepository.createProject(project, employee);
-        Account accountId = this.accountRepository.getAccountByMail(employee.getMail());
-
-        this.projectRepository.updateAccountProjectJunction(accountId.getId(), projectId);
-
-        return project;
     }
 
     public List<Project> getProjects(){
@@ -47,6 +35,40 @@ public class ProjectService {
         }
     }
 
+    @Transactional
+    public Project createProject(Project project, Employee employee) {
+
+        //todo: validate project fields
+
+        int projectId = this.projectRepository.createProject(project, employee);
+        Account accountId = this.accountRepository.getAccountByMail(employee.getMail());
+
+        this.projectRepository.insertIntoAccountProjectJunction(accountId.getId(), projectId);
+
+        return project;
+    }
+
+    @Transactional
+    public Project updateProject(Project project, Employee assignedLead) {
+
+        //todo: validate project fields
+
+        int rowsAffected;
+
+        //update project data
+        this.projectRepository.updateProject(project);
+        Account leadAccount = this.accountRepository.getAccountByMail(assignedLead.getMail());
+
+        //delete row(s) from junction table
+        this.projectRepository.deleteFromAccountProjectJunction(project.getId());
+
+        //insert new fields
+        this.projectRepository.insertIntoAccountProjectJunction(leadAccount.getId(), project.getId());
+
+        return project;
+    }
+
+    //todo: make validation methods private
     public boolean hasValidName(Project projectToCheck) {
 
         if(projectToCheck.getName().isBlank()){
