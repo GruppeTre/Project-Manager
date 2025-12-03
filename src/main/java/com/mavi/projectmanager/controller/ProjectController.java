@@ -1,6 +1,7 @@
 package com.mavi.projectmanager.controller;
 
 import com.mavi.projectmanager.controller.utils.SessionUtils;
+import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.ProjectService;
 import jakarta.servlet.http.HttpSession;
@@ -27,10 +28,15 @@ public class ProjectController {
             return "redirect:/";
         }
 
-        if(viewMode.equals("projects")){
+        model.addAttribute("accounts", accountService.getAccounts());
+        model.addAttribute("viewMode", viewMode);
+
+        if(viewMode.equals("projects") && !SessionUtils.userIsProjectLead(session)){
             model.addAttribute("projects", projectService.getProjects());
-            model.addAttribute("accounts", accountService.getAccounts());
-            model.addAttribute("viewMode", viewMode);
+        }
+        if(viewMode.equals("projects") && SessionUtils.userIsProjectLead(session)){
+            int projectLeadId = ((Account) session.getAttribute("account")).getId();
+            model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
         }
         return "overviewPage";
 

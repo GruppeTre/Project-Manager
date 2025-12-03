@@ -53,4 +53,20 @@ public class ProjectRepository {
 
         return projects;
     }
+
+    public List<Project> getProjectsByLead(int id){
+        String query = """
+                        SELECT
+                            p.id,
+                            p.name,
+                            p.start_date,
+                            p.end_date
+                        FROM Project p
+                        INNER JOIN account_project_junction apj
+                            ON p.id = apj.project_id
+                        WHERE apj.account_id = ?
+                """;
+
+        return jdbcTemplate.query(query, projectRowMapper, id);
+    }
 }

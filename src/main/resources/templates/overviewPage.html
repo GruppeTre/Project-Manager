@@ -14,7 +14,7 @@
     <section class="overview">
         <nav class="top-nav">
                 <a th:if="${session.account.role.id == 1}" th:href="@{/overview(viewMode='accounts')}" th:text="#{nav.a.account}"></a>
-                <a th:if="${session.account.role.id == 1 || 2}" th:href="@{/overview/projects(viewMode='projects')}" th:text="#{nav.a.project}"></a>
+                <a th:if="${session.account.role.id == 1 || session.account.role.id == 2}" th:href="@{/overview/projects(viewMode='projects')}" th:text="#{nav.a.project}"></a>
         </nav>
         <article th:if="${viewMode == 'accounts'}">
             <div>
@@ -51,7 +51,7 @@
         </article>
 
     <!-- Projects table for Admins -->
-        <article th:if="${viewMode == 'projects'} && ${session.account.role.id == 1}">
+        <article th:if="${viewMode == 'projects' && session.account.role.id == 1}">
             <div>
                 <div class="inline-block">
                     <label for="project_search_bar"></label>
@@ -61,7 +61,7 @@
                     <a class="button button-primary" th:href="@{/project/create}" th:text="#{overview.button.createProject}"></a>
                 </div>
 
-                <table>
+                <table class="overview_table">
                     <thead>
                         <tr>
                             <th th:text="#{overview.text.label.projectName}"></th>
@@ -86,14 +86,14 @@
         </article>
 
         <!-- Projects for Project Leader-->
-        <article th:if="${viewMode == 'projects'} && ${session.account.role.id == 2}">
+        <article th:if="${viewMode == 'projects' && session.account.role.id == 2}">
             <div>
                 <div class="inline-block">
                     <label for="projectLead_search_bar"></label>
                     <input id="projectLead_search_bar" type="search" th:placeholder="#{overview.search.placeholder}" />
                 </div>
 
-                <table>
+                <table class="overview_table">
                     <thead>
                         <tr>
                             <th th:text="#{overview.text.label.projectName}"></th>
@@ -103,7 +103,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="p : ${projects}">
+                        <tr th:each="p : ${projectsByLead}">
                             <td th:text="${p.name}"></td>
                             <td th:if="${p.leadsList != null}" th:text="${p.leadsToString}"></td>
                             <td th:if="${p.leadsList == null}" th:text="'No project leader(s)'"></td>
