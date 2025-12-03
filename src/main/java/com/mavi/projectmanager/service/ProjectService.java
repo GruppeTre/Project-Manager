@@ -6,6 +6,7 @@ import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -57,25 +58,21 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project updateProject(Project project, Employee assignedLead) {
+    public Project updateProject(Project project) {
 
-        project.setName(project.getName().trim());
+        //validate project (returns project with full Account object of project lead)
+        validateUpdatedProject(project);
 
-        if (!hasValidName(project)) {
-            throw new InvalidFieldException("invalid name", Field.TITLE);
-        }
-
-        validateDates(project);
+        int leadId = project.getLeadsList().getFirst().getId();
 
         //update project data
         this.projectRepository.updateProject(project);
-        Account leadAccount = this.accountRepository.getAccountByMail(assignedLead.getMail());
 
         //delete row(s) from junction table
         this.projectRepository.deleteFromAccountProjectJunction(project.getId());
 
         //insert new fields
-        this.projectRepository.insertIntoAccountProjectJunction(leadAccount.getId(), project.getId());
+        this.projectRepository.insertIntoAccountProjectJunction(leadId, project.getId());
 
         return project;
     }
@@ -85,10 +82,6 @@ public class ProjectService {
         if(projectToCheck.getName().isBlank()){
             return false;
         }
-
-//        String regex = "^[a-zA-Z0-9 ]+$";
-
-//        return projectToCheck.getName().matches(regex);
 
         return true;
     }
@@ -108,5 +101,35 @@ public class ProjectService {
 
     private boolean hasProjectLead(Project projectToCheck) {
         return true;
+    }
+
+    private Project validateUpdatedProject(Project project) {
+
+        //trim name for leading and trailing whitespaces
+        project.setName(project.getName().trim());
+
+        //validate name
+        if (!hasValidName(project)) {
+            throw new InvalidFieldException("invalid name", Field.TITLE);
+        }
+
+        validateDates(project);
+
+        //validate that project lead exists
+        String mail = project.getLeadsList().getFirst().getMail();
+        Account lead = accountRepository.getAccountByMail(mail);
+
+        if (lead == null) {
+            throw new IllegalArgumentException("Lead with mail: '" + mail + "' does not exist!");
+        }
+
+        //validate that Account is of role Project Lead
+        if (lead.getRole() != Role.PROJECT_LEAD) {
+            throw new IllegalArgumentException("Unexpected role of assigned project lead: expected: " + Role.PROJECT_LEAD.getValue() + " actual: " + lead.getRole().getValue());
+        }
+
+        project.setLeadsList(List.of(lead));
+
+        return project;
     }
 }

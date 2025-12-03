@@ -9,7 +9,6 @@ public class Account {
     private Role role;
     private String password;
     private Employee employee;
-    public static final Comparator<Account> ACCOUNT_COMPARABLE = Comparator.comparing(((Account a) -> a.getRole().getId())).thenComparing(Account::getFirstName).thenComparing(Account::getLastName);
 
     public int getId() {
         return id;

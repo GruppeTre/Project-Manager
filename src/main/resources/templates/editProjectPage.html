@@ -42,14 +42,14 @@
                 <input id="end_date" type="date" name="end_date" th:value="*{end_date}">
             </div>
 
-            <!-- todo: fix input field not displaying current project lead (needs leads to be assigned field in project objects) -->
             <div class="row">
-                <label for="project_lead">Project Lead:</label>
-                <select id="project_lead" th:field="${assignedLead.mail}">
-                    <option value="" disabled selected th:text="'Choose Account'">Vælg konto…</option>
+                <label for="project_lead" th:text="#{form.label.projectLead}"></label>
+                <select id="project_lead" name="leadsList[0].employee.mail">
+                    <option value="" disabled selected th:text="#{form.input.options.selectLead}"></option>
                     <option th:each="lead : ${allLeads}"
-                            th:value="${lead.mail}"
-                            th:text="|${lead.firstName} ${lead.lastName}|">
+                            th:value="${lead.employee.mail}"
+                            th:text="|${lead.employee.firstName} ${lead.employee.lastName}|"
+                            th:attr="selected=${lead.employee.mail == project.leadsList.getFirst().employee.mail}">
                     </option>
                 </select>
                 <!--hidden submit input (so submit button can be outside of form -->

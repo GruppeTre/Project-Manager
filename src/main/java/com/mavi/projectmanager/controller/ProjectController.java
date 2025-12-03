@@ -114,19 +114,20 @@ import java.util.List;
             return "redirect:/projects?viewMode=projects";
         }
 
-        List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+        //todo: update allLeads list to use getAccountsByRole when it is implemented
+//        List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+
+        List<Account> allLeads = List.of(this.accountService.getAccountByID(2), this.accountService.getAccountByID(4));
+
 
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);
-        model.addAttribute("assignedLead", new Employee());
-        //todo: add list of assigned leads (or fix project object to contain list of assigned leads)
-
 
         return "editProjectPage";
     }
 
     @PostMapping("/project/update")
-    public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project, @ModelAttribute Employee assignedLead) {
+    public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -139,23 +140,26 @@ import java.util.List;
         }
 
         try {
-            this.projectService.updateProject(project, assignedLead);
+            this.projectService.updateProject(project);
         } catch (InvalidFieldException e) {
-            List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+
+            //todo: update allLeads list to use getAccountsByRole when it is implemented
+//            List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+            List<Account> allLeads = List.of(this.accountService.getAccountByID(2), this.accountService.getAccountByID(4));
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
+            //if Exception is an InvalidDateException, add errorId to model so template can display proper error message
             if (e instanceof InvalidDateException) {
                 int errorId = ((InvalidDateException) e).getErrorId();
                 model.addAttribute("errorId", errorId);
             }
-
             model.addAttribute("error", true);
             model.addAttribute("invalidField", e.getField());
+
+            //add model attributes needed to display project information on template
             model.addAttribute("project", project);
             model.addAttribute("allLeads", allLeads);
-            model.addAttribute("assignedLead", assignedLead);
 
-            System.out.println("returning with invalid field: " + e.getField());
             return "editProjectPage";
         }
 
