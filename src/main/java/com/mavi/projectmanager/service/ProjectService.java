@@ -83,10 +83,6 @@ public class ProjectService {
             return false;
         }
 
-        //tænker ikke at det er forventet at en boolean validation metoder ændrer fields i objektet det tjekker
-
-//        projectToCheck.setName(projectToCheck.getName().trim());
-//
 //        String regex = "^[a-zA-Z0-9 ]+$";
 
 //        return projectToCheck.getName().matches(regex);
@@ -97,11 +93,6 @@ public class ProjectService {
     private void validateDates(Project projectToCheck) {
 
         LocalDate today = LocalDate.now();
-
-        //er det ikke OK hvis man kan oprette et projekt dagen efter kick-off f.eks.?
-//        if (!projectToCheck.getStart_date().isAfter(today)) {
-//            throw new IllegalArgumentException("Start date cannot be in the past");
-//        }
 
         if (projectToCheck.getStart_date().isAfter(projectToCheck.getEnd_date())) {
             throw new InvalidDateException("Start date cannot be after end date!", 1);
