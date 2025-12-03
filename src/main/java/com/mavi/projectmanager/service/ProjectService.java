@@ -44,12 +44,19 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project createProject(Project project, Employee employee) {
+    public Project createProject(Project project, Account account) {
 
         //todo: validate project fields
+        project.setName(project.getName().trim());
+
+        if (!hasValidName(project)) {
+            throw new InvalidFieldException("Invalid name", Field.TITLE);
+        }
+
+        validateDates(project);
 
         int projectId = this.projectRepository.createProject(project);
-        Account accountId = this.accountRepository.getAccountByMail(employee.getMail());
+        Account accountId = this.accountRepository.getAccountByMail(account.getEmployee().getMail());
 
         this.projectRepository.insertIntoAccountProjectJunction(accountId.getId(), projectId);
 
@@ -82,15 +89,11 @@ public class ProjectService {
 
     private boolean hasValidName(Project projectToCheck) {
 
-        if(projectToCheck.getName().isBlank()){
-            return false;
-        }
+        return !projectToCheck.getName().isBlank();
 
 //        String regex = "^[a-zA-Z0-9 ]+$";
 
 //        return projectToCheck.getName().matches(regex);
-
-        return true;
     }
 
     private void validateDates(Project projectToCheck) {

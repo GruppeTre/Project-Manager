@@ -51,14 +51,14 @@ import java.util.List;
         }
 
         @PostMapping("project/create")
-        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Employee employee, HttpServletResponse response) {
+        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Account account, HttpServletResponse response) {
 
             if(!SessionUtils.isLoggedIn(session)) {
                 return "redirect:/";
             }
 
             try {
-                projectService.createProject(newProject, employee);
+                projectService.createProject(newProject, account);
             } catch(InvalidFieldException e) {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     model.addAttribute("error", true);
