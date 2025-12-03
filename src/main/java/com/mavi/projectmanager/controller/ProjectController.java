@@ -118,7 +118,6 @@ import java.util.List;
 
         List<Account> allLeads = List.of(this.accountService.getAccountByID(2), this.accountService.getAccountByID(4));
 
-        System.out.println("editing project with lead.getfirst(): " + toEdit.getLeadsList().getFirst().getFirstName() + " " + toEdit.getLeadsList().getFirst().getLastName());
 
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);

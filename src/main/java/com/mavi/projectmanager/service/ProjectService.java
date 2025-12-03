@@ -63,8 +63,6 @@ public class ProjectService {
         //validate project (returns project with full Account object of project lead)
         validateUpdatedProject(project);
 
-        System.out.println("project lead for project is: " + project.getLeadsList().getFirst().getFirstName());
-
         int leadId = project.getLeadsList().getFirst().getId();
 
         //update project data
@@ -84,10 +82,6 @@ public class ProjectService {
         if(projectToCheck.getName().isBlank()){
             return false;
         }
-
-//        String regex = "^[a-zA-Z0-9 ]+$";
-
-//        return projectToCheck.getName().matches(regex);
 
         return true;
     }
