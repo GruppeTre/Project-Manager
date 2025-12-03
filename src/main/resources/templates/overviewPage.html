@@ -70,8 +70,8 @@
 
                     <tr th:each="p : ${projects}">
                         <td th:text="${p.name}"></td>
-                        <td th:if="${!p.leadsList.isEmpty()}" th:text="${#strings.listJoin(p.leadsList, ', ')}"></td>
-                        <td th:if="${p.leadsList.isEmpty()}" th:text="'No project leader(s)'"></td>
+                        <td th:if="${p.leadsList != null}" th:text="${p.leadsToString}"></td>
+                        <td th:if="${p.leadsList == null}" th:text="'No project leader(s)'"></td>
                         <td th:text="${p.end_date}"></td>
                         <td>
                             <a th:if="${session.account.role == 1}" class="button button-primary" th:href="@{/project/edit/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>

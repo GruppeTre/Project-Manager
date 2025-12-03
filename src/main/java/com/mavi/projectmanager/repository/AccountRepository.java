@@ -150,4 +150,24 @@ public class AccountRepository {
         //return null if no rows affected
         return rowsAffected == 0 ? null : toDelete;
     }
+
+    public List<Account> getAccountsByProjectId(int id){
+        String query = """
+                SELECT
+                    a.*,
+                    e.id AS employee_id,
+                    e.position,
+                    e.mail,
+                    e.firstName,
+                    e.lastName
+                FROM account a
+                INNER JOIN
+                    account_project_junction apj ON a.id = apj.account_id
+                INNER JOIN
+                    Employee e ON a.emp_id = e.id 
+                WHERE apj.project_id = ?
+                """;
+
+        return jdbcTemplate.query(query, accountRowMapper, id);
+    }
 }

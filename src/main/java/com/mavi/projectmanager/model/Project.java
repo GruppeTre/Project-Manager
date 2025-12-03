@@ -9,7 +9,7 @@ public class Project {
     private String name;
     private LocalDate start_date;
     private LocalDate end_date;
-    private List<String> leadsList;
+    private List<Account> leadsList;
     private List<SubProject> subProjectsList;
 
     public int getId() {
@@ -44,11 +44,11 @@ public class Project {
         this.end_date = end_date;
     }
 
-    public List<String> getLeadsList() {
+    public List<Account> getLeadsList() {
         return leadsList;
     }
 
-    public void setLeadsList(List<String> leadsList) {
+    public void setLeadsList(List<Account> leadsList) {
         this.leadsList = leadsList;
     }
 
@@ -70,5 +70,20 @@ public class Project {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, start_date, end_date);
+    }
+
+    public String leadsToString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < leadsList.size(); i++) {
+            String fullName = leadsList.get(i).getFirstName() + " " + leadsList.get(i).getLastName();
+
+            stringBuilder.append(fullName);
+
+            if(i < leadsList.size() - 1){
+                stringBuilder.append(", ");
+            }
+        }
+
+        return stringBuilder.toString();
     }
 }

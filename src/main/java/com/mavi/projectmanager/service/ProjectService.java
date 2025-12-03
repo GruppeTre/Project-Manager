@@ -17,6 +17,8 @@ public class ProjectService {
     }
 
     public List<Project> getProjects(){
+        
+
         return projectRepository.getProjects();
     }
 }
