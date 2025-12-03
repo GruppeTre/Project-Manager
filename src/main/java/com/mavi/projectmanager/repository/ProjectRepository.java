@@ -28,7 +28,6 @@ public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
     private AccountRepository accountRepository;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
-    private final AccountRepository accountRepository;
 
     public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository){
         this.jdbcTemplate = jdbcTemplate;
