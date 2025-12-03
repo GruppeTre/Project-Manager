@@ -52,16 +52,27 @@
                             th:text="|${lead.firstName} ${lead.lastName}|">
                     </option>
                 </select>
+                <!--hidden submit input (so submit button can be outside of form -->
+                <input type="submit" id="hidden-submit" class="hidden">
             </div>
 
             <!-- todo: add multiselect for project leads -->
-
-            <!-- BUTTONS -->
-            <div class="row">
-                <a class="button button-primary" href="/projects?viewMode=projects" th:text="#{form.button.back}"></a>
-                <button class="button" type="submit" th:text="#{form.button.submit}"></button>
-            </div>
         </form>
+
+        <!-- BUTTONS -->
+        <div class="row form-button-container">
+            <!--submit-->
+            <label class="button button-primary" for="hidden-submit" th:text="#{form.button.submit}"></label>
+            <!--delete-->
+            <form class="button-container-form" th:action="@{/project/delete}" th:object="${project}" method="post">
+                <input id="hidden-mail" th:field="*{id}" hidden="hidden">
+                <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>
+            </form>
+        </div>
+        <!-- back -->
+        <div class="row">
+            <a class="button button-primary" href="/projects?viewMode=projects" th:text="#{form.button.back}"></a>
+        </div>
     </main>
     <footer th:replace="~{fragments/_commonElements :: footer}"></footer>
 </body>
