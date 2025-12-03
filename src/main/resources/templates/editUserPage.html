@@ -24,6 +24,7 @@
                         <option th:each="role : ${roles}" th:value="${role.name()}" th:text="${role.value}"/>
                     </select>
 
+                    <!--hidden submit input (so submit button can be outside of form -->
                     <input type="submit" id="hidden-submit" class="hidden">
                 </form>
                 <!-- BUTTONS -->
@@ -36,7 +37,6 @@
                         <input id="hidden-mail" th:field="*{employee.mail}" hidden="hidden">
                         <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>
                     </form>
-                    <!-- delete button here -->
                 </div >
                 <div class="row form-button-container">
                     <a class="button button-primary" href="/overview?viewMode=accounts" th:text="#{form.button.back}"></a>

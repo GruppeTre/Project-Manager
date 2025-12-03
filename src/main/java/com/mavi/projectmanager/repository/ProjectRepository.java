@@ -3,23 +3,16 @@ package com.mavi.projectmanager.repository;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.repository.AccountRepository;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Comparator;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.sql.Date;
 
@@ -57,7 +50,7 @@ public class ProjectRepository {
 
     public List<Project> getProjects(){
         String query = """
-                        SELECT p.id, p.name, p.start_date, p.end_date  
+                        SELECT p.id, p.name, p.start_date, p.end_date
                         FROM Project p
                        """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
@@ -81,6 +74,25 @@ public class ProjectRepository {
                 """;
 
         return jdbcTemplate.query(query, projectRowMapper, id);
+    }
+
+    public Project getProjectById(int id) {
+
+        String query = """
+                 SELECT p.id, p.name, p.start_date, p.end_date,
+                               GROUP_CONCAT(
+                                   CONCAT(e.firstName, ' ', e.lastName)
+                                   SEPARATOR','
+                               ) AS leads
+                        FROM Project p
+                        LEFT JOIN account_project_junction apj ON p.id = apj.project_id
+                        LEFT JOIN Account a ON apj.account_id = a.id
+                        LEFT JOIN Employee e ON a.emp_id = e.id
+                        WHERE p.id = ?
+                        GROUP BY p.id, p.name, p.start_date, p.end_date;
+                """;
+
+        return jdbcTemplate.queryForObject(query, projectRowMapper, id);
     }
 
     //Inserts a project in the database
@@ -115,7 +127,25 @@ public class ProjectRepository {
         return keyHolder.getKey().intValue();
     }
 
-    public int updateAccountProjectJunction(int accountId, int projectId) {
+    public Project updateProject(Project project) {
+
+        String query = """
+                UPDATE Project
+                SET name = ?, start_date = ?, end_date = ?
+                WHERE id = ?
+                """;
+
+        //returns rows affected
+        int rowsAffected = jdbcTemplate.update(query, project.getName(), project.getStart_date(), project.getEnd_date(), project.getId());
+
+        if(rowsAffected != 1) {
+            throw new RuntimeException("Could not insert into junction table");
+        }
+
+        return project;
+    }
+
+    public void insertIntoAccountProjectJunction(int accountId, int projectId) {
 
         int rowsAffected;
 
@@ -126,8 +156,19 @@ public class ProjectRepository {
         if(rowsAffected != 1) {
             throw new RuntimeException("Could not insert into junction table");
         }
+    }
 
-       return rowsAffected;
+    public void deleteFromAccountProjectJunction(int projectId) {
 
+        String query = """
+                DELETE FROM account_project_junction
+                WHERE project_id = ?;
+                """;
+
+        int rowsAffected = jdbcTemplate.update(query, projectId);
+
+        if (rowsAffected != 1) {
+            throw new RuntimeException("unexpected amount of rows deleted! Expected : 1, actual: " + rowsAffected);
+        }
     }
 }

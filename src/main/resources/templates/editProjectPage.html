@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+    <header th:replace="~{fragments/_commonElements :: header}"></header>
+    <main class="container">
+        <form th:action="@{/project/update}" th:object="${project}" method="post">
+
+            <div>
+                <h2 th:text="#{form.label.updateProject}"></h2>
+            </div>
+
+            <!-- Error messages -->
+            <div th:if="${error}" class="form-error-container">
+                <label th:if="${invalidField == 'title'}" th:text="#{form.error.title}"></label>
+                <div th:if="${invalidField == 'date'}">
+                    <label th:if="${errorId == 1}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
+                    <label th:if="${errorId == 2}" th:text="#{form.error.date.endDateInPast}"></label>
+                </div>
+            </div>
+
+            <input id="hidden_id" th:field="*{id}" hidden="hidden">
+
+            <div class="row">
+                <label for="name" class="form-label" th:text="#{form.label.projectName}"></label>
+                <input id="name" type="text" th:field="*{name}">
+            </div>
+
+            <div class="row">
+                <label for="start_date" class="form-label" th:text="#{form.label.startDate}"></label>
+                <input id="start_date" type="date" name="start_date" th:value="*{start_date}">
+            </div>
+
+            <div class="row">
+                <label for="end_date" class="form-label" th:text="#{form.label.endDate}"></label>
+                <input id="end_date" type="date" name="end_date" th:value="*{end_date}">
+            </div>
+
+            <!-- todo: fix input field not displaying current project lead (needs leads to be assigned field in project objects) -->
+            <div class="row">
+                <label for="project_lead">Project Lead:</label>
+                <select id="project_lead" th:field="${assignedLead.mail}">
+                    <option value="" disabled selected th:text="'Choose Account'">Vælg konto…</option>
+                    <option th:each="lead : ${allLeads}"
+                            th:value="${lead.mail}"
+                            th:text="|${lead.firstName} ${lead.lastName}|">
+                    </option>
+                </select>
+                <!--hidden submit input (so submit button can be outside of form -->
+                <input type="submit" id="hidden-submit" class="hidden">
+            </div>
+
+            <!-- todo: add multiselect for project leads -->
+        </form>
+
+        <!-- BUTTONS -->
+        <div class="row form-button-container">
+            <!--submit-->
+            <label class="button button-primary" for="hidden-submit" th:text="#{form.button.submit}"></label>
+            <!--delete-->
+            <form class="button-container-form" th:action="@{/project/delete}" th:object="${project}" method="post">
+                <input id="hidden-mail" th:field="*{id}" hidden="hidden">
+                <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>
+            </form>
+        </div>
+        <!-- back -->
+        <div class="row">
+            <a class="button button-primary" href="/projects?viewMode=projects" th:text="#{form.button.back}"></a>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/_commonElements :: footer}"></footer>
+</body>
+</html>
