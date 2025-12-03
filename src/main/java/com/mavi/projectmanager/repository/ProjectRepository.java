@@ -1,9 +1,6 @@
 package com.mavi.projectmanager.repository;
 
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.SubProject;
+import com.mavi.projectmanager.model.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -64,7 +61,29 @@ public class ProjectRepository {
 
         List<SubProject> subProjectsList = getSubProjectsByProjectId(projectId);
 
+        project.setSubProjectsList(subProjectsList);
+
         return project;
+    });
+
+    public RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
+        SubProject subProject = new SubProject();
+
+        int subProjectId = rs.getInt("id");
+        subProject.setId(subProjectId);
+        subProject.setName(rs.getString("name"));
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        subProject.setStart_date(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        subProject.setEnd_date(convertedEndDate);
+
+        List<Task> taskList = getTaskBySubProjectId(subProjectId);
+        subProject.setTaskList(taskList);
+
+        return subProject;
     });
 
     public List<Project> getProjects(){
@@ -197,6 +216,22 @@ public class ProjectRepository {
                 SELECT * FROM Project WHERE id = ?
                 """;
 
-        return jdbcTemplate.query(query, fullProjectRowMapper, id)
+        return jdbcTemplate.query(query, fullProjectRowMapper, id);
+    }
+
+    public List<SubProject> getSubProjectsByProjectId(int id){
+        String query = """
+                SELECT * FROM Subproject WHERE project_id = ?
+                """;
+
+        return jdbcTemplate.query(query, subProjectRowMapper, id);
+    }
+
+    public List<Task> getTaskBySubProjectId(int id){
+        String query = """
+                SELECT * FROM Task WHERE subproject_id = ?
+                """;
+
+        return jdbcTemplate.query(query, taskRowMapper, id);
     }
 }
