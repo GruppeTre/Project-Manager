@@ -10,7 +10,6 @@
 <body>
 <header th:replace="~{fragments/_commonElements :: header}"></header>
 <main>
-    <!-- Navigation links for switching between sections -->
     <!-- Accounts table -->
     <section class="overview">
         <nav class="top-nav">
@@ -51,8 +50,8 @@
             </div>
         </article>
 
-    <!-- Projects table -->
-        <article th:if="${viewMode == 'projects'} && ${session.account.role.name() == 'ADMIN'}">
+    <!-- Projects table for Admins -->
+        <article th:if="${viewMode == 'projects'} && ${session.account.role.id == 1}">
             <div>
                 <div class="inline-block">
                     <label for="project_search_bar"></label>
@@ -62,30 +61,32 @@
                     <a class="button button-primary" th:href="@{/project/create}" th:text="#{overview.button.createProject}"></a>
                 </div>
 
-                <table th:if="${session.account.role.name() == 'ADMIN'}">
-                    <tr>
-                        <th th:text="#{overview.text.label.projectName}"></th>
-                        <th th:text="#{overview.text.label.projectLead}"></th>
-                        <th th:text="#{overview.text.label.deadline}"></th>
-                        <th th:text="#{overview.text.label.actions}"></th>
-                    </tr>
-
-                    <tr th:each="p : ${projects}">
-                        <td th:text="${p.name}"></td>
-                        <td th:if="${p.leadsList != null}" th:text="${p.leadsToString}"></td>
-                        <td th:if="${p.leadsList == null}" th:text="'No project leader(s)'"></td>
-                        <td th:text="${p.end_date}"></td>
-                        <td>
-                            <a th:if="${session.account.role.name() == 'ADMIN'}" class="button button-primary" th:href="@{/project/edit/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>
-                            <a th:if="${session.account.role.name() == ''}" class="button button-primary" th:href="@{/project/view/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>
-                        </td>
-                    </tr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th th:text="#{overview.text.label.projectName}"></th>
+                            <th th:text="#{overview.text.label.projectLead}"></th>
+                            <th th:text="#{overview.text.label.deadline}"></th>
+                            <th th:text="#{overview.text.label.actions}"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${projects}">
+                            <td th:text="${p.name}"></td>
+                            <td th:if="${p.leadsList != null}" th:text="${p.leadsToString}"></td>
+                            <td th:if="${p.leadsList == null}" th:text="'No project leader(s)'"></td>
+                            <td th:text="${p.end_date}"></td>
+                            <td>
+                                <a class="button button-primary" th:href="@{/project/edit/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </article>
 
         <!-- Projects for Project Leader-->
-        <article th:if="${viewMode == 'projects'} && ${session.account.role.name() == 'PROJECT_LEAD'}">
+        <article th:if="${viewMode == 'projects'} && ${session.account.role.id == 2}">
             <div>
                 <div class="inline-block">
                     <label for="projectLead_search_bar"></label>
@@ -108,8 +109,7 @@
                             <td th:if="${p.leadsList == null}" th:text="'No project leader(s)'"></td>
                             <td th:text="${p.end_date}"></td>
                             <td>
-                                <a th:if="${session.account.role.name() == 'ADMIN'}" class="button button-primary" th:href="@{/project/edit/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>
-                                <a th:if="${session.account.role.name() == ''}" class="button button-primary" th:href="@{/project/view/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>
+                                <a class="button button-primary" th:href="@{/project/view/{id}(id=${p.id})}" th:text="#{overview.button.view}"></a>
                             </td>
                         </tr>
                     </tbody>
