@@ -113,7 +113,7 @@ class ProjectControllerTest {
 
             when(projectService.getProjectsByLead(testProjectLead.getId())).thenReturn(projects);
 
-            mockMvc.perform(get("/overview/projects")
+            mockMvc.perform(get("/projects")
                             .sessionAttr("account", testProjectLead)
                             .param("viewMode", "projects"))
                     .andExpect(status().isOk())
