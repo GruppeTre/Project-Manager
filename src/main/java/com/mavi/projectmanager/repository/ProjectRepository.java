@@ -50,7 +50,7 @@ public class ProjectRepository {
 
     public List<Project> getProjects(){
         String query = """
-                        SELECT p.id, p.name, p.start_date, p.end_date  
+                        SELECT p.id, p.name, p.start_date, p.end_date
                         FROM Project p
                        """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
