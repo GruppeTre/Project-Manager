@@ -48,7 +48,7 @@ public class ProjectService {
 
         //todo: validate project fields
 
-        int projectId = this.projectRepository.createProject(project, employee);
+        int projectId = this.projectRepository.createProject(project);
         Account accountId = this.accountRepository.getAccountByMail(employee.getMail());
 
         this.projectRepository.insertIntoAccountProjectJunction(accountId.getId(), projectId);

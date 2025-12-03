@@ -37,11 +37,11 @@
 
         <div>
             <label for="project_lead">Project Lead:</label>
-            <select id="project_lead" th:field="${employee.mail}">
+            <select id="project_lead" th:field="${account.employee.mail}">
                 <option value="" disabled selected>Vælg konto…</option>
-                <option th:each="employee : ${employees}"
-                        th:value="${employee.mail}"
-                        th:text="|${employee.firstName} ${employee.lastName}|">
+                <option th:each="account : ${accounts}"
+                        th:value="${account.employee.mail}"
+                        th:text="|${account.employee.firstName} ${account.employee.lastName}|">
                 </option>
             </select>
         </div>

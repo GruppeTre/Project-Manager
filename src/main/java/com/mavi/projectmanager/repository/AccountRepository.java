@@ -171,4 +171,16 @@ public class AccountRepository {
 
         return jdbcTemplate.query(query, accountRowMapper, id);
     }
+
+    public List<Account> getAccountsByRole(Role role) {
+
+        String query = """
+                        SELECT a.*, e.id AS employee_id, e.position, e.firstName, e.lastName, e.mail
+                        FROM account a
+                        JOIN employee e ON a.emp_id = e.id
+                        WHERE a.role = ?
+                       """;
+
+        return jdbcTemplate.query(query, accountRowMapper, role.getId());
+    }
 }

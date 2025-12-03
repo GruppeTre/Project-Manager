@@ -40,12 +40,12 @@ import java.util.List;
         public String getCreateProjectPage(Model model) {
             Project project = new Project();
 
-            List<Employee> employees = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
-            Employee employee = new Employee();
+            List<Account> accounts = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+            Account account = new Account();
 
             model.addAttribute("project", project);
-            model.addAttribute("employees", employees);
-            model.addAttribute("employee", employee);
+            model.addAttribute("accounts", accounts);
+            model.addAttribute("account", account);
 
             return "createProjectPage";
         }
@@ -64,8 +64,8 @@ import java.util.List;
                     model.addAttribute("error", true);
                     model.addAttribute("InvalidField", e.getField());
                     model.addAttribute("newproject", newProject);
-                    List<Employee> employees = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
-                    model.addAttribute("employees", employees);
+                    List<Account> accounts = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+                    model.addAttribute("accounts", accounts);
                     return "createProjectPage";
                 }
 
@@ -114,7 +114,7 @@ import java.util.List;
             return "redirect:/projects?viewMode=projects";
         }
 
-        List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+        List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
 
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);
@@ -141,7 +141,7 @@ import java.util.List;
         try {
             this.projectService.updateProject(project, assignedLead);
         } catch (InvalidFieldException e) {
-            List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+            List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
             if (e instanceof InvalidDateException) {
