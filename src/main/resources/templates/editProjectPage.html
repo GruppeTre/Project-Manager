@@ -14,7 +14,15 @@
 
             <div>
                 <h2 th:text="#{form.label.updateProject}"></h2>
-                <h2 th:text="'start date: ' + ${project.start_date}"></h2>
+            </div>
+
+            <!-- Error messages -->
+            <div th:if="${error}" class="form-error-container">
+                <label th:if="${invalidField == 'title'}" th:text="#{form.error.title}"></label>
+                <div th:if="${invalidField == 'date'}">
+                    <label th:if="${errorId == 1}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
+                    <label th:if="${errorId == 2}" th:text="#{form.error.date.endDateInPast}"></label>
+                </div>
             </div>
 
             <input id="hidden_id" th:field="*{id}" hidden="hidden">

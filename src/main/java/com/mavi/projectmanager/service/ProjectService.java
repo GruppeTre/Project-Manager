@@ -1,14 +1,19 @@
 package com.mavi.projectmanager.service;
 
+import com.mavi.projectmanager.exception.Field;
+import com.mavi.projectmanager.exception.InvalidDateException;
+import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -51,9 +56,13 @@ public class ProjectService {
     @Transactional
     public Project updateProject(Project project, Employee assignedLead) {
 
-        //todo: validate project fields
+        project.setName(project.getName().trim());
 
-        int rowsAffected;
+        if (!hasValidName(project)) {
+            throw new InvalidFieldException("invalid name", Field.TITLE);
+        }
+
+        validateDates(project);
 
         //update project data
         this.projectRepository.updateProject(project);
@@ -68,38 +77,42 @@ public class ProjectService {
         return project;
     }
 
-    //todo: make validation methods private
-    public boolean hasValidName(Project projectToCheck) {
+    private boolean hasValidName(Project projectToCheck) {
 
         if(projectToCheck.getName().isBlank()){
             return false;
         }
 
-        projectToCheck.setName(projectToCheck.getName().trim());
+        //tænker ikke at det er forventet at en boolean validation metoder ændrer fields i objektet det tjekker
 
-        String regex = "^[a-zA-Z0-9 ]+$";
+//        projectToCheck.setName(projectToCheck.getName().trim());
+//
+//        String regex = "^[a-zA-Z0-9 ]+$";
 
-        return projectToCheck.getName().matches(regex);
+//        return projectToCheck.getName().matches(regex);
+
+        return true;
     }
 
-    public void validateDates(Project projectToCheck) {
+    private void validateDates(Project projectToCheck) {
 
         LocalDate today = LocalDate.now();
 
-        if (!projectToCheck.getStart_date().isAfter(today)) {
-            throw new IllegalArgumentException("Start date cannot be in the past");
-        }
+        //er det ikke OK hvis man kan oprette et projekt dagen efter kick-off f.eks.?
+//        if (!projectToCheck.getStart_date().isAfter(today)) {
+//            throw new IllegalArgumentException("Start date cannot be in the past");
+//        }
 
         if (projectToCheck.getStart_date().isAfter(projectToCheck.getEnd_date())) {
-            throw new IllegalArgumentException("Start date cannot be after end date");
+            throw new InvalidDateException("Start date cannot be after end date!", 1);
         }
 
         if (!projectToCheck.getEnd_date().isAfter(today)) {
-            throw new IllegalArgumentException("End date cannot be in the past");
+            throw new InvalidDateException("End date cannot be in the past!", 2);
         }
     }
 
-    public boolean hasProjectLead(Project projectToCheck) {
+    private boolean hasProjectLead(Project projectToCheck) {
         return true;
     }
 

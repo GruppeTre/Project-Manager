@@ -1,5 +1,6 @@
 package com.mavi.projectmanager.controller;
 import com.mavi.projectmanager.controller.utils.SessionUtils;
+import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
@@ -110,7 +111,6 @@ import java.util.List;
 
         List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
 
-        System.out.println("editing project with start date: " + toEdit.getStart_date().toString());
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);
         model.addAttribute("assignedLead", new Employee());
@@ -121,12 +121,7 @@ import java.util.List;
     }
 
     @PostMapping("/project/update")
-    public String updateProject(RedirectAttributes redirectAttributes, HttpSession session, @ModelAttribute Project project, @ModelAttribute Employee assignedLead) {
-
-        System.out.println("updating project with name: " + project.getName() + "\n");
-        System.out.println("with new start date of: " + project.getStart_date().toString());
-        System.out.println("project id: " + project.getId());
-
+    public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project, @ModelAttribute Employee assignedLead) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -138,7 +133,26 @@ import java.util.List;
             return "redirect:/overview";
         }
 
-        this.projectService.updateProject(project, assignedLead);
+        try {
+            this.projectService.updateProject(project, assignedLead);
+        } catch (InvalidFieldException e) {
+            List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+            if (e instanceof InvalidDateException) {
+                int errorId = ((InvalidDateException) e).getErrorId();
+                model.addAttribute("errorId", errorId);
+            }
+
+            model.addAttribute("error", true);
+            model.addAttribute("invalidField", e.getField());
+            model.addAttribute("project", project);
+            model.addAttribute("allLeads", allLeads);
+            model.addAttribute("assignedLead", assignedLead);
+
+            System.out.println("returning with invalid field: " + e.getField());
+            return "editProjectPage";
+        }
 
         return "redirect:/projects?viewMode=projects";
     }
