@@ -114,6 +114,7 @@ import java.util.List;
             return "redirect:/projects?viewMode=projects";
         }
 
+        //todo: update allLeads list to use getAccountsByRole when it is implemented
 //        List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
 
         List<Account> allLeads = List.of(this.accountService.getAccountByID(2), this.accountService.getAccountByID(4));
@@ -121,8 +122,6 @@ import java.util.List;
 
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);
-        //todo: add list of assigned leads (or fix project object to contain list of assigned leads)
-
 
         return "editProjectPage";
     }
@@ -143,6 +142,8 @@ import java.util.List;
         try {
             this.projectService.updateProject(project);
         } catch (InvalidFieldException e) {
+
+            //todo: update allLeads list to use getAccountsByRole when it is implemented
 //            List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
             List<Account> allLeads = List.of(this.accountService.getAccountByID(2), this.accountService.getAccountByID(4));
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
