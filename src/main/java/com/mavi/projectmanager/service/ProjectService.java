@@ -26,7 +26,7 @@ public class ProjectService {
     @Transactional
     public Project createProject(Project project, Employee employee) {
 
-        int projectId = this.projectRepository.createProject(project, employee);
+        int projectId = this.projectRepository.createProject(project);
         Account accountId = this.accountRepository.getAccountByMail(employee.getMail());
 
         this.projectRepository.updateAccountProjectJunction(accountId.getId(), projectId);
