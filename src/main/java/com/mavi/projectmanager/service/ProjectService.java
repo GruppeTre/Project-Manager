@@ -81,7 +81,7 @@ public class ProjectService {
         return project;
     }
 
-    public List<Project> getFullProjectById(int id){
+    public Project getFullProjectById(int id){
         return this.projectRepository.getFullProjectById(id);
     }
 

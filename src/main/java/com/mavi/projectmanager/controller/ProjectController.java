@@ -11,14 +11,10 @@ import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -168,7 +164,7 @@ import java.util.List;
             return "redirect:/";
         }
 
-        model.addAttribute("subProject", projectService.getFullProjectById(id));
+        model.addAttribute("project", projectService.getFullProjectById(id));
 
         return "projectOverviewPage";
     }

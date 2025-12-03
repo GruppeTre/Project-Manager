@@ -231,12 +231,12 @@ public class ProjectRepository {
         }
     }
 
-    public List<Project> getFullProjectById(int id){
+    public Project getFullProjectById(int id){
         String query = """
                 SELECT * FROM Project WHERE id = ?
                 """;
 
-        return jdbcTemplate.query(query, fullProjectRowMapper, id);
+        return jdbcTemplate.queryForObject(query, fullProjectRowMapper, id);
     }
 
     public List<SubProject> getSubProjectsByProjectId(int id){
