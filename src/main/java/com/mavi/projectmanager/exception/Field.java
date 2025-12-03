@@ -5,7 +5,9 @@ public enum Field {
     FIRST_NAME("firstName"),
     SURNAME("surname"),
     PASSWORD("password"),
-    EMPLOYEE("employee");
+    EMPLOYEE("employee"),
+    TITLE("title"),
+    DATE("date");
 
     private final String value;
 
