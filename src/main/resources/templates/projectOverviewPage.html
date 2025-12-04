@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+    <main>
+        <header th:replace="~{fragments/_commonElements.html :: header}"></header>
+        <section class="overview" th:object="${project}">
+            <nav class="project_nav">
+                    <a th:href="@{/overview(viewMode=projects)}" th:text="'Go back'"></a>
+                    <a th:href="@{/project/view/{id}(id=*{id})}" th:text="'Project Overivew'"></a>
+                    <a href="#" th:text="'Project Statistics'"></a>
+                    <a href="#" th:text="'Gannt Diagram'"></a>
+            </nav>
+            <div>
+                <h2 th:text="*{name}"></h2>
+                <a th:href="@{/project/subProject/create}" th:text="'Add Subproject'"></a>
+            </div>
+            <article th:if="*{!subProjectsList.isEmpty}" th:each="sb : ${project.getSubProjectsList()}">
+                    <details>
+                        <summary th:text="'+ ' + ${sb.name}"></summary>
+                        <div class="collapsed_content">
+                            <p th:text="'Subproject Duration: Need a method in SubProjects model to sum up total duration'"></p>
+                        </div>
+                        <a th:href="@{/project/task/create}" th:text="'Add Task'"></a>
+                        <article th:each="task : ${sb.getTaskList()}">
+                            <details>
+                                <summary th:text="'+ ' + ${task.name}"></summary>
+                            </details>
+                        </article>
+                    </details>
+            </article>
+            <article th:if="*{subProjectsList.isEmpty}">
+                <p>No subprojects found!</p>
+            </article>
+        </section>
+        <footer th:replace="~{fragments/_commonElements.html :: footer}"></footer>
+    </main>
+</body>
+</html>
