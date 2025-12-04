@@ -95,11 +95,17 @@ CREATE TABLE employee_task_junction (
 
 INSERT INTO employee (position, mail, firstName, lastName)
 VALUES ('Manager', 'admin@alphasolutions.com','Anders', 'Nielsen'),
-       ('Udvikler', 'idso@alphasolutions.com', 'Ida', 'Sorensen');
+       ('Udvikler', 'idso@alphasolutions.com', 'Ida', 'Sorensen'),
+       ('Support', 'mich@alphasolutions.com', 'Mikkel', 'Christensen');
 
 INSERT INTO account(role, password, emp_id)
--- admin account with email 'admin@alphasolutions.com' password: 'admin'
-VALUES (1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 1);
+-- all passwords are 'admin'
+VALUES (1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 1),
+       (2, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 2);
 
 INSERT INTO project(name, start_date, end_date)
-VALUES ('Projekt Alpha', '2025-11-28', '2025-11-30');
+VALUES ('Projekt Alpha', '2025-11-28', '2025-11-30'),
+       ('Projekt Beta', '2025-12-01', '2025-12-17');
+
+INSERT INTO account_project_junction(account_id, project_id)
+VALUES (2,1);

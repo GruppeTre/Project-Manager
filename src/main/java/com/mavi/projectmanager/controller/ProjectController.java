@@ -11,14 +11,11 @@ import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -87,10 +84,10 @@ import java.util.List;
         model.addAttribute("accounts", accountService.getAccounts());
         model.addAttribute("viewMode", viewMode);
 
-        if(viewMode.equals("projects") && !SessionUtils.userIsProjectLead(session)){
+        if(viewMode.equals("projects") && !SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
             model.addAttribute("projects", projectService.getProjects());
         }
-        if(viewMode.equals("projects") && SessionUtils.userIsProjectLead(session)){
+        if(viewMode.equals("projects") && SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
             int projectLeadId = ((Account) session.getAttribute("account")).getId();
             model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
         }
@@ -124,15 +121,12 @@ import java.util.List;
 
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);
-        model.addAttribute("assignedLead", new Employee());
-        //todo: add list of assigned leads (or fix project object to contain list of assigned leads)
-
 
         return "editProjectPage";
     }
 
     @PostMapping("/project/update")
-    public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project, @ModelAttribute Employee assignedLead) {
+    public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -145,23 +139,23 @@ import java.util.List;
         }
 
         try {
-            this.projectService.updateProject(project, assignedLead);
+            this.projectService.updateProject(project);
         } catch (InvalidFieldException e) {
             List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
+            //if Exception is an InvalidDateException, add errorId to model so template can display proper error message
             if (e instanceof InvalidDateException) {
                 int errorId = ((InvalidDateException) e).getErrorId();
                 model.addAttribute("errorId", errorId);
             }
-
             model.addAttribute("error", true);
             model.addAttribute("invalidField", e.getField());
+
+            //add model attributes needed to display project information on template
             model.addAttribute("project", project);
             model.addAttribute("allLeads", allLeads);
-            model.addAttribute("assignedLead", assignedLead);
 
-            System.out.println("returning with invalid field: " + e.getField());
             return "editProjectPage";
         }
 

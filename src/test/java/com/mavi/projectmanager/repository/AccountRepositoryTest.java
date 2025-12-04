@@ -28,11 +28,11 @@ class AccountRepositoryTest {
     @BeforeEach
     void setUp() {
         empWithoutAcc = new Employee();
-        empWithoutAcc.setPosition("Udvikler");
-        empWithoutAcc.setFirstName("Ida");
-        empWithoutAcc.setLastName("Sørensen");
-        empWithoutAcc.setMail("idso@alphasolutions.com");
-        empWithoutAcc.setId(2);
+        empWithoutAcc.setPosition("Support");
+        empWithoutAcc.setFirstName("Mikkel");
+        empWithoutAcc.setLastName("Christensen");
+        empWithoutAcc.setMail("mich@alphasolutions.com");
+        empWithoutAcc.setId(3);
 
         empWithAccount = new Employee();
         empWithAccount.setPosition("Manager");
@@ -84,9 +84,9 @@ class AccountRepositoryTest {
     @Test
     void shouldReturnNullWhenNoAccountIsDeleted() {
 
-        int nonExistentId = 2;
+        int NON_EXISTENT_ID = 4;
 
-        dbAccount.setId(nonExistentId);
+        dbAccount.setId(NON_EXISTENT_ID);
 
         assertNull(this.repository.deleteAccount(dbAccount));
     }

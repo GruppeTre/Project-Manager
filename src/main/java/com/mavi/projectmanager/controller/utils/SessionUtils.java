@@ -11,7 +11,7 @@ public class SessionUtils {
         return session.getAttribute("account") != null;
     }
 
-    public static boolean userIsProjectLead(HttpSession session) {
-        return ((Account) session.getAttribute("account")).getRole() == Role.PROJECT_LEAD;
+    public static boolean userHasRole(HttpSession session, Role role) {
+        return ((Account) session.getAttribute("account")).getRole() == role;
     }
 }

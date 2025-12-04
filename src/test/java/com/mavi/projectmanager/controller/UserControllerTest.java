@@ -168,9 +168,8 @@ class UserControllerTest {
 
     @Test
     void shouldEditUser() throws Exception{
-        Account updatedTestAccount = testAccount;
 
-        when(accountService.updatedAccount(updatedTestAccount)).thenReturn(updatedTestAccount);
+        when(accountService.updatedAccount(testAccount)).thenReturn(testAccount);
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
