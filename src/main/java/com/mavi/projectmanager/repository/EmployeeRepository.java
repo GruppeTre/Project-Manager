@@ -41,4 +41,15 @@ public class EmployeeRepository {
             return null;
         }
     }
+
+    public List<Employee> getEmployeeByTaskId(int id) {
+        String query = """
+                SELECT * FROM employee e
+                INNER JOIN employee_task_junction etj
+                    ON e.id = etj.employee_id;
+                WHERE etj.task_id = ?
+                """;
+
+        return jdbcTemplate.query(query, employeeRowMapper, id);
+    }
 }

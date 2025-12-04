@@ -10,6 +10,7 @@ public class Task {
     private LocalDate start_date;
     private LocalDate end_date;
     private int duration; //in hours
+    // TODO: Remember to swap this to account in sprint 2
     private List<Employee> employeeList;
 
     public int getId() {
