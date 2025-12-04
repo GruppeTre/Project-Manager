@@ -25,12 +25,13 @@
                     <details>
                         <summary th:text="'+ ' + ${sb.name}"></summary>
                         <div class="collapsed_content">
-                            <p th:text="#{projectOverviewPage.p.duration} + ${sb.}"></p>
+                            <p th:text="#{projectOverviewPage.p.duration} + ' ' + ${sb.sumDuration}"></p>
                         </div>
                         <a th:href="@{/project/task/create}" th:text="'Add Task'"></a>
                         <article th:each="task : ${sb.getTaskList()}">
                             <details>
                                 <summary th:text="'+ ' + ${task.name}"></summary>
+                                <p th:text="#{projectOverviewPage.p.employees} + "></p>
                             </details>
                         </article>
                     </details>

@@ -1,6 +1,7 @@
 package com.mavi.projectmanager.model;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class Task {
@@ -9,6 +10,7 @@ public class Task {
     private LocalDate start_date;
     private LocalDate end_date;
     private int duration; //in hours
+    private List<Employee> employeeList;
 
     public int getId() {
         return id;
@@ -48,6 +50,14 @@ public class Task {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public List<Employee> getEmployeeList() {
+        return employeeList;
+    }
+
+    public void setEmployeeList(List<Employee> employeeList) {
+        this.employeeList = employeeList;
     }
 
     @Override
