@@ -17,7 +17,7 @@ import java.sql.Date;
 @Repository
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
     private AccountRepository accountRepository;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
 
@@ -92,7 +92,8 @@ public class ProjectRepository {
     public RowMapper<Task> taskRowMapper = ((rs, rowNum) -> {
         Task task = new Task();
 
-        task.setId(rs.getInt("id"));
+        int taskId = rs.getInt("id");
+        task.setId(taskId);
         task.setName(rs.getString("name"));
 
         Date startDate = rs.getDate("start_date");
@@ -105,7 +106,8 @@ public class ProjectRepository {
 
         task.setDuration(rs.getInt("duration"));
 
-        List<Employee> employeeList = employeeRepository.
+        List<Employee> employeeList = employeeRepository.getEmployeeByTaskId(taskId);
+        task.setEmployeeList(employeeList);
 
         return task;
     });
