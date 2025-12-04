@@ -41,32 +41,38 @@ import java.util.List;
             Project project = new Project();
 
             List<Account> accounts = accountService.getAccountsByRole(Role.PROJECT_LEAD);
-            Account account = new Account();
 
             model.addAttribute("project", project);
             model.addAttribute("accounts", accounts);
-            model.addAttribute("account", account);
 
             return "createProjectPage";
         }
 
         @PostMapping("project/create")
-        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Account account, HttpServletResponse response) {
+        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, HttpServletResponse response) {
 
             if(!SessionUtils.isLoggedIn(session)) {
                 return "redirect:/";
             }
 
+            //todo: check if user i projectlead with SessionUtils
+
             try {
-                projectService.createProject(newProject, account);
-            } catch(InvalidFieldException e) {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    model.addAttribute("error", true);
-                    model.addAttribute("InvalidField", e.getField());
-                    model.addAttribute("newproject", newProject);
-                    List<Account> accounts = accountService.getAccountsByRole(Role.PROJECT_LEAD);
-                    model.addAttribute("accounts", accounts);
-                    return "createProjectPage";
+                projectService.createProject(newProject);
+            } catch (InvalidFieldException e) {
+                List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+                if (e instanceof InvalidDateException) {
+                    int errorId = ((InvalidDateException) e).getErrorId();
+                    model.addAttribute("errorId", errorId);
+                }
+
+                model.addAttribute("error", true);
+                model.addAttribute("InvalidField", e.getField());
+                model.addAttribute("newproject", newProject);
+                model.addAttribute("allLeads", allLeads);
+                return "createProjectPage";
                 }
 
                 return "redirect:/overview?viewMode=projects";

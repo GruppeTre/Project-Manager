@@ -44,7 +44,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project createProject(Project project, Account account) {
+    public Project createProject(Project project) {
 
         //todo: validate project fields
         project.setName(project.getName().trim());
@@ -56,9 +56,9 @@ public class ProjectService {
         validateDates(project);
 
         int projectId = this.projectRepository.createProject(project);
-        Account accountId = this.accountRepository.getAccountByMail(account.getEmployee().getMail());
+        int accountId = this.accountRepository.getAccountByMail(project.getLeadsList().getFirst().getMail()).getId();
 
-        this.projectRepository.insertIntoAccountProjectJunction(accountId.getId(), projectId);
+        this.projectRepository.insertIntoAccountProjectJunction(accountId, projectId);
 
         return project;
     }
