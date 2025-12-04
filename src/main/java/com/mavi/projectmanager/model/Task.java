@@ -72,4 +72,19 @@ public class Task {
     public int hashCode() {
         return Objects.hash(id, name, start_date, end_date, duration);
     }
+
+    public String employeesToString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < employeeList.size(); i++) {
+            String fullName = employeeList.get(i).getFirstName() + " " + employeeList.get(i).getLastName();
+
+            stringBuilder.append(fullName);
+
+            if(i < employeeList.size() - 1){
+                stringBuilder.append(", ");
+            }
+        }
+
+        return stringBuilder.toString();
+    }
 }
