@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 
@@ -23,23 +24,21 @@ import java.util.List;
     public class ProjectController {
 
     private final ProjectService projectService;
-    private final EmployeeService employeeService;
+    private final AccountService accountService;
 
-    public ProjectController(ProjectService projectService, AccountService accountService, EmployeeService employeeService) {
+    public ProjectController(ProjectService projectService, AccountService accountService) {
         this.projectService = projectService;
-        this.employeeService = employeeService;
+        this.accountService = accountService;
     }
 
         @GetMapping("/create")
         public String getCreateProjectPage(Model model) {
             Project project = new Project();
 
-            List<Employee> employees = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
-            Employee employee = new Employee();
+            List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
 
             model.addAttribute("project", project);
-            model.addAttribute("employees", employees);
-            model.addAttribute("employee", employee);
+            model.addAttribute("allLeads", allLeads);
 
             return "createProjectPage";
         }
@@ -51,20 +50,52 @@ import java.util.List;
                 return "redirect:/";
             }
 
+            if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+                return "redirect:/";
+            }
+
             try {
-                projectService.createProject(newProject, employee);
-            } catch(InvalidFieldException e) {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    model.addAttribute("error", true);
-                    model.addAttribute("InvalidField", e.getField());
-                    model.addAttribute("newproject", newProject);
-                    List<Employee> employees = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
-                    model.addAttribute("employees", employees);
-                    return "createProjectPage";
+                projectService.createProject(newProject);
+            } catch (InvalidFieldException e) {
+                List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+                if (e instanceof InvalidDateException) {
+                    int errorId = ((InvalidDateException) e).getErrorId();
+                    model.addAttribute("errorId", errorId);
                 }
 
-                return "redirect:/overview?viewMode=projects";
+                System.out.println("Invalid fields: " + e.getField());
+
+                model.addAttribute("error", true);
+                model.addAttribute("invalidField", e.getField());
+                model.addAttribute("project", newProject);
+                model.addAttribute("allLeads", allLeads);
+                return "createProjectPage";
+                }
+
+            return "redirect:/overview?viewMode=projects";
         }
+
+    @GetMapping("/projects")
+    public String getProjectOverviewPage(@RequestParam("viewMode") String viewMode, Model model, HttpSession session){
+        if(!SessionUtils.isLoggedIn(session)){
+            return "redirect:/";
+        }
+
+        model.addAttribute("accounts", accountService.getAccounts());
+        model.addAttribute("viewMode", viewMode);
+
+        if(viewMode.equals("projects") && !SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
+            model.addAttribute("projects", projectService.getProjects());
+        }
+        if(viewMode.equals("projects") && SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
+            int projectLeadId = ((Account) session.getAttribute("account")).getId();
+            model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
+        }
+        return "overviewPage";
+
+    }
 
     @GetMapping("/edit/{id}")
     public String getEditProjectPage(RedirectAttributes redirectAttributes, HttpSession session, @PathVariable int id, Model model) {
@@ -74,8 +105,7 @@ import java.util.List;
         }
 
         //Reject user if user is not Admin
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser.getRole() != Role.ADMIN) {
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
             return "redirect:/overview?viewMode=projects";
         }
 
@@ -88,48 +118,43 @@ import java.util.List;
             return "redirect:/overview?viewMode=projects";
         }
 
-        List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+        List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
 
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);
-        model.addAttribute("assignedLead", new Employee());
-        //todo: add list of assigned leads (or fix project object to contain list of assigned leads)
-
 
         return "editProjectPage";
     }
 
     @PostMapping("/update")
-    public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project, @ModelAttribute Employee assignedLead) {
+    public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
 
-        //Reject user if user is not Admin
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser.getRole() != Role.ADMIN) {
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
             return "redirect:/overview?viewMode=projects";
         }
 
         try {
-            this.projectService.updateProject(project, assignedLead);
+            this.projectService.updateProject(project);
         } catch (InvalidFieldException e) {
-            List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
+            List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
+            //if Exception is an InvalidDateException, add errorId to model so template can display proper error message
             if (e instanceof InvalidDateException) {
                 int errorId = ((InvalidDateException) e).getErrorId();
                 model.addAttribute("errorId", errorId);
             }
-
             model.addAttribute("error", true);
             model.addAttribute("invalidField", e.getField());
+
+            //add model attributes needed to display project information on template
             model.addAttribute("project", project);
             model.addAttribute("allLeads", allLeads);
-            model.addAttribute("assignedLead", assignedLead);
 
-            System.out.println("returning with invalid field: " + e.getField());
             return "editProjectPage";
         }
 

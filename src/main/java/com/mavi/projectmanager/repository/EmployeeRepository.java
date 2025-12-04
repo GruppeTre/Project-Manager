@@ -41,16 +41,4 @@ public class EmployeeRepository {
             return null;
         }
     }
-
-    public List<Employee> getEmployeesByRole(Role role) {
-
-        String query = """
-                        SELECT e.*
-                        FROM employee e
-                        LEFT JOIN account a ON e.id = a.emp_id
-                        WHERE a.role = ?
-                       """;
-
-        return jdbcTemplate.query(query, employeeRowMapper, role.getId());
-    }
 }

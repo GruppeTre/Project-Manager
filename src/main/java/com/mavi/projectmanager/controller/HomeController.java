@@ -55,7 +55,7 @@ public class HomeController {
         String redirect = "redirect:/overview";
 
         Account roleId = (Account) session.getAttribute("account");
-        if(roleId.getRole().getId() == 1) {
+        if(SessionUtils.userHasRole(session, Role.ADMIN)) {
             String viewMode = "?viewMode=accounts";
 
             redirect = redirect.concat(viewMode);
@@ -95,15 +95,12 @@ public class HomeController {
 
         model.addAttribute("viewMode", viewModeContainer);
         model.addAttribute("accounts", accountService.getAccounts());
+        model.addAttribute("session", session.getAttribute("account"));
 
-        if(viewModeContainer.equals("accounts")) {
-            model.addAttribute("session", session.getAttribute("account"));
-        }
-
-        if(viewModeContainer.equals("projects") && !SessionUtils.userIsProjectLead(session)){
+        if(viewModeContainer.equals("projects") && SessionUtils.userHasRole(session, Role.ADMIN)){
             model.addAttribute("projects", projectService.getProjects());
         }
-        if(viewModeContainer.equals("projects") && SessionUtils.userIsProjectLead(session)){
+        if(viewModeContainer.equals("projects") && SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
             int projectLeadId = ((Account) session.getAttribute("account")).getId();
             model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
         }

@@ -31,21 +31,27 @@ VALUES
 
 INSERT IGNORE INTO project (name, start_date, end_date)
 VALUES
-('Project Alpha', 2025-12-10, 2025-12-24),
-('Project Beta', 2025-12-15, 2026-1-30);
+('Project Alpha', '2025-12-10', '2025-12-24'),
+('Project Beta', '2025-12-15', '2026-1-30');
+
+INSERT IGNORE INTO account_project_junction(account_id, project_id)
+VALUES
+(3, 1),
+(4, 2);
 
 INSERT IGNORE INTO subproject(name, start_date, end_date, project_id)
 VALUES
-('Subproject Charlie', 2025-12-12, 2025-12-18, 1),
-('Subproject Delta', 2025-12-18, 2025-12-20, 1);
+('Subproject Charlie', '2025-12-12', '2025-12-18', 1),
+('Subproject Delta', '2025-12-18', '2025-12-20', 1);
 
 INSERT IGNORE INTO task(name, start_date, end_date, duration, subproject_id)
-('Task A', 2025-12-12, 2025-12-13, 8, 1),
-('Task B', 2025-12-13, 2025-12-15, 24, 1);
+VALUES
+('Task A', '2025-12-12', '2025-12-13', 8, 1),
+('Task B', '2025-12-13', '2025-12-15', 24, 1);
 
-
-
-
-
+INSERT IGNORE INTO employee_task_junction(employee_id, task_id)
+VALUES
+(1, 1),
+(2, 2);
 
 

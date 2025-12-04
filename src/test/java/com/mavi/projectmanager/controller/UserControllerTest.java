@@ -100,7 +100,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(get("/edit/{id}", 1).sessionAttr("account", testAccount))
+        mockMvc.perform(get("/account/edit/{id}", 1).sessionAttr("account", testAccount))
                 .andExpect(status().isOk())
                 .andExpect(view().name("editUserPage"))
                 .andExpect(model().attribute("account", testAccount))
@@ -168,17 +168,16 @@ class UserControllerTest {
 
     @Test
     void shouldEditUser() throws Exception{
-        Account updatedTestAccount = testAccount;
 
-        when(accountService.updatedAccount(updatedTestAccount)).thenReturn(updatedTestAccount);
+        when(accountService.updatedAccount(testAccount)).thenReturn(testAccount);
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/editUser").sessionAttr("account", testAccount))
+        mockMvc.perform(post("/account/editUser").sessionAttr("account", testAccount))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/overview"))
+                .andExpect(redirectedUrl("/overview?viewMode=accounts"))
                 .andExpect(flash().attributeCount(0));
         mockedStatic.close();
     }
@@ -193,7 +192,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/create"))
+        mockMvc.perform(post("/account/create"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview?viewMode=accounts"));
         mockedStatic.close();
@@ -208,7 +207,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/create"))
+        mockMvc.perform(post("/account/create"))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("createUserPage"))
                 .andExpect(model().attribute("error", true))
@@ -227,7 +226,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/create"))
+        mockMvc.perform(post("/account/create"))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("createUserPage"))
                 .andExpect(model().attribute("error", true))
@@ -246,7 +245,7 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/create"))
+        mockMvc.perform(post("/account/create"))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("createUserPage"))
                 .andExpect(model().attribute("error", true))
@@ -267,11 +266,11 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/deleteUser")
+        mockMvc.perform(post("/account/deleteUser")
                         .param("employee.mail", testAccount.getMail())
                         .sessionAttr("account", testAccount))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/overview"))
+                .andExpect(redirectedUrl("/overview?viewMode=accounts"))
                 .andExpect(flash().attribute("success", true));
         mockedStatic.close();
 
@@ -287,11 +286,11 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/deleteUser")
+        mockMvc.perform(post("/account/deleteUser")
                         .param("employee.mail", testAccount.getMail())
                         .sessionAttr("account", testAccount))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/overview"));
+                .andExpect(redirectedUrl("/overview?viewMode=projects"));
         mockedStatic.close();
 
         //make sure that deleteAccount method was never called
@@ -309,11 +308,11 @@ class UserControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
 
-        mockMvc.perform(post("/deleteUser")
+        mockMvc.perform(post("/account/deleteUser")
                         .param("employee.mail", testAccount.getMail())
                         .sessionAttr("account", testAccount))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/overview"))
+                .andExpect(redirectedUrl("/overview?viewMode=accounts"))
                 .andExpect(flash().attribute("error", true));
         mockedStatic.close();
 
