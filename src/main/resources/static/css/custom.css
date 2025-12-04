@@ -140,7 +140,7 @@ tbody td {
     border-style: none;
 }
 
-.top-nav a{
+.top-nav a, .project_nav a{
     display: inline-block;
     border-right-style: solid;
     border-right-color: #c5c3c6;
@@ -150,11 +150,11 @@ tbody td {
     flex-grow: 1;
 }
 
-.top-nav a:last-child{
+.top-nav a:last-child, .project_nav a:last-child{
     border-right-style: none;
 }
 
-.top-nav {
+.top-nav, .project_nav {
     display: flex;
     background-color: #4c5d68;
     width:100%;
@@ -194,12 +194,21 @@ input, label {
 
 .top-nav {
     display: flex;
-    background-color: #4c5d68;
+    background-color: var(--dark-blue);
     width:100%;
     justify-content: space-evenly;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 
+}
+
+summary {
+    background-color: var(--dark-blue);
+    color: var(--light);
+}
+
+details {
+    background-color: var(--light);
 }
 
 /* skeleton overrides */
