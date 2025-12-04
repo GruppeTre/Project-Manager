@@ -94,7 +94,7 @@ class ProjectControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-        mockedStatic.when(() -> SessionUtils.userIsProjectLead(Mockito.any(HttpSession.class))).thenReturn(false);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(false);
 
         mockMvc.perform(get("/projects")
                         .sessionAttr("account", adminAccount)
@@ -115,7 +115,7 @@ class ProjectControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-        mockedStatic.when(() -> SessionUtils.userIsProjectLead(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
         when(projectService.getProjectsByLead(leadAccount.getId())).thenReturn(projects);
 
@@ -143,7 +143,7 @@ class ProjectControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-        mockedStatic.when(() -> SessionUtils.userIsProjectLead(Mockito.any(HttpSession.class))).thenReturn(false);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(false);
 
         mockMvc.perform(get("/project/edit/{id}", testProject.getId())
                         .sessionAttr("account", adminAccount))
@@ -167,7 +167,7 @@ class ProjectControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-        mockedStatic.when(() -> SessionUtils.userIsProjectLead(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
         mockMvc.perform(post("/project/update")
                         .sessionAttr("account", adminAccount))
@@ -190,7 +190,7 @@ class ProjectControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-        mockedStatic.when(() -> SessionUtils.userIsProjectLead(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
         mockMvc.perform(post("/project/update")
                         .sessionAttr("account", adminAccount)
@@ -218,7 +218,7 @@ class ProjectControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-        mockedStatic.when(() -> SessionUtils.userIsProjectLead(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
         mockMvc.perform(post("/project/update")
                         .sessionAttr("account", adminAccount)

@@ -11,14 +11,11 @@ import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -81,10 +78,10 @@ import java.util.List;
         model.addAttribute("accounts", accountService.getAccounts());
         model.addAttribute("viewMode", viewMode);
 
-        if(viewMode.equals("projects") && !SessionUtils.userIsProjectLead(session)){
+        if(viewMode.equals("projects") && !SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
             model.addAttribute("projects", projectService.getProjects());
         }
-        if(viewMode.equals("projects") && SessionUtils.userIsProjectLead(session)){
+        if(viewMode.equals("projects") && SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
             int projectLeadId = ((Account) session.getAttribute("account")).getId();
             model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
         }
