@@ -37,36 +37,46 @@ import java.util.List;
         public String getCreateProjectPage(Model model) {
             Project project = new Project();
 
-            List<Employee> employees = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
-            Employee employee = new Employee();
+            List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
 
             model.addAttribute("project", project);
-            model.addAttribute("employees", employees);
-            model.addAttribute("employee", employee);
+            model.addAttribute("allLeads", allLeads);
 
             return "createProjectPage";
         }
 
         @PostMapping("project/create")
-        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Employee employee, HttpServletResponse response) {
+        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, HttpServletResponse response) {
 
             if(!SessionUtils.isLoggedIn(session)) {
                 return "redirect:/";
             }
 
+            if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+                return "redirect:/";
+            }
+
             try {
-                projectService.createProject(newProject, employee);
-            } catch(InvalidFieldException e) {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    model.addAttribute("error", true);
-                    model.addAttribute("InvalidField", e.getField());
-                    model.addAttribute("newproject", newProject);
-                    List<Employee> employees = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
-                    model.addAttribute("employees", employees);
-                    return "createProjectPage";
+                projectService.createProject(newProject);
+            } catch (InvalidFieldException e) {
+                List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+                if (e instanceof InvalidDateException) {
+                    int errorId = ((InvalidDateException) e).getErrorId();
+                    model.addAttribute("errorId", errorId);
                 }
 
-                return "redirect:/overview?viewMode=projects";
+                System.out.println("Invalid fields: " + e.getField());
+
+                model.addAttribute("error", true);
+                model.addAttribute("invalidField", e.getField());
+                model.addAttribute("project", newProject);
+                model.addAttribute("allLeads", allLeads);
+                return "createProjectPage";
+                }
+
+            return "redirect:/overview?viewMode=projects";
         }
 
     @GetMapping("/projects")
@@ -97,9 +107,8 @@ import java.util.List;
         }
 
         //Reject user if user is not Admin
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser.getRole() != Role.ADMIN) {
-            return "redirect:/overview";
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/";
         }
 
         Project toEdit;
@@ -111,11 +120,7 @@ import java.util.List;
             return "redirect:/projects?viewMode=projects";
         }
 
-        //todo: update allLeads list to use getAccountsByRole when it is implemented
-//        List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
-
-        List<Account> allLeads = List.of(this.accountService.getAccountByID(2), this.accountService.getAccountByID(4));
-
+        List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
 
         model.addAttribute("project", toEdit);
         model.addAttribute("allLeads", allLeads);
@@ -130,19 +135,14 @@ import java.util.List;
             return "redirect:/";
         }
 
-        //Reject user if user is not Admin
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser.getRole() != Role.ADMIN) {
-            return "redirect:/overview";
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/";
         }
 
         try {
             this.projectService.updateProject(project);
         } catch (InvalidFieldException e) {
-
-            //todo: update allLeads list to use getAccountsByRole when it is implemented
-//            List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
-            List<Account> allLeads = List.of(this.accountService.getAccountByID(2), this.accountService.getAccountByID(4));
+            List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
             //if Exception is an InvalidDateException, add errorId to model so template can display proper error message

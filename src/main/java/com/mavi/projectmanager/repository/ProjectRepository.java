@@ -96,11 +96,9 @@ public class ProjectRepository {
     }
 
     //Inserts a project in the database
-    public int createProject(Project project, Employee employee) {
+    public int createProject(Project project) {
 
         String query = "INSERT INTO project (name, start_date, end_date) VALUES (?,?,?)";
-
-        Account account = accountRepository.getAccountByMail(employee.getMail());
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
