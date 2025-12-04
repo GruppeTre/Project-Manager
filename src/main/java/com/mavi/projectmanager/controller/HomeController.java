@@ -4,6 +4,7 @@ import com.mavi.projectmanager.controller.utils.SessionUtils;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.ProjectService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
 
 @Controller
 @RequestMapping("/")
@@ -18,10 +20,12 @@ public class HomeController {
 
     private final AccountService accountService;
     private final ProjectService projectService;
+    private final View view;
 
-    public HomeController(AccountService accountService, ProjectService projectService){
+    public HomeController(AccountService accountService, ProjectService projectService, View view){
         this.accountService = accountService;
         this.projectService = projectService;
+        this.view = view;
     }
 
     @GetMapping
@@ -74,22 +78,32 @@ public class HomeController {
     }
 
     @GetMapping("/overview")
-    public String getOverviewPage(@RequestParam("viewMode") String viewMode, HttpSession session, Model model) {
+    public String getOverviewPage(@RequestParam(value = "viewMode", required = false) String viewMode, HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-        model.addAttribute("viewMode", viewMode);
+
+        String viewModeContainer = viewMode;
+
+        if(viewMode == null && ((Account) session.getAttribute("account")).getRole() == Role.ADMIN){
+            viewModeContainer = "accounts";
+        }
+        if(viewMode == null && ((Account) session.getAttribute("account")).getRole() == Role.PROJECT_LEAD){
+            viewModeContainer = "projects";
+        }
+
+        model.addAttribute("viewMode", viewModeContainer);
         model.addAttribute("accounts", accountService.getAccounts());
 
-        if(viewMode.equals("accounts")) {
+        if(viewModeContainer.equals("accounts")) {
             model.addAttribute("session", session.getAttribute("account"));
         }
 
-        if(viewMode.equals("projects") && !SessionUtils.userIsProjectLead(session)){
+        if(viewModeContainer.equals("projects") && !SessionUtils.userIsProjectLead(session)){
             model.addAttribute("projects", projectService.getProjects());
         }
-        if(viewMode.equals("projects") && SessionUtils.userIsProjectLead(session)){
+        if(viewModeContainer.equals("projects") && SessionUtils.userIsProjectLead(session)){
             int projectLeadId = ((Account) session.getAttribute("account")).getId();
             model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
         }
