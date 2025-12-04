@@ -6,6 +6,7 @@ import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.model.SubProject;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
@@ -81,6 +82,10 @@ public class ProjectService {
         this.projectRepository.insertIntoAccountProjectJunction(leadId, project.getId());
 
         return project;
+    }
+
+    public Project getFullProjectById(int id){
+        return this.projectRepository.getFullProjectById(id);
     }
 
     private boolean hasValidName(Project projectToCheck) {

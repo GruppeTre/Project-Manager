@@ -1,8 +1,6 @@
 package com.mavi.projectmanager.repository;
 
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.model.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -46,6 +44,66 @@ public class ProjectRepository {
         project.setLeadsList(projectLeads);
 
         return project;
+    });
+
+    public RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
+        Project project = new Project();
+        int projectId = rs.getInt(rs.getInt("id"));
+        project.setId(projectId);
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        project.setStart_date(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        project.setEnd_date(convertedEndDate);
+
+        List<SubProject> subProjectsList = getSubProjectsByProjectId(projectId);
+
+        project.setSubProjectsList(subProjectsList);
+
+        return project;
+    });
+
+    public RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
+        SubProject subProject = new SubProject();
+
+        int subProjectId = rs.getInt("id");
+        subProject.setId(subProjectId);
+        subProject.setName(rs.getString("name"));
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        subProject.setStart_date(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        subProject.setEnd_date(convertedEndDate);
+
+        List<Task> taskList = getTaskBySubProjectId(subProjectId);
+        subProject.setTaskList(taskList);
+
+        return subProject;
+    });
+
+    public RowMapper<Task> taskRowMapper = ((rs, rowNum) -> {
+        Task task = new Task();
+
+        task.setId(rs.getInt("id"));
+        task.setName(rs.getString("name"));
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        task.setStart_date(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        task.setEnd_date(convertedEndDate);
+
+        task.setDuration(rs.getInt("duration"));
+
+        return task;
     });
 
     public List<Project> getProjects(){
@@ -125,6 +183,7 @@ public class ProjectRepository {
         return keyHolder.getKey().intValue();
     }
 
+    // Todo: Should probably be return rowsAffected
     public Project updateProject(Project project) {
 
         String query = """
@@ -168,5 +227,29 @@ public class ProjectRepository {
         if (rowsAffected != 1) {
             throw new RuntimeException("unexpected amount of rows deleted! Expected : 1, actual: " + rowsAffected);
         }
+    }
+
+    public Project getFullProjectById(int id){
+        String query = """
+                SELECT * FROM Project WHERE id = ?
+                """;
+
+        return jdbcTemplate.queryForObject(query, fullProjectRowMapper, id);
+    }
+
+    public List<SubProject> getSubProjectsByProjectId(int id){
+        String query = """
+                SELECT * FROM Subproject WHERE project_id = ?
+                """;
+
+        return jdbcTemplate.query(query, subProjectRowMapper, id);
+    }
+
+    public List<Task> getTaskBySubProjectId(int id){
+        String query = """
+                SELECT * FROM Task WHERE subproject_id = ?
+                """;
+
+        return jdbcTemplate.query(query, taskRowMapper, id);
     }
 }

@@ -14,7 +14,7 @@
     <section class="overview">
         <nav class="top-nav">
                 <a th:if="${session.account.role.id == 1}" th:href="@{/overview(viewMode='accounts')}" th:text="#{nav.a.account}"></a>
-                <a th:if="${session.account.role.id == 1 || session.account.role.id == 2}" th:href="@{/overview/projects(viewMode='projects')}" th:text="#{nav.a.project}"></a>
+                <a th:if="${session.account.role.id == 1 || session.account.role.id == 2}" th:href="@{/overview(viewMode='projects')}" th:text="#{nav.a.project}"></a>
         </nav>
         <article th:if="${viewMode == 'accounts'}">
             <div>
@@ -23,7 +23,7 @@
                     <input id="search_bar" type="search" th:placeholder="#{overview.search.placeholder}"></h2>
                 </div>
                 <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block">
-                    <a class="button button-primary" th:href="@{/create}" th:text="#{overview.button.createAccount}"></a>
+                    <a class="button button-primary" th:href="@{/account/create}" th:text="#{overview.button.createAccount}"></a>
                 </div>
             </div>
             <div>
@@ -42,7 +42,7 @@
                             <td th:text="${a.mail}"></td>
                             <td th:text="${a.role.value}"></td>
                             <td>
-                                <a class="button button-primary" th:href="@{/edit/{id}(id=${a.id})}" th:text="#{overview.button.edit}"></a>
+                                <a class="button button-primary" th:href="@{/account/edit/{id}(id=${a.id})}" th:text="#{overview.button.edit}"></a>
                             </td>
                         </tr>
                     </tbody>

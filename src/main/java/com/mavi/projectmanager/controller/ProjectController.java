@@ -20,20 +20,18 @@ import java.util.List;
 
 
 @Controller
-
+@RequestMapping("/project")
     public class ProjectController {
 
     private final ProjectService projectService;
     private final AccountService accountService;
-    private final EmployeeService employeeService;
 
-    public ProjectController(ProjectService projectService, AccountService accountService, EmployeeService employeeService) {
+    public ProjectController(ProjectService projectService, AccountService accountService) {
         this.projectService = projectService;
         this.accountService = accountService;
-        this.employeeService = employeeService;
     }
 
-        @GetMapping("project/create")
+        @GetMapping("/create")
         public String getCreateProjectPage(Model model) {
             Project project = new Project();
 
@@ -45,8 +43,8 @@ import java.util.List;
             return "createProjectPage";
         }
 
-        @PostMapping("project/create")
-        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, HttpServletResponse response) {
+        @PostMapping("/create")
+        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Employee employee, HttpServletResponse response) {
 
             if(!SessionUtils.isLoggedIn(session)) {
                 return "redirect:/";
@@ -99,7 +97,7 @@ import java.util.List;
 
     }
 
-    @GetMapping("/project/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String getEditProjectPage(RedirectAttributes redirectAttributes, HttpSession session, @PathVariable int id, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
@@ -108,7 +106,7 @@ import java.util.List;
 
         //Reject user if user is not Admin
         if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
-            return "redirect:/";
+            return "redirect:/overview?viewMode=projects";
         }
 
         Project toEdit;
@@ -117,7 +115,7 @@ import java.util.List;
             toEdit = this.projectService.getProjectById(id);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", true);
-            return "redirect:/projects?viewMode=projects";
+            return "redirect:/overview?viewMode=projects";
         }
 
         List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
@@ -128,7 +126,7 @@ import java.util.List;
         return "editProjectPage";
     }
 
-    @PostMapping("/project/update")
+    @PostMapping("/update")
     public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project) {
 
         if (!SessionUtils.isLoggedIn(session)) {
@@ -136,7 +134,7 @@ import java.util.List;
         }
 
         if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
-            return "redirect:/";
+            return "redirect:/overview?viewMode=projects";
         }
 
         try {
@@ -160,7 +158,18 @@ import java.util.List;
             return "editProjectPage";
         }
 
-        return "redirect:/projects?viewMode=projects";
+        return "redirect:/overview?viewMode=projects";
+    }
+
+    @GetMapping("/view/{id}")
+    public String getProjectOverview(@PathVariable("id") int id, Model model, HttpSession session) {
+        if(!SessionUtils.isLoggedIn(session)){
+            return "redirect:/";
+        }
+
+        model.addAttribute("project", projectService.getFullProjectById(id));
+
+        return "projectOverviewPage";
     }
 }
 

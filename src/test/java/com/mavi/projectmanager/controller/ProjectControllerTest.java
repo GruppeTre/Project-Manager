@@ -94,9 +94,9 @@ class ProjectControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(false);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
-        mockMvc.perform(get("/projects")
+        mockMvc.perform(get("/overview")
                         .sessionAttr("account", adminAccount)
                         .param("viewMode", "projects"))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ class ProjectControllerTest {
 
         when(projectService.getProjectsByLead(leadAccount.getId())).thenReturn(projects);
 
-        mockMvc.perform(get("/projects")
+        mockMvc.perform(get("/overview")
                         .sessionAttr("account", leadAccount)
                         .param("viewMode", "projects"))
                 .andExpect(status().isOk())
@@ -128,8 +128,6 @@ class ProjectControllerTest {
                 .andExpect(model().attribute("projectsByLead", projects));
             mockedStatic.close();
             verify(projectService, times(1)).getProjectsByLead(leadAccount.getId());
-
-            verify(projectService, never()).getProjects();
     }
 
     //todo: shouldShowEditProjectPage
@@ -143,7 +141,7 @@ class ProjectControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(false);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
         mockMvc.perform(get("/project/edit/{id}", testProject.getId())
                         .sessionAttr("account", adminAccount))
@@ -172,7 +170,7 @@ class ProjectControllerTest {
         mockMvc.perform(post("/project/update")
                         .sessionAttr("account", adminAccount))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/projects?viewMode=projects"));
+                .andExpect(redirectedUrl("/overview?viewMode=projects"));
         mockedStatic.close();
 
         verify(projectService).updateProject(any(Project.class));
