@@ -25,7 +25,7 @@
                     <details>
                         <summary th:text="'+ ' + ${sb.name}"></summary>
                         <div class="collapsed_content">
-                            <p th:text="'Subproject Duration: Need a method in SubProjects model to sum up total duration'"></p>
+                            <p th:text="#{projectOverviewPage.p.duration} + ${sb.}"></p>
                         </div>
                         <a th:href="@{/project/task/create}" th:text="'Add Task'"></a>
                         <article th:each="task : ${sb.getTaskList()}">

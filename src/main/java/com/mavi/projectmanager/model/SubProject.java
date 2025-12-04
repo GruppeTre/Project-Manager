@@ -51,6 +51,15 @@ public class SubProject {
         this.taskList = taskList;
     }
 
+    public int sumDuration(){
+        int sum = 0;
+        for(Task d : taskList){
+            sum += d.getDuration();
+        }
+
+        return sum;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
