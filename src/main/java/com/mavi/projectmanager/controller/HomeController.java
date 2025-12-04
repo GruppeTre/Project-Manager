@@ -1,0 +1,99 @@
+package com.mavi.projectmanager.controller;
+
+import com.mavi.projectmanager.controller.utils.SessionUtils;
+import com.mavi.projectmanager.model.Account;
+import com.mavi.projectmanager.model.Employee;
+import com.mavi.projectmanager.model.Project;
+import com.mavi.projectmanager.service.AccountService;
+import com.mavi.projectmanager.service.ProjectService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/")
+public class HomeController {
+
+    private final AccountService accountService;
+    private final ProjectService projectService;
+
+    public HomeController(AccountService accountService, ProjectService projectService){
+        this.accountService = accountService;
+        this.projectService = projectService;
+    }
+
+    @GetMapping
+    public String getLogin(Model model){
+        Employee employee = new Employee();
+        Account account = new Account();
+
+        account.setEmployee(employee);
+
+        model.addAttribute("account", account);
+
+        return "index";
+    }
+    @PostMapping("/login")
+    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account){
+
+        if(!accountService.accountLogin(account)){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("error", true);
+            model.addAttribute("account", account);
+            return "index";
+        }
+
+        account = accountService.getAccountByMail(account.getMail());
+
+        session.setAttribute("account", account);
+        String redirect = "redirect:/overview";
+
+        Account roleId = (Account) session.getAttribute("account");
+        if(roleId.getRole().getId() == 1) {
+            String viewMode = "?viewMode=accounts";
+
+            redirect = redirect.concat(viewMode);
+
+            return redirect;
+        }
+        else{
+            String viewMode = "?viewMode=projects";
+            redirect = redirect.concat(viewMode);
+
+            return redirect;
+        }
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/overview")
+    public String getOverviewPage(@RequestParam("viewMode") String viewMode, HttpSession session, Model model) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        model.addAttribute("viewMode", viewMode);
+        model.addAttribute("accounts", accountService.getAccounts());
+
+        if(viewMode.equals("accounts")) {
+            model.addAttribute("session", session.getAttribute("account"));
+        }
+
+        if(viewMode.equals("projects") && !SessionUtils.userIsProjectLead(session)){
+            model.addAttribute("projects", projectService.getProjects());
+        }
+        if(viewMode.equals("projects") && SessionUtils.userIsProjectLead(session)){
+            int projectLeadId = ((Account) session.getAttribute("account")).getId();
+            model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
+        }
+
+        return "overviewPage";
+    }
+}

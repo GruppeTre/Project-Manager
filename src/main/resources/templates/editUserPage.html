@@ -12,7 +12,7 @@
     <main class="container">
         <section>
             <article>
-                <form th:action="@{/editUser}" th:object="${account}" th:method="post">
+                <form th:action="@{/account/editUser}" th:object="${account}" th:method="post">
 
                     <input id="id" hidden="hidden" th:field="*{id}">
 

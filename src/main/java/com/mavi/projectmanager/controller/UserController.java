@@ -15,61 +15,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/account")
 public class UserController {
     private final AccountService service;
 
     public UserController(AccountService service) {
         this.service = service;
-    }
-
-    @GetMapping
-    public String getLogin(Model model){
-        Employee employee = new Employee();
-        Account account = new Account();
-
-        account.setEmployee(employee);
-
-        model.addAttribute("account", account);
-
-        return "index";
-    }
-    @PostMapping("/login")
-    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account){
-
-        if(!service.accountLogin(account)){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            model.addAttribute("error", true);
-            model.addAttribute("account", account);
-            return "index";
-        }
-
-        account = service.getAccountByMail(account.getMail());
-
-        session.setAttribute("account", account);
-        String redirect = "redirect:/overview";
-
-        Account roleId = (Account) session.getAttribute("account");
-        if(roleId.getRole().getId() == 1) {
-            String viewMode = "?viewMode=accounts";
-
-            redirect = redirect.concat(viewMode);
-
-            return redirect;
-        }
-        else{
-            String viewMode = "?viewMode=projects";
-            redirect = redirect.concat(viewMode);
-
-            return redirect;
-        }
-    }
-
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-
-        return "redirect:/";
     }
 
     //Shows the createUSerPage
@@ -113,22 +64,6 @@ public class UserController {
 
         return "redirect:/overview?viewMode=accounts";
     }
-
-    @GetMapping("/overview")
-    public String getOverviewPage(@RequestParam("viewMode") String viewMode, HttpSession session, Model model) {
-
-        if (!SessionUtils.isLoggedIn(session)) {
-            return "redirect:/";
-        }
-
-        if(viewMode.equals("accounts")) {
-            model.addAttribute("accounts", service.getAccounts());
-            model.addAttribute("session", session.getAttribute("account"));
-            model.addAttribute("viewMode", viewMode);
-        }
-
-        return "overviewPage";
-    }
   
     @GetMapping("/edit/{id}")
     public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
@@ -140,7 +75,7 @@ public class UserController {
         //Reject user if user is not Admin
         Account currentUser = (Account) session.getAttribute("account");
         if (currentUser.getRole() != Role.ADMIN) {
-            return "redirect:/overview";
+            return "redirect:/overview?viewMode=accounts";
         }
 
         Account account = service.getAccountByID(id);
@@ -160,12 +95,12 @@ public class UserController {
 
         //Reject user if user is not Admin
         if (!sessionUserIsAdmin(session)) {
-            return "redirect:/overview";
+            return "redirect:/overview?viewMode=projects";
         }
 
         service.updatedAccount(updatedAccount);
 
-        return "redirect:/overview";
+        return "redirect:/overview?viewMode=accounts";
     }
 
     @PostMapping("/deleteUser")
@@ -177,7 +112,7 @@ public class UserController {
 
         //Reject user if user is not Admin
         if (!sessionUserIsAdmin(session)) {
-            return "redirect:/overview";
+            return "redirect:/overview?viewMode=projects";
         }
 
         toDelete.setId(this.service.getAccountByMail(toDelete.getMail()).getId());
@@ -186,7 +121,7 @@ public class UserController {
             toDelete = this.service.deleteAccount(toDelete);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("admin-deletion", true);
-            return "redirect:/overview";
+            return "redirect:/overview?viewMode=accounts";
         }
 
         // todo: redirect attributes to show feedback on operation on overview page
@@ -196,7 +131,7 @@ public class UserController {
             redirectAttributes.addFlashAttribute("success", true);
         }
 
-        return "redirect:/overview";
+        return "redirect:/overview?viewMode=accounts";
     }
 
     private boolean sessionUserIsAdmin(HttpSession session) {

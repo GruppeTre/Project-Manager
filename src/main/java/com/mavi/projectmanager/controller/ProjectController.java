@@ -19,20 +19,18 @@ import java.util.List;
 
 
 @Controller
-
+@RequestMapping("/project")
     public class ProjectController {
 
     private final ProjectService projectService;
-    private final AccountService accountService;
     private final EmployeeService employeeService;
 
     public ProjectController(ProjectService projectService, AccountService accountService, EmployeeService employeeService) {
         this.projectService = projectService;
-        this.accountService = accountService;
         this.employeeService = employeeService;
     }
 
-        @GetMapping("project/create")
+        @GetMapping("/create")
         public String getCreateProjectPage(Model model) {
             Project project = new Project();
 
@@ -46,7 +44,7 @@ import java.util.List;
             return "createProjectPage";
         }
 
-        @PostMapping("project/create")
+        @PostMapping("/create")
         public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Employee employee, HttpServletResponse response) {
 
             if(!SessionUtils.isLoggedIn(session)) {
@@ -68,27 +66,7 @@ import java.util.List;
                 return "redirect:/overview?viewMode=projects";
         }
 
-    @GetMapping("/projects")
-    public String getProjectOverviewPage(@RequestParam("viewMode") String viewMode, Model model, HttpSession session){
-        if(!SessionUtils.isLoggedIn(session)){
-            return "redirect:/";
-        }
-
-        model.addAttribute("accounts", accountService.getAccounts());
-        model.addAttribute("viewMode", viewMode);
-
-        if(viewMode.equals("projects") && !SessionUtils.userIsProjectLead(session)){
-            model.addAttribute("projects", projectService.getProjects());
-        }
-        if(viewMode.equals("projects") && SessionUtils.userIsProjectLead(session)){
-            int projectLeadId = ((Account) session.getAttribute("account")).getId();
-            model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
-        }
-        return "overviewPage";
-
-    }
-
-    @GetMapping("/project/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String getEditProjectPage(RedirectAttributes redirectAttributes, HttpSession session, @PathVariable int id, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
@@ -98,7 +76,7 @@ import java.util.List;
         //Reject user if user is not Admin
         Account currentUser = (Account) session.getAttribute("account");
         if (currentUser.getRole() != Role.ADMIN) {
-            return "redirect:/overview";
+            return "redirect:/overview?viewMode=projects";
         }
 
         Project toEdit;
@@ -107,7 +85,7 @@ import java.util.List;
             toEdit = this.projectService.getProjectById(id);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", true);
-            return "redirect:/projects?viewMode=projects";
+            return "redirect:/overview?viewMode=projects";
         }
 
         List<Employee> allLeads = employeeService.getEmployeesByRole(Role.PROJECT_LEAD);
@@ -121,7 +99,7 @@ import java.util.List;
         return "editProjectPage";
     }
 
-    @PostMapping("/project/update")
+    @PostMapping("/update")
     public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project, @ModelAttribute Employee assignedLead) {
 
         if (!SessionUtils.isLoggedIn(session)) {
@@ -131,7 +109,7 @@ import java.util.List;
         //Reject user if user is not Admin
         Account currentUser = (Account) session.getAttribute("account");
         if (currentUser.getRole() != Role.ADMIN) {
-            return "redirect:/overview";
+            return "redirect:/overview?viewMode=projects";
         }
 
         try {
@@ -155,7 +133,7 @@ import java.util.List;
             return "editProjectPage";
         }
 
-        return "redirect:/projects?viewMode=projects";
+        return "redirect:/overview?viewMode=projects";
     }
 
     @GetMapping("/view/{id}")
