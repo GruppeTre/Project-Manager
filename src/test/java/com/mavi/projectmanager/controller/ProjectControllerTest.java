@@ -53,6 +53,7 @@ class ProjectControllerTest {
     private List<Account> projectLeads;
     private Account leadAccount;
     private Account adminAccount;
+    private Project emptyProject;
 
     @BeforeEach
     void setUp() {
@@ -80,6 +81,8 @@ class ProjectControllerTest {
         testProject.setLeadsList(List.of(leadAccount));
 
         projectList = new ArrayList<>();
+        emptyProject = new Project();
+        projectLeads = new ArrayList<>();
 
     }
 
@@ -154,6 +157,23 @@ class ProjectControllerTest {
         mockedStatic.close();
 
         verify(projectService, times(1)).getProjectById(testProject.getId());
+    }
+
+    @Test
+    void shouldShowCreateProjectPage() throws Exception {
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        mockMvc.perform(get("/project/create")
+                        .sessionAttr("account", adminAccount))
+                .andExpect(status().isOk())
+                .andExpect(view().name("createProjectPage"))
+                .andExpect(model().attribute("project", emptyProject))
+                .andExpect(model().attribute("allLeads", projectLeads));
+        mockedStatic.close();
+
     }
 
 /*
@@ -235,11 +255,75 @@ class ProjectControllerTest {
         verify(projectService).updateProject(any(Project.class));
     }
 
-    //todo: shouldShowCreateProjectPage
+    @Test
+    void shouldCreateValidProject() throws Exception {
 
-    //todo: shouldCreateValidProject
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        mockMvc.perform(post("/project/create")
+                        .sessionAttr("account", adminAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview?viewMode=projects"));
+        mockedStatic.close();
+
+        verify(projectService).createProject(any(Project.class));
+    }
 
     //todo: shouldRejectProjectWithEndDateInThePast
 
-    //todo: shouldRejectProjectWithEndDateBeforeStartDate
+    @Test
+    void shouldRejectProjectWithEndDateInThePast() throws Exception {
+
+        when(projectService.createProject(any(Project.class)))
+                .thenThrow(new InvalidDateException("End date cannot be in the past!", 2));
+
+        when(accountService.getAccountByID(anyInt())).thenReturn(leadAccount);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        mockMvc.perform(post("/project/create")
+                        .sessionAttr("account", adminAccount)
+                        .param("leadsList[0].employee.mail", leadAccount.getMail()))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createProjectPage"))
+                .andExpect(model().attribute("errorId", 2))
+                .andExpect(model().attribute("error", true))
+                .andExpect(model().attribute("invalidField", Field.DATE.getValue()))
+                .andExpect(model().attribute("project", Matchers.instanceOf(Project.class)))
+                .andExpect(model().attribute("allLeads", Matchers.instanceOf(List.class)));
+        mockedStatic.close();
+
+        verify(projectService).createProject(any(Project.class));
+    }
+
+    @Test
+    void shouldRejectProjectWithEndDateBeforeStartDate() throws Exception {
+
+        when(projectService.createProject(any(Project.class)))
+                .thenThrow(new InvalidDateException("End date cannot be before start date", 1));
+
+        when(accountService.getAccountByID(anyInt())).thenReturn(leadAccount);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        mockMvc.perform(post("/project/create")
+                        .sessionAttr("account", adminAccount)
+                        .param("leadsList[0].employee.mail", leadAccount.getMail()))
+                .andExpect(status().isBadRequest())
+                .andExpect(view().name("createProjectPage"))
+                .andExpect(model().attribute("errorId", 1))
+                .andExpect(model().attribute("error", true))
+                .andExpect(model().attribute("invalidField", Field.DATE.getValue()))
+                .andExpect(model().attribute("project", Matchers.instanceOf(Project.class)))
+                .andExpect(model().attribute("allLeads", Matchers.instanceOf(List.class)));
+        mockedStatic.close();
+
+        verify(projectService).createProject(any(Project.class));
+    }
 }
