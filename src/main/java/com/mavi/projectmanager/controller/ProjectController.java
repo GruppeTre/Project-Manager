@@ -37,10 +37,10 @@ import java.util.List;
         public String getCreateProjectPage(Model model) {
             Project project = new Project();
 
-            List<Account> accounts = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+            List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
 
             model.addAttribute("project", project);
-            model.addAttribute("accounts", accounts);
+            model.addAttribute("allLeads", allLeads);
 
             return "createProjectPage";
         }
@@ -52,7 +52,9 @@ import java.util.List;
                 return "redirect:/";
             }
 
-            //todo: check if user i projectlead with SessionUtils
+            if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+                return "redirect:/";
+            }
 
             try {
                 projectService.createProject(newProject);
@@ -65,14 +67,16 @@ import java.util.List;
                     model.addAttribute("errorId", errorId);
                 }
 
+                System.out.println("Invalid fields: " + e.getField());
+
                 model.addAttribute("error", true);
-                model.addAttribute("InvalidField", e.getField());
-                model.addAttribute("newproject", newProject);
+                model.addAttribute("invalidField", e.getField());
+                model.addAttribute("project", newProject);
                 model.addAttribute("allLeads", allLeads);
                 return "createProjectPage";
                 }
 
-                return "redirect:/overview?viewMode=projects";
+            return "redirect:/overview?viewMode=projects";
         }
 
     @GetMapping("/projects")
@@ -103,9 +107,8 @@ import java.util.List;
         }
 
         //Reject user if user is not Admin
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser.getRole() != Role.ADMIN) {
-            return "redirect:/overview";
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/";
         }
 
         Project toEdit;
@@ -132,10 +135,8 @@ import java.util.List;
             return "redirect:/";
         }
 
-        //Reject user if user is not Admin
-        Account currentUser = (Account) session.getAttribute("account");
-        if (currentUser.getRole() != Role.ADMIN) {
-            return "redirect:/overview";
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/";
         }
 
         try {

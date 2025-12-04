@@ -19,29 +19,37 @@
             <h2 th:text="#{newProject.title}"></h2>
         </div>
 
+        <!-- Error messages -->
+        <div th:if="${error}" class="form-error-container">
+            <label th:if="${invalidField == 'title'}" th:text="#{form.error.title}"></label>
+            <div th:if="${invalidField == 'date'}">
+                <label th:if="${errorId == 1}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
+                <label th:if="${errorId == 2}" th:text="#{form.error.date.endDateInPast}"></label>
+            </div>
+        </div>
 
         <div class="row">
             <label for="name" class="form-label" th:text="Name"></label>
-            <input id="name" type="text" th:field="*{name}">
+            <input id="name" type="text" th:field="*{name}" required>
         </div>
 
         <div class="row">
             <label for="start-date" class="form-label" th:text="'Start Date'"></label>
-            <input id="start-date" type="date" th:field="*{start_date}">
+            <input id="start-date" type="date" th:field="*{start_date}" required>
         </div>
 
         <div class="row">
             <label for="end-date" class="form-label" th:text="'End Date'"></label>
-            <input id="end-date" type="date" th:field="*{end_date}">
+            <input id="end-date" type="date" th:field="*{end_date}" required>
         </div>
 
         <div>
             <label for="project_lead">Project Lead:</label>
-            <select id="project_lead" th:field="${account.employee.mail}">
+            <select id="project_lead" name="leadsList[0].employee.mail" required>
                 <option value="" disabled selected>Vælg konto…</option>
-                <option th:each="account : ${accounts}"
-                        th:value="${account.employee.mail}"
-                        th:text="|${account.employee.firstName} ${account.employee.lastName}|">
+                <option th:each="lead : ${allLeads}"
+                        th:value="${lead.employee.mail}"
+                        th:text="|${lead.employee.firstName} ${lead.employee.lastName}|">
                 </option>
             </select>
         </div>

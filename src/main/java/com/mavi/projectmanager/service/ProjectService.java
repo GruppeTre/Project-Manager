@@ -47,7 +47,6 @@ public class ProjectService {
     @Transactional
     public Project createProject(Project project) {
 
-        //todo: validate project fields
         project.setName(project.getName().trim());
 
         if (!hasValidName(project)) {
@@ -88,7 +87,6 @@ public class ProjectService {
 
         return !projectToCheck.getName().isBlank();
 
-        return true;
     }
 
     private void validateDates(Project projectToCheck) {
