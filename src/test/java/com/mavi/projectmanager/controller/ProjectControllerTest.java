@@ -345,5 +345,7 @@ class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("projectOverviewPage"))
                 .andExpect(model().attribute("project", project));
+
+        mockedStatic.close();
     }
 }
