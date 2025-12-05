@@ -204,4 +204,16 @@ class ProjectServiceTest {
         verify(projectRepository, never()).deleteFromAccountProjectJunction(anyInt());
         verify(projectRepository, never()).insertIntoAccountProjectJunction(anyInt(), anyInt());
     }
+
+    @Test
+    void shouldDeleteProject() {
+
+        when(projectRepository.deleteProject(dbProject)).thenReturn(1);
+
+        assertDoesNotThrow(() -> this.projectService.deleteProject(dbProject));
+
+        verify(projectRepository).deleteProject(dbProject);
+
+    }
+
 }
