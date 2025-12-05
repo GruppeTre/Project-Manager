@@ -115,6 +115,12 @@ public class ProjectRepository {
             throw new RuntimeException(e);
         }
 
+        int rowsAffected = jdbcTemplate.update(query);
+
+        if (rowsAffected != 1) {
+            throw new RuntimeException("Wrong number of rows inserted. Rows: " + rowsAffected);
+            }
+
         //Returns the keyholder for check
         if (keyHolder.getKey() == null) {
             throw new RuntimeException("Failed to obtain generated key for new project");
