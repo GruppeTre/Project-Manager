@@ -17,12 +17,14 @@ import java.sql.Date;
 @Repository
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
+    private EmployeeRepository employeeRepository;
     private AccountRepository accountRepository;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
 
-    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository){
+    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, EmployeeRepository employeeRepository){
         this.jdbcTemplate = jdbcTemplate;
         this.accountRepository = accountRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
@@ -50,6 +52,8 @@ public class ProjectRepository {
         Project project = new Project();
         int projectId = rs.getInt(rs.getInt("id"));
         project.setId(projectId);
+
+        project.setName(rs.getString("name"));
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
@@ -90,7 +94,8 @@ public class ProjectRepository {
     public RowMapper<Task> taskRowMapper = ((rs, rowNum) -> {
         Task task = new Task();
 
-        task.setId(rs.getInt("id"));
+        int taskId = rs.getInt("id");
+        task.setId(taskId);
         task.setName(rs.getString("name"));
 
         Date startDate = rs.getDate("start_date");
@@ -101,7 +106,10 @@ public class ProjectRepository {
         LocalDate convertedEndDate = endDate.toLocalDate();
         task.setEnd_date(convertedEndDate);
 
-        task.setDuration(rs.getInt("duration"));
+        task.setEstimatedDuration(rs.getInt("duration"));
+
+        List<Employee> employeeList = employeeRepository.getEmployeeByTaskId(taskId);
+        task.setEmployeeList(employeeList);
 
         return task;
     });

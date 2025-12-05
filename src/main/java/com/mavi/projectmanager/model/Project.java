@@ -61,6 +61,15 @@ public class Project {
         this.subProjectsList = subProjectsList;
     }
 
+    public int sumProjectDuration(){
+            int sum = 0;
+            for(SubProject sb : subProjectsList){
+                sum += sb.sumDuration();
+            }
+
+            return sum;
+        }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
