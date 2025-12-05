@@ -54,7 +54,7 @@ public class SubProject {
     public int sumDuration(){
         int sum = 0;
         for(Task d : taskList){
-            sum += d.getDuration();
+            sum += d.getEstimatedDuration();
         }
 
         return sum;

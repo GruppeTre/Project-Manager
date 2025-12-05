@@ -46,7 +46,7 @@ public class EmployeeRepository {
         String query = """
                 SELECT * FROM employee e
                 INNER JOIN employee_task_junction etj
-                    ON e.id = etj.employee_id;
+                    ON e.id = etj.employee_id
                 WHERE etj.task_id = ?
                 """;
 

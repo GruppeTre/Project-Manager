@@ -9,7 +9,9 @@ public class Task {
     private String name;
     private LocalDate start_date;
     private LocalDate end_date;
-    private int duration; //in hours
+    private String description;
+    private int estimatedDuration; //in hours
+    private int actualDuration;
     // TODO: Remember to swap this to account in sprint 2
     private List<Employee> employeeList;
 
@@ -45,12 +47,12 @@ public class Task {
         this.end_date = end_date;
     }
 
-    public int getDuration() {
-        return duration;
+    public int getEstimatedDuration() {
+        return estimatedDuration;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setEstimatedDuration(int estimatedDuration) {
+        this.estimatedDuration = estimatedDuration;
     }
 
     public List<Employee> getEmployeeList() {
@@ -61,16 +63,32 @@ public class Task {
         this.employeeList = employeeList;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getActualDuration() {
+        return actualDuration;
+    }
+
+    public void setActualDuration(int actualDuration) {
+        this.actualDuration = actualDuration;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && duration == task.duration && Objects.equals(name, task.name) && Objects.equals(start_date, task.start_date) && Objects.equals(end_date, task.end_date);
+        return id == task.id && estimatedDuration == task.estimatedDuration && Objects.equals(name, task.name) && Objects.equals(start_date, task.start_date) && Objects.equals(end_date, task.end_date) && Objects.equals(description, task.description) && Objects.equals(employeeList, task.employeeList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, start_date, end_date, duration);
+        return Objects.hash(id, name, start_date, end_date, description, estimatedDuration, employeeList);
     }
 
     public String employeesToString(){
