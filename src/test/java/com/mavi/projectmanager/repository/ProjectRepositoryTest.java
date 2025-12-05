@@ -4,6 +4,7 @@ import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.model.Role;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,9 +120,24 @@ VALUES
         Project project = projectRepository.getFullProjectById(1);
 
         assertEquals(1, project.getId());
-        assertEquals("Project Alpha", project.getName());
+        assertEquals("Projekt Alpha", project.getName());
         assertEquals(LocalDate.parse("2025-11-28"), project.getStart_date());
         assertEquals(LocalDate.parse("2025-11-30"), project.getEnd_date());
+        assertFalse(project.getSubProjectsList().isEmpty());
+        assertEquals(1, project.getSubProjectsList().getFirst().getId());
+        assertEquals("Subproject Charlie", project.getSubProjectsList().getFirst().getName());
+        assertEquals(LocalDate.parse("2025-12-12"), project.getSubProjectsList().getFirst().getStart_date());
+        assertEquals(LocalDate.parse("2025-12-18"), project.getSubProjectsList().getFirst().getEnd_date());
+        assertFalse(project.getSubProjectsList().isEmpty());
+        assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getId());
+        assertEquals("Task A", project.getSubProjectsList().getFirst().getTaskList().getFirst().getName());
+        assertEquals("Test beskrivelse", project.getSubProjectsList().getFirst().getTaskList().getFirst().getDescription());
+        assertEquals(LocalDate.parse("2025-12-12"), project.getSubProjectsList().getFirst().getTaskList().getFirst().getStart_date());
+        assertEquals(LocalDate.parse("2025-12-13"), project.getSubProjectsList().getFirst().getTaskList().getFirst().getEnd_date());
+        assertEquals(8, project.getSubProjectsList().getFirst().getTaskList().getFirst().getEstimatedDuration());
+        assertFalse(project.getSubProjectsList().getFirst().getTaskList().getFirst().getEmployeeList().isEmpty());
+        assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getEmployeeList().getFirst().getId());
+
     }
 
 }
