@@ -77,26 +77,6 @@ import java.util.List;
             return "redirect:/overview?viewMode=projects";
         }
 
-    @GetMapping("/projects")
-    public String getProjectOverviewPage(@RequestParam("viewMode") String viewMode, Model model, HttpSession session){
-        if(!SessionUtils.isLoggedIn(session)){
-            return "redirect:/";
-        }
-
-        model.addAttribute("accounts", accountService.getAccounts());
-        model.addAttribute("viewMode", viewMode);
-
-        if(viewMode.equals("projects") && !SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
-            model.addAttribute("projects", projectService.getProjects());
-        }
-        if(viewMode.equals("projects") && SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
-            int projectLeadId = ((Account) session.getAttribute("account")).getId();
-            model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
-        }
-        return "overviewPage";
-
-    }
-
     @GetMapping("/edit/{id}")
     public String getEditProjectPage(RedirectAttributes redirectAttributes, HttpSession session, @PathVariable int id, Model model) {
 
