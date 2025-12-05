@@ -268,33 +268,26 @@ public class ProjectRepository {
         return jdbcTemplate.query(query, taskRowMapper, id);
     }
 
-    public int deleteProjectByProject(Project toDelete) {
+    public int deleteProject(Project toDelete) {
 
         String sql = """
-                DELETE FROM project WHERE id = ?""";
+                DELETE FROM project
+                WHERE id = ?
+                """;
 
-        int projectID = toDelete.getId();
+        int projectId = toDelete.getId();
 
         int rowsAffected;
 
         try {
 
-            rowsAffected = jdbcTemplate.update(sql, projectID);
+            rowsAffected = jdbcTemplate.update(sql, projectId);
             //(jdbc template throws DataAccessException)
         } catch (DataAccessException e) {
             throw new RuntimeException("A database error occurred when trying to delete project with ID: " +
-                    projectID + ". Please contact data specialist.");
-        }
-
-        //Signal, on whether the database is corrupt.
-        if (rowsAffected != 1) {
-            throw new RuntimeException("Multiple lists was found with this id: " + projectID +
-                    ", and it is unclear what Project to delete. Please contact dataspecialist");
+                    projectId + ". Please contact data specialist.");
         }
 
         return rowsAffected;
     }
-
-
-
 }
