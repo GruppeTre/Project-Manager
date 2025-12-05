@@ -2,6 +2,7 @@ package com.mavi.projectmanager.repository;
 
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
+import com.mavi.projectmanager.model.Role;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -41,16 +42,14 @@ public class EmployeeRepository {
         }
     }
 
-    public List<Employee> getEmployeesByRole() {
+    public List<Employee> getEmployeeByTaskId(int id) {
         String query = """
-                        SELECT e.*
-                        FROM employee e
-                        LEFT JOIN account a ON e.id = a.emp_id
-                        WHERE a.role = 2
-                       """;
+                SELECT * FROM employee e
+                INNER JOIN employee_task_junction etj
+                    ON e.id = etj.employee_id
+                WHERE etj.task_id = ?
+                """;
 
-        List<Employee> employees = jdbcTemplate.query(query, employeeRowMapper);
-
-        return employees;
+        return jdbcTemplate.query(query, employeeRowMapper, id);
     }
 }

@@ -3,50 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
-    <link rel="stylesheet" th:href="@{/style/normalize.css}">
-    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
-    <link rel="stylesheet" th:href="@{/style/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
-<form th:action="@{/project/create}" th:object="${project}" method="post">
 
-    <div>
-        <h2 th:text="'New project'"></h2>
-    </div>
+<header th:replace="~{fragments/_commonElements :: header}"></header>
+
+<main class="container">
+
+    <form th:action="@{/project/create}" th:object="${project}" method="post">
+
+        <div>
+            <h2 th:text="#{newProject.title}"></h2>
+        </div>
+
+        <!-- Error messages -->
+        <div th:if="${error}" class="form-error-container">
+            <label th:if="${invalidField == 'title'}" th:text="#{form.error.title}"></label>
+            <div th:if="${invalidField == 'date'}">
+                <label th:if="${errorId == 1}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
+                <label th:if="${errorId == 2}" th:text="#{form.error.date.endDateInPast}"></label>
+            </div>
+        </div>
+
+        <div class="row">
+            <label for="name" class="form-label" th:text="Name"></label>
+            <input id="name" type="text" th:field="*{name}" required>
+        </div>
+
+        <div class="row">
+            <label for="start-date" class="form-label" th:text="'Start Date'"></label>
+            <input id="start-date" type="date" th:field="*{start_date}" required>
+        </div>
+
+        <div class="row">
+            <label for="end-date" class="form-label" th:text="'End Date'"></label>
+            <input id="end-date" type="date" th:field="*{end_date}" required>
+        </div>
+
+        <div>
+            <label for="project_lead">Project Lead:</label>
+            <select id="project_lead" name="leadsList[0].employee.mail" required>
+                <option value="" disabled selected>Vælg konto…</option>
+                <option th:each="lead : ${allLeads}"
+                        th:value="${lead.employee.mail}"
+                        th:text="|${lead.employee.firstName} ${lead.employee.lastName}|">
+                </option>
+            </select>
+        </div>
 
 
-    <div class="row">
-        <label for="name" class="form-label" th:text="Name"></label>
-        <input id="name" type="text" th:field="*{name}">
-    </div>
-
-    <div class="row">
-        <label for="start-date" class="form-label" th:text="'Start Date'"></label>
-        <input id="start-date" type="date" th:field="*{start_date}">
-    </div>
-
-    <div class="row">
-        <label for="end-date" class="form-label" th:text="'End Date'"></label>
-        <input id="end-date" type="date" th:field="*{end_date}">
-    </div>
-
-    <div>
-        <label for="project_lead">Project Lead:</label>
-        <select id="project_lead" th:field="${employee.mail}">
-            <option value="" disabled selected>Vælg konto…</option>
-            <option th:each="employee : ${employees}"
-                    th:value="${employee.mail}"
-                    th:text="|${employee.firstName} ${employee.lastName}|">
-            </option>
-        </select>
-    </div>
-
-
-    <!-- BUTTONS -->
-    <div class="row">
-        <a class="button" href="/overview" th:text="Tilbage"></a>
-        <button class="button" type="submit" th:text="submit"></button>
-    </div>
-</form>
+        <!-- BUTTONS -->
+        <div class="row">
+            <a class="button" href="/overview?viewMode=accounts" th:text="#{form.button.back}"></a>
+            <button class="button" type="submit" th:text="#{form.button.submit}"></button>
+        </div>
+    </form>
+</main>
 </body>
 </html>

@@ -4,6 +4,7 @@ import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
+import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,4 @@ public class EmployeeService {
         return employeeRepository.getEmployeeByMail(mail);
     }
 
-    //Get all accounts with specific role
-    public List<Employee> getEmployeesByRole() {
-        return employeeRepository.getEmployeesByRole();
-    }
-
-    private boolean isValidMail(Employee employee){
-        return employee != null;
-    }
 }

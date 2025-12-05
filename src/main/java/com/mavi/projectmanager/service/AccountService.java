@@ -4,6 +4,7 @@ import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
+import com.mavi.projectmanager.repository.EmployeeRepository;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import com.mavi.projectmanager.exception.Field;
@@ -22,11 +23,13 @@ public class AccountService {
     private final int SUPER_ADMIN_ID = 1;
     private final AccountRepository accountRepository;
     private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
-    public AccountService(AccountRepository accountRepository, EmployeeService employeeService) {
+    public AccountService(AccountRepository accountRepository, EmployeeService employeeService, EmployeeRepository employeeRepository) {
         this.accountRepository = accountRepository;
         this.employeeService = employeeService;
+        this.employeeRepository = employeeRepository;
     }
 
     //Registers a user
@@ -101,10 +104,14 @@ public class AccountService {
 
             return encoder.matches(account.getPassword(), getAccount.getPassword());
         } catch (RuntimeException e) {
-            System.out.println("Throwing");
             return false;
         }
     }
+
+    public List<Account> getAccountsByRole(Role role) {
+        return accountRepository.getAccountsByRole(role);
+    }
+
 
     public Account deleteAccount(Account toDelete) {
 

@@ -140,7 +140,7 @@ tbody td {
     border-style: none;
 }
 
-.top-nav a{
+.top-nav a, .project_nav a{
     display: inline-block;
     border-right-style: solid;
     border-right-color: #c5c3c6;
@@ -148,16 +148,19 @@ tbody td {
     padding: 5px;
     text-align: center;
     flex-grow: 1;
+    color: var(--light);
+    text-decoration: none;
 }
 
-.top-nav a:last-child{
+.top-nav a:last-child, .project_nav a:last-child{
     border-right-style: none;
 }
 
-.top-nav {
+.top-nav, .project_nav {
     display: flex;
-    background-color: #4c5d68;
+    background-color: var(--dark-blue);
     width:100%;
+    justify-content: space-evenly;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 
@@ -188,18 +191,47 @@ input, label {
     width: 25em;
     color: var(--gray);
 }
-.top-nav a:last-child{
-    border-right-style: none;
+
+summary {
+    background-color: var(--dark-blue);
+    color: var(--light);
+    list-style: none;
+    padding: 0;
 }
 
-.top-nav {
-    display: flex;
-    background-color: #4c5d68;
-    width:100%;
-    justify-content: space-evenly;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
+details summary::-webkit-details-marker,
+details summary::marker {
+    display: none;
+}
 
+details {
+    background-color: var(--light);
+}
+
+details > * {
+    padding: 10px;
+}
+
+.bold_description{
+    font-weight: bold;
+    padding-bottom: -5px;
+}
+
+details p {
+    margin-bottom: -2px;
+    padding: 0;
+}
+
+article h5 {
+    margin: 5px 0 0 0;
+}
+
+article p {
+    margin-bottom: -2px;
+}
+
+.float-right {
+    float: right;
 }
 
 /* skeleton overrides */

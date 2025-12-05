@@ -21,7 +21,7 @@ CREATE TABLE account (
 
      PRIMARY KEY(id),
      FOREIGN KEY(emp_id) REFERENCES employee(id)
-         ON DELETE CASCADE
+         ON DELETE RESTRICT
 );
 
 CREATE TABLE project (
@@ -38,7 +38,7 @@ CREATE TABLE subproject (
     name VARCHAR(50) NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
-    project_id INT NOT NULL
+    project_id INT NOT NULL,
 
     PRIMARY KEY(id),
     FOREIGN KEY(project_id) REFERENCES project(id)
