@@ -35,7 +35,7 @@ class ProjectRepositoryTest {
         Employee dbEmployee = new Employee();
         dbEmployee.setPosition("Udvikler");
         dbEmployee.setFirstName("Ida");
-        dbEmployee.setLastName("Sørensen");
+        dbEmployee.setLastName("Sï¿½rensen");
         dbEmployee.setMail("idso@alphasolutions.com");
         dbEmployee.setId(2);
 
@@ -133,6 +133,10 @@ class ProjectRepositoryTest {
         dbProjectToInsert.setId(expectedId);
 
         assertEquals(this.projectRepository.getProjectById(expectedId), dbProjectToInsert);
+    }
+    @Test
+    void shouldDeleteProject() {
+        assertEquals(1, this.projectRepository.deleteProject(dbProjectWithLead));
     }
 
 }

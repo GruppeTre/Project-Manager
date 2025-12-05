@@ -85,7 +85,7 @@ class ProjectControllerTest {
 
 /*
     ======================================
-    =            GETTER TESTS            =
+    =            GET TESTS            =
     ======================================
 */
 
@@ -173,7 +173,7 @@ class ProjectControllerTest {
 
 /*
     ======================================
-    =            SETTER TESTS            =
+    =            POST TESTS            =
     ======================================
 */
 
@@ -345,6 +345,21 @@ class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("projectOverviewPage"))
                 .andExpect(model().attribute("project", project));
+
+        mockedStatic.close();
+    }
+
+    @Test
+    void shouldDeleteProject() throws Exception {
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        mockMvc.perform(post("/project/delete")
+                .sessionAttr("account", adminAccount))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/overview?viewMode=projects"));
 
         mockedStatic.close();
     }
