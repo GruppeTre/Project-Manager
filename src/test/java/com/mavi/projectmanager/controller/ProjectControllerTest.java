@@ -111,6 +111,7 @@ class ProjectControllerTest {
     @Test
     void shouldDeleteProject() throws Exception {
 
+        
         int rowsAffected = 1;
 
         when(projectService.deleteProjectByProject(any(Project.class))).thenReturn(rowsAffected);
