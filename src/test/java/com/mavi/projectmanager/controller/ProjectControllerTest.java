@@ -3,10 +3,7 @@ package com.mavi.projectmanager.controller;
 import com.mavi.projectmanager.controller.utils.SessionUtils;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidDateException;
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.Role;
+import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
@@ -323,5 +320,30 @@ class ProjectControllerTest {
         mockedStatic.close();
 
         verify(projectService).createProject(any(Project.class));
+    }
+
+    @Test
+    void shouldShowProjectOverviewPage() throws Exception {
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+
+        Project project = new Project();
+        List<SubProject> subProjectList = new ArrayList<>();
+        SubProject subProject = new SubProject();
+        List<Task> taskList = new ArrayList<>();
+        Task task = new Task();
+        List<Employee> employeeList = new ArrayList<>();
+
+        project.setSubProjectsList(subProjectList);
+        subProject.setTaskList(taskList);
+        task.setEmployeeList(employeeList);
+
+
+        when(projectService.getFullProjectById(anyInt())).thenReturn(project);
+
+        mockMvc.perform(get("/project/view/{id}", 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("projectOverviewPage"))
+                .andExpect(model().attribute("project", project));
     }
 }

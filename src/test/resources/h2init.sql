@@ -42,11 +42,16 @@ CREATE TABLE subproject (
 CREATE TABLE task (
                       id INT NOT NULL UNIQUE AUTO_INCREMENT,
                       name VARCHAR(50) NOT NULL,
+                      description VARCHAR(255),
                       start_date DATE NOT NULL,
                       end_date DATE NOT NULL,
-                      duration INT NOT NULL,
+                      estimated_duration INT NOT NULL,
+                      actual_duration INT,
+                      subproject_id INT NOT NULL,
 
-                      PRIMARY KEY(id)
+                      PRIMARY KEY(id),
+                      FOREIGN KEY(subproject_id) REFERENCES subproject(id)
+                          ON DELETE CASCADE
 );
 
 CREATE TABLE account_project_junction (
@@ -109,3 +114,18 @@ VALUES ('Projekt Alpha', '2025-11-28', '2025-11-30'),
 
 INSERT INTO account_project_junction(account_id, project_id)
 VALUES (2,1);
+
+INSERT INTO subproject(name, start_date, end_date, project_id)
+VALUES
+('Subproject Charlie', '2025-12-12', '2025-12-18', 1),
+('Subproject Delta', '2025-12-18', '2025-12-20', 1);
+
+INSERT INTO task(name, description, start_date, end_date, estimated_duration, subproject_id)
+VALUES
+('Task A', 'Test beskrivelse', '2025-12-12', '2025-12-13', 8, 1),
+('Task B', 'Test beskrivelse', '2025-12-13', '2025-12-15', 24, 1);
+
+INSERT INTO employee_task_junction(employee_id, task_id)
+VALUES
+(1, 1),
+(2, 2);

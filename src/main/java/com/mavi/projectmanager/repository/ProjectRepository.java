@@ -97,6 +97,7 @@ public class ProjectRepository {
         int taskId = rs.getInt("id");
         task.setId(taskId);
         task.setName(rs.getString("name"));
+        task.setDescription(rs.getString("description"));
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
@@ -106,7 +107,7 @@ public class ProjectRepository {
         LocalDate convertedEndDate = endDate.toLocalDate();
         task.setEnd_date(convertedEndDate);
 
-        task.setEstimatedDuration(rs.getInt("duration"));
+        task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
         List<Employee> employeeList = employeeRepository.getEmployeeByTaskId(taskId);
         task.setEmployeeList(employeeList);
