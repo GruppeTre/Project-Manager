@@ -28,6 +28,7 @@ class ProjectRepositoryTest {
     private Project dbProjectWithLead;
     private Project dbProjectWithoutLead;
     private Account dbProjectLead;
+    private Project dbProjectToInsert;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +55,12 @@ class ProjectRepositoryTest {
         dbProjectWithoutLead.setStart_date(LocalDate.parse("2025-12-01"));
         dbProjectWithoutLead.setEnd_date(LocalDate.parse("2025-12-17"));
         dbProjectWithoutLead.setId(2);
+
+        dbProjectToInsert = new Project();
+        dbProjectToInsert.setName("Project Gamma");
+        dbProjectToInsert.setStart_date(LocalDate.parse("2025-11-28"));
+        dbProjectToInsert.setEnd_date(LocalDate.parse("2025-11-30"));
+
     }
 
     @Test
@@ -94,8 +101,13 @@ class ProjectRepositoryTest {
     @Test
     void shouldInsertIntoProject() {
 
-        assertDoesNotThrow(() -> this.projectRepository.createProject(dbProjectWithLead));
+        int expectedId = 3;
 
+        assertDoesNotThrow(() -> this.projectRepository.createProject(dbProjectToInsert));
+
+        dbProjectToInsert.setId(expectedId);
+
+        assertEquals(this.projectRepository.getProjectById(expectedId), dbProjectToInsert);
     }
 
 }

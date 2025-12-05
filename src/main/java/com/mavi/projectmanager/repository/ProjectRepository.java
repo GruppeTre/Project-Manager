@@ -166,9 +166,11 @@ public class ProjectRepository {
 
         String query = "INSERT INTO project (name, start_date, end_date) VALUES (?,?,?)";
 
+        int rowsAffected;
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            jdbcTemplate.update(connection -> {
+            rowsAffected = jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, project.getName());
                 ps.setObject(2, project.getStart_date());
@@ -180,8 +182,6 @@ public class ProjectRepository {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        int rowsAffected = jdbcTemplate.update(query);
 
         if (rowsAffected != 1) {
             throw new RuntimeException("Wrong number of rows inserted. Rows: " + rowsAffected);
