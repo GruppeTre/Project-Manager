@@ -4,8 +4,8 @@ import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.model.Role;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +28,7 @@ class ProjectRepositoryTest {
     private Project dbProjectWithLead;
     private Project dbProjectWithoutLead;
     private Account dbProjectLead;
+    private Project dbProjectToInsert;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +55,12 @@ class ProjectRepositoryTest {
         dbProjectWithoutLead.setStart_date(LocalDate.parse("2025-12-01"));
         dbProjectWithoutLead.setEnd_date(LocalDate.parse("2025-12-17"));
         dbProjectWithoutLead.setId(2);
+
+        dbProjectToInsert = new Project();
+        dbProjectToInsert.setName("Project Gamma");
+        dbProjectToInsert.setStart_date(LocalDate.parse("2025-11-28"));
+        dbProjectToInsert.setEnd_date(LocalDate.parse("2025-11-30"));
+
     }
 
     @Test
@@ -91,30 +98,6 @@ class ProjectRepositoryTest {
         assertEquals(this.projectRepository.getProjectsByLead(dbProjectLead.getId()), List.of(dbProjectWithLead, dbProjectWithoutLead));
     }
 
-    /*
-INSERT INTO project(name, start_date, end_date)
-VALUES ('Projekt Alpha', '2025-11-28', '2025-11-30'),
-       ('Projekt Beta', '2025-12-01', '2025-12-17');
-
-INSERT INTO account_project_junction(account_id, project_id)
-VALUES (2,1);
-
-INSERT INTO subproject(name, start_date, end_date, project_id)
-VALUES
-('Subproject Charlie', '2025-12-12', '2025-12-18', 1),
-('Subproject Delta', '2025-12-18', '2025-12-20', 1);
-
-INSERT INTO task(name, description, start_date, end_date, estimated_duration, subproject_id)
-VALUES
-('Task A', 'Test beskrivelse', '2025-12-12', '2025-12-13', 8, 1),
-('Task B', 'Test beskrivelse', '2025-12-13', '2025-12-15', 24, 1);
-
-INSERT INTO employee_task_junction(employee_id, task_id)
-VALUES
-(1, 1),
-(2, 2);
-     */
-
     @Test
     void shouldGetFullProjectById() {
         Project project = projectRepository.getFullProjectById(1);
@@ -138,6 +121,18 @@ VALUES
         assertFalse(project.getSubProjectsList().getFirst().getTaskList().getFirst().getEmployeeList().isEmpty());
         assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getEmployeeList().getFirst().getId());
 
+    }
+
+    @Test
+    void shouldInsertIntoProject() {
+
+        int expectedId = 3;
+
+        assertDoesNotThrow(() -> this.projectRepository.createProject(dbProjectToInsert));
+
+        dbProjectToInsert.setId(expectedId);
+
+        assertEquals(this.projectRepository.getProjectById(expectedId), dbProjectToInsert);
     }
 
 }
