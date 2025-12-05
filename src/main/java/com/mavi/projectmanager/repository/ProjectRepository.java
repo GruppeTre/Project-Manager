@@ -1,10 +1,5 @@
 package com.mavi.projectmanager.repository;
 
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.Role;
-import org.springframework.dao.EmptyResultDataAccessException;
 import com.mavi.projectmanager.model.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,10 +11,8 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Comparator;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.sql.Date;
-import java.util.List;
 
 @Repository
 public class ProjectRepository {
@@ -27,7 +20,6 @@ public class ProjectRepository {
     private EmployeeRepository employeeRepository;
     private AccountRepository accountRepository;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
-    private final AccountRepository accountRepository;
 
     public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, EmployeeRepository employeeRepository){
         this.jdbcTemplate = jdbcTemplate;
@@ -37,7 +29,8 @@ public class ProjectRepository {
 
     public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
-        project.setId(rs.getInt("id"));
+        int projectId = rs.getInt("id");
+        project.setId(projectId);
         project.setName(rs.getString("name"));
 
         Date startDate = rs.getDate("start_date");
@@ -54,22 +47,6 @@ public class ProjectRepository {
 
         return project;
     });
-    //RowMapper with only with fields: ID, Name, Start_Date, End_Date.
-    public RowMapper<Project> projectExclusiveRowMapper = ((rs, rowNum) -> {
-        Project projectExclusive = new Project();
-        projectExclusive.setId(rs.getInt("id"));
-        projectExclusive.setName(rs.getString("name"));
-
-        Date startDate = rs.getDate("start_date");
-        LocalDate convertedStartDate = startDate.toLocalDate();
-
-        Date endDate = rs.getDate("end_date");
-        LocalDate convertedEndDate = endDate.toLocalDate();
-
-        return projectExclusive;
-    });
-
-
 
     public RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
@@ -250,9 +227,6 @@ public class ProjectRepository {
         if(rowsAffected != 1) {
             throw new RuntimeException("Could not insert into junction table");
         }
-
-       return rowsAffected;
-
     }
 
     public void deleteFromAccountProjectJunction(int projectId) {
@@ -291,18 +265,5 @@ public class ProjectRepository {
                 """;
 
         return jdbcTemplate.query(query, taskRowMapper, id);
-    }
-    //Helper method:
-    //Retrieves a project, but only with fields: name, start_date and end_date - no arraylist or nested object.
-    public Project getProjectById(int id) {
-        String sql = """
-                SELECT p.id p.name, p.start_date, p.end_date FROM project WHERE p.id = ?
-                """;
-        try {
-            return jdbcTemplate.queryForObject(sql, projectExclusiveRowMapper, id);
-        }
-        catch (EmptyResultDataAccessException e) {
-            return null;
-        }
     }
 }
