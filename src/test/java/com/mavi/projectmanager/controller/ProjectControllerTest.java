@@ -357,10 +357,24 @@ class ProjectControllerTest {
         mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
         mockMvc.perform(post("/project/delete")
-                .sessionAttr("account", adminAccount))
+                        .sessionAttr("account", adminAccount))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/overview?viewMode=projects"));
+        mockedStatic.close();
+    }
 
+    @Test
+    void shouldDeleteTask() throws Exception {
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        mockMvc.perform(post("/project/edit/{projectId}/task/delete", 1)
+                        .sessionAttr("account", leadAccount).param("id", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/view/" + 1))
+                .andExpect(flash().attributeCount(0));
         mockedStatic.close();
     }
 }

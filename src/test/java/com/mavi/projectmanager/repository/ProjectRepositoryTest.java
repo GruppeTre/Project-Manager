@@ -1,9 +1,6 @@
 package com.mavi.projectmanager.repository;
 
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.Role;
+import com.mavi.projectmanager.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -49,6 +46,27 @@ class ProjectRepositoryTest {
         dbProjectWithLead.setStart_date(LocalDate.parse("2025-11-28"));
         dbProjectWithLead.setEnd_date(LocalDate.parse("2025-11-30"));
         dbProjectWithLead.setId(1);
+
+        Task dbTask = new Task();
+        dbTask.setId(1);
+        dbTask.setName("task A");
+        dbTask.setDescription("test beskrivelse");
+        dbTask.setStart_date(LocalDate.parse("2025-12-12"));
+        dbTask.setEnd_date(LocalDate.parse("2025-12-13"));
+        dbTask.setEstimatedDuration(8);
+
+        List<Task> taskList = List.of(dbTask);
+
+        SubProject dbSubProject = new SubProject();
+        dbSubProject.setId(1);
+        dbSubProject.setName("Subproject Charlie");
+        dbSubProject.setStart_date(LocalDate.parse("2025-12-12"));
+        dbSubProject.setStart_date(LocalDate.parse("2025-12-18"));
+        dbSubProject.setTaskList(taskList);
+
+        List<SubProject> subProjectList = List.of(dbSubProject);
+
+        dbProjectWithLead.setSubProjectsList(subProjectList);
 
         dbProjectWithoutLead = new Project();
         dbProjectWithoutLead.setName("Projekt Beta");
@@ -139,4 +157,12 @@ class ProjectRepositoryTest {
         assertEquals(1, this.projectRepository.deleteProject(dbProjectWithLead));
     }
 
+    @Test
+    void shouldDeleteTask() {
+
+        //retrieve first task of first subproject
+        Task toDelete = dbProjectWithLead.getSubProjectsList().getFirst().getTaskList().getFirst();
+
+        assertEquals(1, this.projectRepository.deleteTask(toDelete));
+    }
 }

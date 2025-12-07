@@ -3,11 +3,7 @@ package com.mavi.projectmanager.service;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.SubProject;
-import com.mavi.projectmanager.model.Role;
+import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -96,6 +92,16 @@ public class ProjectService {
         if (rowsAffected != 1) {
             throw new IllegalArgumentException("Multiple lists was found with this id: " + toDelete.getId() +
                     ", and it is unclear what Project to delete. Please contact dataspecialist");
+        }
+    }
+
+    public void deleteTask(Task toDelete) {
+
+        int rowsAffected = projectRepository.deleteTask(toDelete);
+
+        if (rowsAffected != 1) {
+            throw new IllegalArgumentException("Unexpected number of tasks with id: " + toDelete.getId()
+            + " found in database! Expected: [1], actual: [" + rowsAffected + "]");
         }
     }
 
