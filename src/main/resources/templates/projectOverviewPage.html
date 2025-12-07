@@ -8,56 +8,74 @@
     <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
-    <main>
-        <header th:replace="~{fragments/_commonElements.html :: header}"></header>
+    <header th:replace="~{fragments/_commonElements.html :: header}"></header>
+    <main class="container">
+
         <section class="overview" th:object="${project}">
+
             <nav class="project_nav">
-                    <a th:href="@{/overview(viewMode=projects)}" th:text="'Go back'"></a>
-                    <a th:href="@{/project/view/{id}(id=*{id})}" th:text="'Project Overivew'"></a>
-                    <a href="#" th:text="'Project Statistics'"></a>
-                    <a href="#" th:text="'Gannt Diagram'"></a>
+                <a th:href="@{/overview(viewMode=projects)}" th:text="'Go back'"></a>
+                <a th:href="@{/project/view/{id}(id=*{id})}" th:text="'Project Overivew'"></a>
+                <a href="#" th:text="'Project Statistics'"></a>
+                <a href="#" th:text="'Gannt Diagram'"></a>
             </nav>
-            <article>
-                <h5 th:text="*{name}"></h5>
-                <a class="button button-primary" th:href="@{/project/subProject/create}" th:text="'Add Subproject'"></a>
-                <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
-                <p th:text="#{projectOverviewPage.p.deadline} + ' ' + *{end_date}"></p>
-                <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + *{sumProjectDuration} + #{projectOverviewPage.p.hours}"></p>
-            </article>
-            <article th:if="*{!subProjectsList.isEmpty}" th:each="sb : ${project.getSubProjectsList()}">
+
+            <div class="overview-content">
+
+                <div class="project-header">
+                    <article>
+                        <h5 th:text="*{name}"></h5>
+                        <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
+                        <p th:text="#{projectOverviewPage.p.deadline} + ' ' + *{end_date}"></p>
+                        <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + *{sumProjectDuration} + #{projectOverviewPage.p.hours}"></p>
+                    </article>
+                    <a class="button button-primary" th:href="@{/project/subProject/create}" th:text="'Add Subproject'"></a>
+                </div>
+
+                <article th:if="*{!subProjectsList.isEmpty}" th:each="sb : ${project.getSubProjectsList()}">
                     <details>
                         <summary th:text="'+ ' + ${sb.name}"></summary>
-                        <div class="collapsed_content">
-                            <div>
-                                <a class="button button-primary" th:href="@{/project/task/create}" th:text="'Add Task'"></a>
-                                <a class="button button-primary float-right" href="#" th:text="'Edit'"></a>
-                            </div>
-                            <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
-                            <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${sb.end_date}"></p>
-                            <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
-                        </div>
-                        <article th:each="task : ${sb.getTaskList()}">
-                            <details>
-                                <summary th:text="'+ ' + ${task.name}"></summary>
-                                <div class="collapsed_content">
-                                    <div>
-                                        <a class="button button-primary" href="#" th:text="#{projectOverviewPage.button.timespend}"></a>
-                                        <a class="button button-primary float-right" href="#" th:text="#{overview.button.edit}"></a>
-                                    </div>
-                                    <p class="bold_description" th:text="#{projectOverviewPage.h3.description}"></p>
-                                    <p th:text="${task.description}"></p>
+                        <div class="collapsed-content">
+                            <div class="project-header">
+                                <article>
+<!--                                    <h3 th:text="'Sub-project info:'"></h3>-->
                                     <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
-                                    <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${task.end_date}"></p>
-                                    <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.employeesToString()}"></p>
-                                    <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${task.estimatedDuration} + #{projectOverviewPage.p.hours}"></p>
+                                    <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${sb.end_date}"></p>
+                                    <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
+                                </article>
+                                <div class="project-buttons-container">
+                                    <a class="button button-primary" href="#" th:text="'Edit'"></a>
+                                    <a class="button button-primary" th:href="@{/project/task/create}" th:text="'Add Task'"></a>
                                 </div>
-                            </details>
-                        </article>
+                            </div>
+                            <article class="task-list" th:each="task : ${sb.getTaskList()}">
+                                <details>
+                                    <summary th:text="'+ ' + ${task.name}"></summary>
+                                    <div class="collapsed_content">
+                                        <div class="project-header">
+                                            <article>
+                                                <p class="bold_description" th:text="#{projectOverviewPage.h3.description}"></p>
+                                                <p th:text="${task.description}"></p>
+                                                <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
+                                                <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${task.end_date}"></p>
+                                                <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.employeesToString()}"></p>
+                                                <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${task.estimatedDuration} + #{projectOverviewPage.p.hours}"></p>
+                                            </article>
+                                            <div class="project-buttons-container">
+                                                <a class="button button-primary" href="#" th:text="#{overview.button.edit}"></a>
+                                                <a class="button button-primary" href="#" th:text="#{projectOverviewPage.button.timespend}"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </article>
+                        </div>
                     </details>
-            </article>
-            <article th:if="*{subProjectsList.isEmpty}">
-                <p>No subprojects found!</p>
-            </article>
+                </article>
+                <article th:if="*{subProjectsList.isEmpty}">
+                    <p>No subprojects found!</p>
+                </article>
+            </div>
         </section>
         <footer th:replace="~{fragments/_commonElements.html :: footer}"></footer>
     </main>
