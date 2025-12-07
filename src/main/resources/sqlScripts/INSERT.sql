@@ -38,7 +38,8 @@ VALUES
 INSERT IGNORE INTO account_project_junction(account_id, project_id)
 VALUES
 (3, 1),
-(4, 1);
+(4, 1),
+(3, 2);
 
 INSERT IGNORE INTO subproject(name, start_date, end_date, project_id)
 VALUES
