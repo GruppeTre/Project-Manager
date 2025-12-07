@@ -240,7 +240,7 @@ public class ProjectRepository {
 
         int rowsAffected = jdbcTemplate.update(query, projectId);
 
-        if (rowsAffected != 1) {
+        if (rowsAffected == 0) {
             throw new RuntimeException("unexpected amount of rows deleted! Expected : 1, actual: " + rowsAffected);
         }
     }
