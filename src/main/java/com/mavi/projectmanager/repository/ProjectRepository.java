@@ -285,8 +285,27 @@ public class ProjectRepository {
             rowsAffected = jdbcTemplate.update(sql, projectId);
             //(jdbc template throws DataAccessException)
         } catch (DataAccessException e) {
-            throw new RuntimeException("A database error occurred when trying to delete project with ID: " +
-                    projectId + ". Please contact data specialist.");
+            throw new RuntimeException("An unexpected error occured while trying to delete project with id: " + projectId);
+        }
+
+        return rowsAffected;
+    }
+
+    public int deleteTask(Task toDelete) {
+
+        String sql = """
+                DELETE FROM task
+                WHERE id = ?
+                """;
+
+        int taskId = toDelete.getId();
+
+        int rowsAffected;
+
+        try {
+            rowsAffected = jdbcTemplate.update(sql, taskId);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occured while trying to delete task with id: " + taskId);
         }
 
         return rowsAffected;

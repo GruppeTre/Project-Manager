@@ -3,10 +3,7 @@ package com.mavi.projectmanager.controller;
 import com.mavi.projectmanager.controller.utils.SessionUtils;
 import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.Role;
+import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
@@ -172,6 +169,31 @@ public class ProjectController {
         }
 
         return "redirect:/overview?viewMode=projects";
+    }
+
+    @PostMapping("/edit/{projectId}/task/delete")
+    public String deleteTask(@PathVariable("projectId") int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        //todo: check if lead is actual owner of project and task?
+
+        //make sure that id of task to be deleted is passed as a field for toDelete object
+        try {
+            projectService.deleteTask(toDelete);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", true);
+        }
+
+        //return to project view
+        return "redirect:/project/view/" + projectId;
     }
 }
 
