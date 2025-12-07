@@ -3,10 +3,7 @@ package com.mavi.projectmanager.service;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.Role;
+import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +37,7 @@ class ProjectServiceTest {
     AccountRepository accountRepository;
 
     private Project dbProject;
+    private Task dbTask;
     private Project newProject;
     private Account leadAccount;
 
@@ -83,6 +81,9 @@ class ProjectServiceTest {
         newProject.setEnd_date(endDate);
         newProject.setName(name);
         newProject.setId(id);
+
+        dbTask = new Task();
+        dbTask.setId(id);
     }
 
     @Test
@@ -213,7 +214,16 @@ class ProjectServiceTest {
         assertDoesNotThrow(() -> this.projectService.deleteProject(dbProject));
 
         verify(projectRepository).deleteProject(dbProject);
+    }
 
+    @Test
+    void shouldDeleteTask() {
+
+        when(projectRepository.deleteTask(dbTask)).thenReturn(1);
+
+        assertDoesNotThrow(() -> this.projectService.deleteTask(dbTask));
+
+        verify(projectRepository).deleteTask(dbTask);
     }
 
 }
