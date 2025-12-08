@@ -18,14 +18,12 @@ import java.sql.Date;
 @Repository
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
-    private EmployeeRepository employeeRepository;
     private AccountRepository accountRepository;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
 
     public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, EmployeeRepository employeeRepository){
         this.jdbcTemplate = jdbcTemplate;
         this.accountRepository = accountRepository;
-        this.employeeRepository = employeeRepository;
     }
 
     public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
@@ -110,8 +108,8 @@ public class ProjectRepository {
 
         task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
-        List<Employee> employeeList = employeeRepository.getEmployeeByTaskId(taskId);
-        task.setEmployeeList(employeeList);
+        List<Account> accountList = accountRepository.getAccountsByTaskId(taskId);
+        task.setAccountList(accountList);
 
         return task;
     });
