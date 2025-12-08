@@ -233,9 +233,6 @@ summary {
 details summary::-webkit-details-marker, details summary::marker {
     color: var(--light);
 }
-/*details summary::marker {*/
-/*    color: var(--accent);*/
-/*}*/
 
 details {
     background-color: var(--light);
