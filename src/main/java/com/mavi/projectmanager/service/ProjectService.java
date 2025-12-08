@@ -10,6 +10,7 @@ import com.mavi.projectmanager.model.SubProject;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
+import com.mavi.projectmanager.service.utils.DateUtils;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +55,7 @@ public class ProjectService {
             throw new InvalidFieldException("Invalid name", Field.TITLE);
         }
 
-        validateDates(project);
+        DateUtils.validateDates(project.getStart_date(), project.getEnd_date());
 
         int projectId = this.projectRepository.createProject(project);
         int accountId = this.accountRepository.getAccountByMail(project.getLeadsList().getFirst().getMail()).getId();
@@ -94,19 +95,6 @@ public class ProjectService {
 
     }
 
-    private void validateDates(Project projectToCheck) {
-
-        LocalDate today = LocalDate.now();
-
-        if (projectToCheck.getStart_date().isAfter(projectToCheck.getEnd_date())) {
-            throw new InvalidDateException("Start date cannot be after end date!", 1);
-        }
-
-        if (!projectToCheck.getEnd_date().isAfter(today)) {
-            throw new InvalidDateException("End date cannot be in the past!", 2);
-        }
-    }
-
     private boolean hasProjectLead(Project projectToCheck) {
         return true;
     }
@@ -121,7 +109,7 @@ public class ProjectService {
             throw new InvalidFieldException("invalid name", Field.TITLE);
         }
 
-        validateDates(project);
+        DateUtils.validateDates(project.getStart_date(), project.getEnd_date());
 
         //validate that project lead exists
         String mail = project.getLeadsList().getFirst().getMail();
