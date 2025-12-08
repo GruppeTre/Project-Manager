@@ -153,6 +153,25 @@ tbody td {
     border-style: none;
 }
 
+.task-description {
+    background-color: var(--dark-ash);
+    border-radius: 12px;
+    min-height: 5em;
+    max-height: 13em;
+    width: 40em;
+    padding: 0.5em;
+
+    overflow-y: auto;
+
+    white-space: pre-wrap;
+    font-family: inherit;
+}
+
+details, summary {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
 .top-nav a, .project_nav a{
     display: inline-block;
     border-right-style: solid;
