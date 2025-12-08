@@ -162,6 +162,11 @@ public class ProjectService {
         return projectRepository.getSubprojectById(id);
     }
 
+    public int updateSubProject(SubProject subProject) {
+        return projectRepository.updateSubProject(subProject);
+    }
+
+
 
 
 

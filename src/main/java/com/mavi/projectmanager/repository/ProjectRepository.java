@@ -22,7 +22,7 @@ public class ProjectRepository {
     private AccountRepository accountRepository;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
 
-    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, EmployeeRepository employeeRepository){
+    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, EmployeeRepository employeeRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.accountRepository = accountRepository;
         this.employeeRepository = employeeRepository;
@@ -116,11 +116,11 @@ public class ProjectRepository {
         return task;
     });
 
-    public List<Project> getProjects(){
+    public List<Project> getProjects() {
         String query = """
-                        SELECT p.id, p.name, p.start_date, p.end_date
-                        FROM Project p
-                       """;
+                 SELECT p.id, p.name, p.start_date, p.end_date
+                 FROM Project p
+                """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
 
         projects.sort(PROJECT_COMPARATOR);
@@ -128,7 +128,7 @@ public class ProjectRepository {
         return projects;
     }
 
-    public List<Project> getProjectsByLead(int id){
+    public List<Project> getProjectsByLead(int id) {
         String query = """
                         SELECT
                             p.id,
@@ -187,7 +187,7 @@ public class ProjectRepository {
 
         if (rowsAffected != 1) {
             throw new RuntimeException("Wrong number of rows inserted. Rows: " + rowsAffected);
-            }
+        }
 
         //Returns the keyholder for check
         if (keyHolder.getKey() == null) {
@@ -211,7 +211,7 @@ public class ProjectRepository {
         //returns rows affected
         int rowsAffected = jdbcTemplate.update(query, project.getName(), project.getStart_date(), project.getEnd_date(), project.getId());
 
-        if(rowsAffected != 1) {
+        if (rowsAffected != 1) {
             throw new RuntimeException("Could not insert into junction table");
         }
 
@@ -226,7 +226,7 @@ public class ProjectRepository {
 
         rowsAffected = jdbcTemplate.update(query, accountId, projectId);
 
-        if(rowsAffected != 1) {
+        if (rowsAffected != 1) {
             throw new RuntimeException("Could not insert into junction table");
         }
     }
@@ -245,7 +245,7 @@ public class ProjectRepository {
         }
     }
 
-    public Project getFullProjectById(int id){
+    public Project getFullProjectById(int id) {
         String query = """
                 SELECT * FROM Project WHERE id = ?
                 """;
@@ -253,7 +253,7 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(query, fullProjectRowMapper, id);
     }
 
-    public List<SubProject> getSubProjectsByProjectId(int id){
+    public List<SubProject> getSubProjectsByProjectId(int id) {
         String query = """
                 SELECT * FROM Subproject WHERE project_id = ?
                 """;
@@ -261,7 +261,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(query, subProjectRowMapper, id);
     }
 
-    public List<Task> getTaskBySubProjectId(int id){
+    public List<Task> getTaskBySubProjectId(int id) {
         String query = """
                 SELECT * FROM Task WHERE subproject_id = ?
                 """;
@@ -321,5 +321,24 @@ public class ProjectRepository {
 
         return jdbcTemplate.queryForObject(sql, subProjectRowMapper, id);
 
+    }
+
+    //returns rowsAffected - catches DataAccessException - checks for?
+    //Checks for consistency in end_date and start_date between these fields in SubProejct, Task and Project.
+    //ToDo: the above mentioned.
+    public int updateSubProject(SubProject subProject) {
+
+        String sql = """
+                UPDATE subproject
+                SET name = ?, start_date = ?, end_date = ?
+                WHERE id = ?""";
+
+        int rowsAffected = jdbcTemplate.update(sql, subProject.getName(), subProject.getStart_date(), subProject.getEnd_date());
+
+        if(rowsAffected != 0) {
+            throw new RuntimeException("Could not update the Subproject");
+        }
+
+        return rowsAffected;
     }
 }

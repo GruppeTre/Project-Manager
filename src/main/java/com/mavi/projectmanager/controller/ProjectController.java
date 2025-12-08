@@ -240,12 +240,16 @@ public class ProjectController {
         }
 
         try {
-            projectService.updateSubproject(toUpdate);
+            projectService.updateSubProject(toUpdate);
         } catch (IllegalArgumentException i) {
+            //ToDO: add flashattriibute/RedirectAttributes.
             return "redirect:/ProjectOverviewPage";
         }
 
-        //ToDO: add 
+        //SHOULD USER BE REDIRECTED TO EDITPROJECTPAGE?
+        return "/editProjectPage";
+
+        //ToDO: add RedirectAttributes for whether the update was successful. - redirect to the same page and return the same object with it.
 
     }
 
