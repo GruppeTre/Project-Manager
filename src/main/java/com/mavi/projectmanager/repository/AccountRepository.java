@@ -183,4 +183,17 @@ public class AccountRepository {
 
         return jdbcTemplate.query(query, accountRowMapper, role.getId());
     }
+
+    public List<Account> getAccountsByTaskId(int id) {
+        String query = """
+                SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
+                INNER JOIN account_task_junction atj
+                    ON a.id = atj.account_id
+                LEFT JOIN employee e
+                    ON a.emp_id = e.id
+                WHERE atj.task_id = ?
+                """;
+
+        return jdbcTemplate.query(query, accountRowMapper, id);
+    }
 }

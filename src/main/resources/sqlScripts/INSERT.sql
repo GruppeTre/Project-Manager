@@ -27,7 +27,9 @@ VALUES
 (1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 1),
 (1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 2),
 (2, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 3),
-(2, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 4);
+(2, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 4),
+(3, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 5),
+(3, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 6);
 
 INSERT IGNORE INTO project (name, start_date, end_date)
 VALUES
@@ -51,9 +53,9 @@ VALUES
 ('Task A', 'Test beskrivelse', '2025-12-12', '2025-12-13', 8, 1),
 ('Task B', 'Test beskrivelse', '2025-12-13', '2025-12-15', 24, 1);
 
-INSERT IGNORE INTO employee_task_junction(employee_id, task_id)
+INSERT IGNORE INTO account_task_junction(account_id, task_id)
 VALUES
-(1, 1),
-(2, 2);
+(5, 1),
+(6, 2);
 
 

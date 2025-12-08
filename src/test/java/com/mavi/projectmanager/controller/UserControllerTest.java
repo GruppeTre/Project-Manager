@@ -9,6 +9,7 @@ import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
+import com.mavi.projectmanager.service.TaskService;
 import jakarta.servlet.http.HttpSession;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,12 @@ class UserControllerTest {
     private ProjectService projectService;
     @MockitoBean
     private EmployeeService employeeService;
+    @MockitoBean
+    private TaskService taskService;
+    @MockitoBean
+    private TaskController taskController;
+    @MockitoBean
+    private ProjectController projectController;
     @MockitoBean
     private HttpSession session;
 

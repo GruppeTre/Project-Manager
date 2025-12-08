@@ -75,7 +75,7 @@ class ProjectRepositoryTest {
         dbProjectWithoutLead.setId(2);
 
         dbProjectToInsert = new Project();
-        dbProjectToInsert.setName("Project Gamma");
+        dbProjectToInsert.setName("Project Charlie");
         dbProjectToInsert.setStart_date(LocalDate.parse("2025-11-28"));
         dbProjectToInsert.setEnd_date(LocalDate.parse("2025-11-30"));
 
@@ -136,8 +136,8 @@ class ProjectRepositoryTest {
         assertEquals(LocalDate.parse("2025-12-12"), project.getSubProjectsList().getFirst().getTaskList().getFirst().getStart_date());
         assertEquals(LocalDate.parse("2025-12-13"), project.getSubProjectsList().getFirst().getTaskList().getFirst().getEnd_date());
         assertEquals(8, project.getSubProjectsList().getFirst().getTaskList().getFirst().getEstimatedDuration());
-        assertFalse(project.getSubProjectsList().getFirst().getTaskList().getFirst().getEmployeeList().isEmpty());
-        assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getEmployeeList().getFirst().getId());
+        assertFalse(project.getSubProjectsList().getFirst().getTaskList().getFirst().getAccountList().isEmpty());
+        assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getAccountList().getFirst().getId());
 
     }
 

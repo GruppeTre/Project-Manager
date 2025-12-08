@@ -71,12 +71,12 @@ CREATE TABLE account_project_junction (
                                               ON DELETE CASCADE
 );
 
-CREATE TABLE employee_task_junction (
-                                        employee_id INT NOT NULL,
+CREATE TABLE account_task_junction (
+                                        account_id INT NOT NULL,
                                         task_id INT NOT NULL,
 
-                                        PRIMARY KEY(employee_id, task_id),
-                                        FOREIGN KEY(employee_id) REFERENCES employee(id)
+                                        PRIMARY KEY(account_id, task_id),
+                                        FOREIGN KEY(account_id) REFERENCES account(id)
                                             ON DELETE CASCADE,
                                         FOREIGN KEY(task_id) REFERENCES task(id)
                                             ON DELETE CASCADE

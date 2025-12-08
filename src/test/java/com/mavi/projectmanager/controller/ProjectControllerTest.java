@@ -7,6 +7,7 @@ import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
+import com.mavi.projectmanager.service.SubProjectService;
 import jakarta.servlet.http.HttpSession;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,18 +40,24 @@ class ProjectControllerTest {
     @MockitoBean
     private ProjectService projectService;
     @MockitoBean
+    private SubProjectService subProjectService;
+    @MockitoBean
     private EmployeeService employeeService;
+    @MockitoBean
+    private TaskController taskController;
     @MockitoBean
     private HttpSession session;
     @MockitoBean
     private Model model;
 
     private Project testProject;
+    private SubProject testSubProject;
     private List<Project> projectList;
     private List<Account> projectLeads;
     private Account leadAccount;
     private Account adminAccount;
     private Project emptyProject;
+    private SubProject emptySubProject;
 
     @BeforeEach
     void setUp() {
@@ -78,8 +84,15 @@ class ProjectControllerTest {
         testProject.setEnd_date(LocalDate.of(2025, 11, 30));
         testProject.setLeadsList(List.of(leadAccount));
 
+        testSubProject = new SubProject();
+        testSubProject.setId(1);
+        testSubProject.setName("Test SubProject");
+        testSubProject.setStart_date(LocalDate.of(2025, 11, 28));
+        testSubProject.setEnd_date(LocalDate.of(2025, 11, 30));
+
         projectList = new ArrayList<>();
         emptyProject = new Project();
+        emptySubProject = new SubProject();
         projectLeads = new ArrayList<>();
 
     }
@@ -195,6 +208,28 @@ class ProjectControllerTest {
 
     }
 
+    @Test
+    void shouldShowCreateSubProjectPage() throws Exception {
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        mockMvc.perform(get("/project/{projectId}/subProject/create", 1)
+                        .sessionAttr("account", leadAccount))
+                .andExpect(status().isOk())
+                .andExpect(view().name("createSubProjectPage"))
+                .andExpect(model().attribute("subProject", emptySubProject));
+        mockedStatic.close();
+
+    }
+
+
+/*
+    ======================================
+    =            POST TESTS            =
+    ======================================
+*/
     /*
         ======================================
         =            POST TESTS            =
@@ -372,6 +407,23 @@ class ProjectControllerTest {
     }
 
     @Test
+    void shouldCreateValidSubProject() throws Exception {
+
+        when(subProjectService.createSubProject(any(SubProject.class), eq(1))).thenReturn(new SubProject());
+
+        mockMvc.perform(post("/project/{projectId}/subProject/create", 1)
+                        .param("name", "My Sub Project")
+                        .param("start_date", "2025-12-10")
+                        .param("end_date",   "2025-12-31")
+                        .sessionAttr("account", leadAccount)
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/project/view/1"));
+
+        verify(subProjectService).createSubProject(any(SubProject.class), eq(1));
+    }
+
+    @Test
     void shouldShowProjectOverviewPage() throws Exception {
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
@@ -381,11 +433,11 @@ class ProjectControllerTest {
         SubProject subProject = new SubProject();
         List<Task> taskList = new ArrayList<>();
         Task task = new Task();
-        List<Employee> employeeList = new ArrayList<>();
+        List<Account> employeeList = new ArrayList<>();
 
         project.setSubProjectsList(subProjectList);
         subProject.setTaskList(taskList);
-        task.setEmployeeList(employeeList);
+        task.setAccountList(employeeList);
 
 
         when(projectService.getFullProjectById(anyInt())).thenReturn(project);
