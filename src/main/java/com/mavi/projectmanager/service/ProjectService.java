@@ -3,11 +3,7 @@ package com.mavi.projectmanager.service;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
-import com.mavi.projectmanager.model.Account;
-import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
-import com.mavi.projectmanager.model.SubProject;
-import com.mavi.projectmanager.model.Role;
+import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import com.mavi.projectmanager.service.utils.DateUtils;
@@ -89,6 +85,27 @@ public class ProjectService {
         return this.projectRepository.getFullProjectById(id);
     }
 
+    public void deleteProject(Project toDelete) {
+
+        int rowsAffected = projectRepository.deleteProject(toDelete);
+
+        //Signal, on whether the database is corrupt.
+        if (rowsAffected != 1) {
+            throw new IllegalArgumentException("Multiple lists was found with this id: " + toDelete.getId() +
+                    ", and it is unclear what Project to delete. Please contact dataspecialist");
+        }
+    }
+
+    public void deleteTask(Task toDelete) {
+
+        int rowsAffected = projectRepository.deleteTask(toDelete);
+
+        if (rowsAffected != 1) {
+            throw new IllegalArgumentException("Unexpected number of tasks with id: " + toDelete.getId()
+            + " found in database! Expected: [1], actual: [" + rowsAffected + "]");
+        }
+    }
+
     private boolean hasValidName(Project projectToCheck) {
 
         return !projectToCheck.getName().isBlank();
@@ -128,4 +145,7 @@ public class ProjectService {
 
         return project;
     }
+
+
+
 }

@@ -61,6 +61,7 @@ header a, header a:hover {
     font-size: larger;
     margin: 0;
 }
+
 .content-wrapper {
     box-sizing: border-box;
     background-color: var(--ash);
@@ -112,32 +113,66 @@ tbody td {
 }
 
 .overview {
-    width:90%;
-    margin: auto;
     background-color: #c5c3c6;
-    border-top-right-radius: 20px;
-    border-top-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border-bottom-left-radius: 20px;
-
+    border-radius: 20px;
 }
 
-.overview article {
-    width:90%;
-    margin: auto;
+.overview-content {
+    padding: 1.7em;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 1.5em;
+}
+
+.project-header article {
+    margin: 0;
+    padding: 0;
+}
+
+.project-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+
+.project-buttons-container .button {
+    width: 12em;
+}
+
+.project-buttons-container a:nth-child(2) {
+    margin-top: 1em;
 }
 
 .overview_table {
     width: 100%;
-    position: relative;
     margin: auto;
     border-collapse: separate;
     overflow: hidden;
-    border-top-right-radius: 20px;
-    border-top-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border-bottom-left-radius: 20px;
+    border-radius: 20px;
     border-style: none;
+}
+
+.task-description {
+    background-color: var(--dark-ash);
+    border-radius: 12px;
+    min-height: 5em;
+    max-height: 13em;
+    width: 40em;
+    padding: 0.5em;
+
+    overflow-y: auto;
+
+    white-space: pre-wrap;
+    font-family: inherit;
+}
+
+details, summary {
+    border-radius: 6px;
 }
 
 .top-nav a, .project_nav a{
@@ -195,13 +230,12 @@ input, label {
 summary {
     background-color: var(--dark-blue);
     color: var(--light);
-    list-style: none;
     padding: 0;
+    display: list-item;
 }
 
-details summary::-webkit-details-marker,
-details summary::marker {
-    display: none;
+details summary::-webkit-details-marker, details summary::marker {
+    color: var(--light);
 }
 
 details {

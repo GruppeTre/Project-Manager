@@ -1,6 +1,7 @@
 package com.mavi.projectmanager.repository;
 
 import com.mavi.projectmanager.model.*;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -97,6 +98,7 @@ public class ProjectRepository {
         int taskId = rs.getInt("id");
         task.setId(taskId);
         task.setName(rs.getString("name"));
+        task.setDescription(rs.getString("description"));
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
@@ -106,7 +108,7 @@ public class ProjectRepository {
         LocalDate convertedEndDate = endDate.toLocalDate();
         task.setEnd_date(convertedEndDate);
 
-        task.setEstimatedDuration(rs.getInt("duration"));
+        task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
         List<Employee> employeeList = employeeRepository.getEmployeeByTaskId(taskId);
         task.setEmployeeList(employeeList);
@@ -238,7 +240,7 @@ public class ProjectRepository {
 
         int rowsAffected = jdbcTemplate.update(query, projectId);
 
-        if (rowsAffected != 1) {
+        if (rowsAffected == 0) {
             throw new RuntimeException("unexpected amount of rows deleted! Expected : 1, actual: " + rowsAffected);
         }
     }
@@ -265,5 +267,47 @@ public class ProjectRepository {
                 """;
 
         return jdbcTemplate.query(query, taskRowMapper, id);
+    }
+
+    public int deleteProject(Project toDelete) {
+
+        String sql = """
+                DELETE FROM project
+                WHERE id = ?
+                """;
+
+        int projectId = toDelete.getId();
+
+        int rowsAffected;
+
+        try {
+
+            rowsAffected = jdbcTemplate.update(sql, projectId);
+            //(jdbc template throws DataAccessException)
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occured while trying to delete project with id: " + projectId);
+        }
+
+        return rowsAffected;
+    }
+
+    public int deleteTask(Task toDelete) {
+
+        String sql = """
+                DELETE FROM task
+                WHERE id = ?
+                """;
+
+        int taskId = toDelete.getId();
+
+        int rowsAffected;
+
+        try {
+            rowsAffected = jdbcTemplate.update(sql, taskId);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occured while trying to delete task with id: " + taskId);
+        }
+
+        return rowsAffected;
     }
 }

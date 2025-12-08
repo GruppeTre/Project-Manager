@@ -1,4 +1,5 @@
 package com.mavi.projectmanager.controller;
+
 import com.mavi.projectmanager.controller.utils.SessionUtils;
 import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/project")
-    public class ProjectController {
+public class ProjectController {
 
     private final ProjectService projectService;
     private final AccountService accountService;
@@ -31,70 +32,50 @@ import java.util.List;
         this.subProjectService = subProjectService;
     }
 
-        @GetMapping("/create")
-        public String getCreateProjectPage(Model model) {
-            Project project = new Project();
+    @GetMapping("/create")
+    public String getCreateProjectPage(Model model) {
+        Project project = new Project();
 
-            List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+        List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
 
-            model.addAttribute("project", project);
-            model.addAttribute("allLeads", allLeads);
+        model.addAttribute("project", project);
+        model.addAttribute("allLeads", allLeads);
 
-            return "createProjectPage";
-        }
+        return "createProjectPage";
+    }
 
-        @PostMapping("/create")
-        public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Employee employee, HttpServletResponse response) {
+    @PostMapping("/create")
+    public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Employee employee, HttpServletResponse response) {
 
-            if(!SessionUtils.isLoggedIn(session)) {
-                return "redirect:/";
-            }
-
-            if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
-                return "redirect:/";
-            }
-
-            try {
-                projectService.createProject(newProject);
-            } catch (InvalidFieldException e) {
-                List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-
-                if (e instanceof InvalidDateException) {
-                    int errorId = ((InvalidDateException) e).getErrorId();
-                    model.addAttribute("errorId", errorId);
-                }
-
-                System.out.println("Invalid fields: " + e.getField());
-
-                model.addAttribute("error", true);
-                model.addAttribute("invalidField", e.getField());
-                model.addAttribute("project", newProject);
-                model.addAttribute("allLeads", allLeads);
-                return "createProjectPage";
-                }
-
-            return "redirect:/overview?viewMode=projects";
-        }
-
-    @GetMapping("/projects")
-    public String getProjectOverviewPage(@RequestParam("viewMode") String viewMode, Model model, HttpSession session){
-        if(!SessionUtils.isLoggedIn(session)){
+        if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
 
-        model.addAttribute("accounts", accountService.getAccounts());
-        model.addAttribute("viewMode", viewMode);
-
-        if(viewMode.equals("projects") && !SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
-            model.addAttribute("projects", projectService.getProjects());
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/";
         }
-        if(viewMode.equals("projects") && SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
-            int projectLeadId = ((Account) session.getAttribute("account")).getId();
-            model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
-        }
-        return "overviewPage";
 
+        try {
+            projectService.createProject(newProject);
+        } catch (InvalidFieldException e) {
+            List<Account> allLeads = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+            if (e instanceof InvalidDateException) {
+                int errorId = ((InvalidDateException) e).getErrorId();
+                model.addAttribute("errorId", errorId);
+            }
+
+            System.out.println("Invalid fields: " + e.getField());
+
+            model.addAttribute("error", true);
+            model.addAttribute("invalidField", e.getField());
+            model.addAttribute("project", newProject);
+            model.addAttribute("allLeads", allLeads);
+            return "createProjectPage";
+        }
+
+        return "redirect:/overview?viewMode=projects";
     }
 
     @GetMapping("/edit/{id}")
@@ -105,7 +86,7 @@ import java.util.List;
         }
 
         //Reject user if user is not Admin
-        if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
             return "redirect:/overview?viewMode=projects";
         }
 
@@ -133,7 +114,7 @@ import java.util.List;
             return "redirect:/";
         }
 
-        if(!SessionUtils.userHasRole(session, Role.ADMIN)) {
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
             return "redirect:/overview?viewMode=projects";
         }
 
@@ -163,7 +144,7 @@ import java.util.List;
 
     @GetMapping("/view/{id}")
     public String getProjectOverview(@PathVariable("id") int id, Model model, HttpSession session) {
-        if(!SessionUtils.isLoggedIn(session)){
+        if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
 
@@ -213,6 +194,52 @@ import java.util.List;
             return "createSubProjectPage";
         }
 
+        return "redirect:/project/view/" + projectId;
+    }
+
+    @PostMapping("/delete")
+    public String deleteProject(HttpSession session, @ModelAttribute Project toDelete, RedirectAttributes redirectAttributes) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        try {
+            projectService.deleteProject(toDelete);
+        } catch (Exception e) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        return "redirect:/overview?viewMode=projects";
+    }
+
+    @PostMapping("/edit/{projectId}/task/delete")
+    public String deleteTask(@PathVariable("projectId") int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        //todo: check if lead is actual owner of project and task?
+
+        //make sure that id of task to be deleted is passed as a field for toDelete object
+        try {
+            projectService.deleteTask(toDelete);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", true);
+        }
+
+        //return to project view
         return "redirect:/project/view/" + projectId;
     }
 }
