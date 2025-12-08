@@ -197,7 +197,7 @@ public class ProjectController {
     }
 
     @GetMapping("/edit-subproject/{id}")
-    public String deleteSubproject(@PathVariable("id") int id, Model model, HttpSession session) {
+    public String editSubproject(@PathVariable("id") int id, Model model, HttpSession session) {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
@@ -221,6 +221,35 @@ public class ProjectController {
         return "editSubprojectPage";
 
     }
+
+    @PostMapping("/update-subproject")
+    public String updateSubproject(@ModelAttribute SubProject toUpdate, HttpSession session) {
+
+        //check for user admin and if loggedin
+        //catch IllegalArgument Exception
+        //
+        //Perform update with modelAttribute
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/overviewPage";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        try {
+            projectService.updateSubproject(toUpdate);
+        } catch (IllegalArgumentException i) {
+            return "redirect:/ProjectOverviewPage";
+        }
+
+        //ToDO: add 
+
+    }
+
+
 }
 
 
