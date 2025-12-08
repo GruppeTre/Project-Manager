@@ -7,6 +7,7 @@ import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.EmployeeService;
 import com.mavi.projectmanager.service.ProjectService;
+import com.mavi.projectmanager.service.SubProjectService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -23,10 +24,12 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final AccountService accountService;
+    private final SubProjectService subProjectService;
 
-    public ProjectController(ProjectService projectService, AccountService accountService) {
+    public ProjectController(ProjectService projectService, AccountService accountService, SubProjectService subProjectService) {
         this.projectService = projectService;
         this.accountService = accountService;
+        this.subProjectService = subProjectService;
     }
 
     @GetMapping("/create")
@@ -148,6 +151,50 @@ public class ProjectController {
         model.addAttribute("project", projectService.getFullProjectById(id));
 
         return "projectOverviewPage";
+    }
+
+    @GetMapping("/{projectId}/subProject/create")
+    public String getCreateSubProjectsPage(@PathVariable("projectId") int projectId, Model model) {
+        SubProject subProject = new SubProject();
+
+        model.addAttribute("subProject", subProject);
+        model.addAttribute("projectId", projectId);
+
+        return "createSubProjectPage";
+
+    }
+
+    @PostMapping("/{projectId}/subProject/create")
+    public String createSubProject(HttpSession session, Model model, @ModelAttribute SubProject subProject, @PathVariable("projectId") Integer projectId, HttpServletResponse response) {
+
+        if(!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        if(!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/";
+        }
+
+
+        try {
+            subProjectService.createSubProject(subProject, projectId);
+        } catch (InvalidFieldException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+            if (e instanceof InvalidDateException) {
+                int errorId = ((InvalidDateException) e).getErrorId();
+                model.addAttribute("errorId", errorId);
+            }
+
+            System.out.println("Invalid fields: " + e.getField());
+
+            model.addAttribute("error", true);
+            model.addAttribute("invalidField", e.getField());
+            model.addAttribute("subProject", subProject);
+            return "createSubProjectPage";
+        }
+
+        return "redirect:/project/view/" + projectId;
     }
 
     @PostMapping("/delete")
