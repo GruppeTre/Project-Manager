@@ -75,7 +75,7 @@ class ProjectRepositoryTest {
         dbProjectWithoutLead.setId(2);
 
         dbProjectToInsert = new Project();
-        dbProjectToInsert.setName("Project Gamma");
+        dbProjectToInsert.setName("Project Charlie");
         dbProjectToInsert.setStart_date(LocalDate.parse("2025-11-28"));
         dbProjectToInsert.setEnd_date(LocalDate.parse("2025-11-30"));
 

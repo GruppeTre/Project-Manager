@@ -48,6 +48,8 @@ class UserControllerTest {
     @MockitoBean
     private TaskController taskController;
     @MockitoBean
+    private ProjectController projectController;
+    @MockitoBean
     private HttpSession session;
 
     private Account testAccount;
