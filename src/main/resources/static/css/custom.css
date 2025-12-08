@@ -140,6 +140,10 @@ tbody td {
     flex-direction: column;
 }
 
+.project-buttons-container .button {
+    width: 12em;
+}
+
 .project-buttons-container a:nth-child(2) {
     margin-top: 1em;
 }
