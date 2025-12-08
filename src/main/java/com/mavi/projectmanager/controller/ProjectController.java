@@ -219,25 +219,21 @@ public class ProjectController {
         model.addAttribute("subproject", toEdit);
 
         return "editSubprojectPage";
-
     }
 
-    @PostMapping("/update-subproject")
-    public String updateSubproject(@ModelAttribute SubProject toUpdate, HttpSession session) {
-
-        //check for user admin and if loggedin
-        //catch IllegalArgument Exception
-        //
-        //Perform update with modelAttribute
+    @PostMapping("/update-subproject") /// ::::
+    public String updateSubproject(@ModelAttribute SubProject toUpdate, HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/overviewPage";
         }
 
         //Reject user if user is not Admin
-        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
             return "redirect:/overview?viewMode=projects";
         }
+
+        model.addAttribute("project", toUpdate); // ensures Thymeleaf has it
 
         try {
             projectService.updateSubProject(toUpdate);
