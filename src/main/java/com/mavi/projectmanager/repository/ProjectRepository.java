@@ -310,4 +310,16 @@ public class ProjectRepository {
 
         return rowsAffected;
     }
+
+    public SubProject getSubprojectById(int id) {
+
+        String sql = """
+                SELECT s.id, s.name, s.start_date, s.end_date 
+                FROM subproject s 
+                WHERE s.id = ?
+                """;
+
+        return jdbcTemplate.queryForObject(sql, subProjectRowMapper, id);
+
+    }
 }
