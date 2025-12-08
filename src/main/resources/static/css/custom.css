@@ -168,8 +168,7 @@ tbody td {
 }
 
 details, summary {
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    border-radius: 6px;
 }
 
 .top-nav a, .project_nav a{
@@ -227,14 +226,16 @@ input, label {
 summary {
     background-color: var(--dark-blue);
     color: var(--light);
-    list-style: none;
     padding: 0;
+    display: list-item;
 }
 
-details summary::-webkit-details-marker,
-details summary::marker {
-    display: none;
+details summary::-webkit-details-marker, details summary::marker {
+    color: var(--light);
 }
+/*details summary::marker {*/
+/*    color: var(--accent);*/
+/*}*/
 
 details {
     background-color: var(--light);

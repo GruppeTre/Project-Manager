@@ -34,7 +34,7 @@
 
                 <article th:if="*{!subProjectsList.isEmpty}" th:each="sb : ${project.getSubProjectsList()}">
                     <details>
-                        <summary th:text="'+ ' + ${sb.name}"></summary>
+                        <summary th:text="${sb.name}"></summary>
                         <div class="collapsed-content">
                             <div class="project-header">
                                 <article>
@@ -50,7 +50,7 @@
                             </div>
                             <article class="task-list" th:each="task : ${sb.getTaskList()}">
                                 <details>
-                                    <summary th:text="'+ ' + ${task.name}"></summary>
+                                    <summary th:text="${task.name}"></summary>
                                     <div class="collapsed_content">
                                         <div class="project-header">
                                             <article>
