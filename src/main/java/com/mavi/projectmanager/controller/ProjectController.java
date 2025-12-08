@@ -210,16 +210,13 @@ public class ProjectController {
         SubProject toEdit;
 
         try {
-            SubProject toEdit = projectService.getSubprojectById(id);
+            toEdit = projectService.getSubprojectById(id);
         } catch (IllegalArgumentException i) {
             //ToDO: add flash attribute
             return "redirect/overView?viewMode=projects";
         }
 
-        List<Account> allAccounts = accountService.getAccountsByRole(Role.PROJECT_LEAD);
-
         model.addAttribute("subproject", toEdit);
-        model.addAttribute("allLeads", allAccounts);
 
     }
 }
