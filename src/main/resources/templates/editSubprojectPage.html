@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Template</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<header th:replace="~{fragments/_commonElements :: header}"></header>
+<main class="container">
+
+</main>
+<footer th:replace="~{fragments/_commonElements :: footer}"></footer>
+</body>
+</html>

@@ -218,6 +218,8 @@ public class ProjectController {
 
         model.addAttribute("subproject", toEdit);
 
+        return "editSubprojectPage";
+
     }
 }
 
