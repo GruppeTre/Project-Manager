@@ -195,6 +195,33 @@ public class ProjectController {
         //return to project view
         return "redirect:/project/view/" + projectId;
     }
+
+    @GetMapping("/edit-subproject/{id}")
+    public String deleteSubproject(@PathVariable("id") int id, Model model, HttpSession session) {
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        SubProject toEdit;
+
+        try {
+            SubProject toEdit = projectService.getSubprojectById(id);
+        } catch (IllegalArgumentException i) {
+            //ToDO: add flash attribute
+            return "redirect/overView?viewMode=projects";
+        }
+
+        List<Account> allAccounts = accountService.getAccountsByRole(Role.PROJECT_LEAD);
+
+        model.addAttribute("subproject", toEdit);
+        model.addAttribute("allLeads", allAccounts);
+
+    }
 }
 
 
