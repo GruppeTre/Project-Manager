@@ -29,7 +29,7 @@
                         <p th:text="#{projectOverviewPage.p.deadline} + ' ' + *{end_date}"></p>
                         <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + *{sumProjectDuration} + #{projectOverviewPage.p.hours}"></p>
                     </article>
-                    <a class="button button-primary" th:href="@{/project/subProject/create}" th:text="'Add Subproject'"></a>
+                    <a class="button button-primary" th:href="@{/project/{projectId}/subProject/create (projectId=${project.id})}" th:text="'Add Subproject'"></a>
                 </div>
 
                 <article th:if="*{!subProjectsList.isEmpty}" th:each="sb : ${project.getSubProjectsList()}">
