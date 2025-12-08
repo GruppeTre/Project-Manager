@@ -10,8 +10,8 @@ public class Task {
     private LocalDate start_date;
     private LocalDate end_date;
     private String description;
-    private int estimatedDuration; //in hours
-    private int actualDuration;
+    private Integer estimatedDuration; //in hours
+    private Integer actualDuration;
     // TODO: Remember to swap this to account in sprint 2
     private List<Account> accountList;
 
@@ -47,11 +47,11 @@ public class Task {
         this.end_date = end_date;
     }
 
-    public int getEstimatedDuration() {
+    public Integer getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    public void setEstimatedDuration(int estimatedDuration) {
+    public void setEstimatedDuration(Integer estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
 

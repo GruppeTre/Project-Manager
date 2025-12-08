@@ -1,6 +1,8 @@
 package com.mavi.projectmanager.controller;
 
 import com.mavi.projectmanager.controller.utils.SessionUtils;
+import com.mavi.projectmanager.exception.InvalidDateException;
+import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.EmployeeRepository;
 import com.mavi.projectmanager.service.AccountService;
@@ -53,7 +55,7 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String createTask(@RequestParam("employeeList") List<String> accountList, @RequestParam("retrievedProjectId") int projectId, @RequestParam("retrievedSubProjectId") int subProjectId, @ModelAttribute Task task, HttpSession session){
+    public String createTask(@RequestParam("employeeList") List<String> accountList, @RequestParam("retrievedProjectId") int projectId, @RequestParam("retrievedSubProjectId") int subProjectId, @ModelAttribute Task task, HttpSession session, Model model){
         if(!SessionUtils.isLoggedIn(session)){
             return "redirect:/";
         }
@@ -69,7 +71,26 @@ public class TaskController {
 
         task.setAccountList(accountsList);
 
-        taskService.createTask(task, subProject);
+        try {
+            taskService.createTask(task, subProject);
+        } catch (InvalidFieldException e){
+
+            if(e instanceof InvalidDateException){
+                int errorId = ((InvalidDateException) e).getErrorId();
+                model.addAttribute(errorId);
+            }
+
+            List<Account> teamList = accountService.getAccountsByRole(Role.TEAM_MEMBER);
+
+            model.addAttribute("error", true);
+            model.addAttribute("invalidField", e.getField());
+            model.addAttribute("task", task);
+            model.addAttribute("subProject", subProject);
+            model.addAttribute("projectId", projectId);
+            model.addAttribute("teamList", teamList);
+
+            return "createTaskPage";
+        }
 
         return "redirect:/project/view/" + projectId;
     }

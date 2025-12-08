@@ -41,6 +41,8 @@ class ProjectControllerTest {
     @MockitoBean
     private EmployeeService employeeService;
     @MockitoBean
+    private TaskController taskController;
+    @MockitoBean
     private HttpSession session;
     @MockitoBean
     private Model model;
@@ -332,11 +334,11 @@ class ProjectControllerTest {
         SubProject subProject = new SubProject();
         List<Task> taskList = new ArrayList<>();
         Task task = new Task();
-        List<Employee> employeeList = new ArrayList<>();
+        List<Account> employeeList = new ArrayList<>();
 
         project.setSubProjectsList(subProjectList);
         subProject.setTaskList(taskList);
-        task.setEmployeeList(employeeList);
+        task.setAccountList(employeeList);
 
 
         when(projectService.getFullProjectById(anyInt())).thenReturn(project);

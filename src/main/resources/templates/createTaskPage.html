@@ -21,12 +21,21 @@
                 <!-- Error messages -->
                 <div th:if="${error}" class="form-error-container">
                     <div th:if="${invalidField == 'date'}">
-                        <label th:if="${errorId == 1}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
-                        <label th:if="${errorId == 2}" th:text="#{form.error.date.endDateInPast}"></label>
-                        <label th:if="${errorId == 3}" th:text="#{form.error.date.startDateBeforeSubprojectStartDate}"></label>
-                        <label th:if="${errorId == 4}" th:text="#{form.error.date.startDateAfterSubprojectEndDate}"></label>
-                        <label th:if="${errorId == 5}" th:text="#{form.error.date.endDateBeforeSubprojectStartDate}"></label>
-                        <label th:if="${errorId == 6}" th:text="#{form.error.date.endDateAfterSubprojectEndDate}"></label>
+                        <label th:if="${errorId == 3}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
+                        <label th:if="${errorId == 4}" th:text="#{form.error.date.endDateInPast}"></label>
+                        <label th:if="${errorId == 5}" th:text="#{form.error.date.startDateBeforeSubprojectStartDate}"></label>
+                        <label th:if="${errorId == 6}" th:text="#{form.error.date.startDateAfterSubprojectEndDate}"></label>
+                        <label th:if="${errorId == 7}" th:text="#{form.error.date.endDateBeforeSubprojectStartDate}"></label>
+                        <label th:if="${errorId == 8}" th:text="#{form.error.date.endDateAfterSubprojectEndDate}"></label>
+                    </div>
+                    <div th:if="${invalidField == 'title'}">
+                        <label th:text="#{form.error.taskTitle}"></label>
+                    </div>
+                    <div th:if="${invalidField == 'employee'}">
+                        <label th:text="#{form.error.employee}"></label>
+                    </div>
+                    <div th:if="${invalidField == 'estimation'}">
+                        <label th:text="#{form.error.estimation}"></label>
                     </div>
                 </div>
 
@@ -55,8 +64,9 @@
                 <!-- task employee -->
                 <div class="row">
                     <label for="employee" class="form-label" th:text="#{form.label.taskEmployee}"></label>
+                    <label class="small-info" th:text="#{form.label.employeeInfo}"></label>
                     <select id="employee" name="employeeList" multiple required>
-                        <option th:each="t : ${teamList}" th:text="${t.firstName} + ' ' + ${t.lastName}" th:value="${t.mail}"></option>
+                        <option th:each="t : ${teamList}" th:text="${t.firstName} + ' ' + ${t.lastName} + ', ' + ${t.mail}" th:value="${t.mail}"></option>
                     </select>
                 </div>
 
@@ -64,14 +74,14 @@
 
                 <div class="row">
                     <label for="start-date" class="form-label" th:text="#{form.label.startDate}"></label>
-                    <input id="start-date" type="date" th:field="*{start_date}" th:min="${subProject.start_date}" required>
+                    <input id="start-date" type="date" th:field="*{start_date}" th:min="${#temporals.format(subProject.start_date, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- end date -->
 
                 <div class="row">
                     <label for="end-date" class="form-label" th:text="#{form.label.endDate}"></label>
-                    <input id="end-date" type="date" th:field="*{end_date}" th:max="${subProject.end_date} required">
+                    <input id="end-date" type="date" th:field="*{end_date}" th:max="${#temporals.format(subProject.end_date, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- BUTTONS -->

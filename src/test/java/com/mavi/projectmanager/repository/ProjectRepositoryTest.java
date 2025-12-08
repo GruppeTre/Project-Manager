@@ -136,8 +136,8 @@ class ProjectRepositoryTest {
         assertEquals(LocalDate.parse("2025-12-12"), project.getSubProjectsList().getFirst().getTaskList().getFirst().getStart_date());
         assertEquals(LocalDate.parse("2025-12-13"), project.getSubProjectsList().getFirst().getTaskList().getFirst().getEnd_date());
         assertEquals(8, project.getSubProjectsList().getFirst().getTaskList().getFirst().getEstimatedDuration());
-        assertFalse(project.getSubProjectsList().getFirst().getTaskList().getFirst().getEmployeeList().isEmpty());
-        assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getEmployeeList().getFirst().getId());
+        assertFalse(project.getSubProjectsList().getFirst().getTaskList().getFirst().getAccountList().isEmpty());
+        assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getAccountList().getFirst().getId());
 
     }
 
