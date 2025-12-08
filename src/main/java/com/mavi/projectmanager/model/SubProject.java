@@ -11,6 +11,10 @@ public class SubProject {
     private LocalDate end_date;
     private List<Task> taskList;
 
+    public SubProject() {
+
+    }
+
     public int getId() {
         return id;
     }

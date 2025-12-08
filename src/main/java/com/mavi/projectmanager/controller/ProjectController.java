@@ -242,6 +242,61 @@ public class ProjectController {
         //return to project view
         return "redirect:/project/view/" + projectId;
     }
+
+    @GetMapping("/edit-subproject/{id}")
+    public String editSubproject(@PathVariable("id") int id, Model model, HttpSession session) {
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        SubProject toEdit;
+
+        try {
+            toEdit = projectService.getSubprojectById(id);
+        } catch (IllegalArgumentException i) {
+            //ToDO: add flash attribute
+            return "redirect/overView?viewMode=projects";
+        }
+
+        model.addAttribute("subproject", toEdit);
+
+        return "editSubprojectPage";
+    }
+
+    @PostMapping("/update-subproject") /// ::::
+    public String updateSubproject(@ModelAttribute SubProject toUpdate, HttpSession session, Model model) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/overviewPage";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        model.addAttribute("project", toUpdate); // ensures Thymeleaf has it
+
+        try {
+            projectService.updateSubProject(toUpdate);
+        } catch (IllegalArgumentException i) {
+            //ToDO: add flashattriibute/RedirectAttributes.
+            return "redirect:/ProjectOverviewPage";
+        }
+
+        //SHOULD USER BE REDIRECTED TO EDITPROJECTPAGE?
+        return "/editProjectPage";
+
+        //ToDO: add RedirectAttributes for whether the update was successful. - redirect to the same page and return the same object with it.
+
+    }
+
+
 }
 
 
