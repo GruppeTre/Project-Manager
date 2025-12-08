@@ -1,6 +1,7 @@
 package com.mavi.projectmanager.repository;
 
 import com.mavi.projectmanager.model.*;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -77,6 +78,24 @@ public class SubProjectRepository {
         subProject.setId(keyHolder.getKey().intValue());
 
         return keyHolder.getKey().intValue();
+    }
+
+    public int deleteSubProjectById(int subProjectId) {
+
+        String sql = """
+                DELETE FROM subproject
+                WHERE id = ?
+                """;
+
+        int rowsAffected;
+
+        try {
+            rowsAffected = jdbcTemplate.update(sql, subProjectId);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occured while trying to delete subproject with id: " + subProjectId);
+        }
+
+        return rowsAffected;
     }
 
 }

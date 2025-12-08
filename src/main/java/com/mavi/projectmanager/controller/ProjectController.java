@@ -218,6 +218,29 @@ public class ProjectController {
         return "redirect:/overview?viewMode=projects";
     }
 
+    @PostMapping("/{projectId}/subProject/{subProjectId}/delete")
+    public String deleteSubProject(@PathVariable int projectId, @PathVariable int subProjectId, HttpSession session, RedirectAttributes redirectAttributes) {
+
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not project lead
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        try {
+            subProjectService.deleteSubProjectById(subProjectId);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", true);
+        }
+
+        //return to project view
+        return "redirect:/project/view/" + projectId;
+    }
+
     @PostMapping("/edit/{projectId}/task/delete")
     public String deleteTask(@PathVariable("projectId") int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
 
