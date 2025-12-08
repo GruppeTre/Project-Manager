@@ -1,6 +1,8 @@
 package com.mavi.projectmanager.repository;
 
 import com.mavi.projectmanager.model.*;
+import com.mavi.projectmanager.model.SubProject;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -8,6 +10,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Comparator;
 
@@ -16,6 +20,7 @@ import java.sql.Date;
 
 @Repository
 public class SubProjectRepository {
+
     private final JdbcTemplate jdbcTemplate;
     private ProjectRepository projectRepository;
     private static final Comparator<SubProject> SUB_PROJECT_COMPARATOR = Comparator.comparing(SubProject::getStart_date).thenComparing(SubProject::getEnd_date);
@@ -25,7 +30,7 @@ public class SubProjectRepository {
         this.projectRepository = projectRepository;
     }
 
-    public RowMapper<SubProject> SubProjectRowMapper = ((rs, rowNum) -> {
+    public RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
         SubProject subProject = new SubProject();
         int subProjectId = rs.getInt("id");
         subProject.setId(subProjectId);
@@ -41,6 +46,18 @@ public class SubProjectRepository {
 
         return subProject;
     });
+
+    public SubProject getSubProjectById(int id) {
+        String query = """
+                SELECT * FROM Subproject sp WHERE id = ?
+                """;
+
+        try {
+            return jdbcTemplate.queryForObject(query, subProjectRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 
     //Inserts a subproject in the database
     public int createSubProject(SubProject subProject, int projectId) {

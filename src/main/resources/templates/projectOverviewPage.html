@@ -44,8 +44,8 @@
                                     <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
                                 </article>
                                 <div class="project-buttons-container">
-                                    <a class="button button-primary" href="#" th:text="#{overview.button.edit}"></a>
-                                    <a class="button button-primary" th:href="@{/project/task/create}" th:text="#{projectOverviewPage.button.addTask}"></a>
+                                    <a class="button button-primary" href="#" th:text="'Edit'"></a>
+                                    <a class="button button-primary" th:href="@{/task/{projectId}/{subProjectId}/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
                                 </div>
                             </div>
                             <article class="task-list" th:each="task : ${sb.getTaskList()}">
@@ -57,7 +57,7 @@
                                                 <h5 th:text="#{projectOverviewPage.h.details}"></h5>
                                                 <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
                                                 <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${task.end_date}"></p>
-                                                <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.employeesToString()}"></p>
+                                                <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.accountsToString()}"></p>
                                                 <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${task.estimatedDuration} + #{projectOverviewPage.p.hours}"></p>
                                             </article>
                                             <div class="project-buttons-container">
