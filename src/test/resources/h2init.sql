@@ -90,12 +90,12 @@ CREATE TABLE subproject_task_junction (
                                               ON DELETE CASCADE
 );
 
-CREATE TABLE employee_task_junction (
-                                        employee_id INT NOT NULL,
+CREATE TABLE account_task_junction (
+                                        account_id INT NOT NULL,
                                         task_id INT NOT NULL,
 
-                                        PRIMARY KEY(employee_id, task_id),
-                                        FOREIGN KEY(employee_id) REFERENCES employee(id)
+                                        PRIMARY KEY(account_id, task_id),
+                                        FOREIGN KEY(account_id) REFERENCES account(id)
                                             ON DELETE CASCADE,
                                         FOREIGN KEY(task_id) REFERENCES task(id)
                                             ON DELETE CASCADE
@@ -128,7 +128,7 @@ VALUES
 ('Task A', 'Test beskrivelse', '2025-12-12', '2025-12-13', 8, 1),
 ('Task B', 'Test beskrivelse', '2025-12-13', '2025-12-15', 24, 1);
 
-INSERT INTO employee_task_junction(employee_id, task_id)
+INSERT INTO account_task_junction(account_id, task_id)
 VALUES
 (1, 1),
 (2, 2);

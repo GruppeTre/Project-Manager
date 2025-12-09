@@ -268,6 +268,17 @@ article p {
     float: right;
 }
 
+label.small-info {
+    font-size:12px;
+    color: var(--dark-blue);
+    opacity: 0.5;
+}
+
+#employee {
+    width: 350px;
+    height: 50px;
+}
+
 /* skeleton overrides */
 .button:hover,
 button:hover,

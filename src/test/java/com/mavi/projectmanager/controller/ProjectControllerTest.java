@@ -44,6 +44,8 @@ class ProjectControllerTest {
     @MockitoBean
     private EmployeeService employeeService;
     @MockitoBean
+    private TaskController taskController;
+    @MockitoBean
     private HttpSession session;
     @MockitoBean
     private Model model;
@@ -101,6 +103,29 @@ class ProjectControllerTest {
     ======================================
 */
 
+
+    @Test
+    void shouldShowEditSubProjectPageWithFetchedSubProject() throws Exception {
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        SubProject sp = new SubProject();
+        when(projectService.getSubprojectById(4)).thenReturn(sp);
+
+
+        mockMvc.perform(get("/project/edit-subproject/4")
+                        .sessionAttr("account", adminAccount))
+                .andExpect(status().isOk())
+                .andExpect(view().name("editSubprojectPage"))
+                .andExpect(model().attribute("subproject", sp));
+
+        mockedStatic.close();
+
+        verify(projectService, times(1)).getSubprojectById(4);
+
+    }
+
     @Test
     void shouldShowProjectsAsAdmin() throws Exception {
 
@@ -138,8 +163,8 @@ class ProjectControllerTest {
                 .andExpect(view().name("overviewPage"))
                 .andExpect(model().attribute("viewMode", "projects"))
                 .andExpect(model().attribute("projectsByLead", projects));
-            mockedStatic.close();
-            verify(projectService, times(1)).getProjectsByLead(leadAccount.getId());
+        mockedStatic.close();
+        verify(projectService, times(1)).getProjectsByLead(leadAccount.getId());
     }
 
     //todo: shouldShowEditProjectPage
@@ -205,6 +230,36 @@ class ProjectControllerTest {
     =            POST TESTS            =
     ======================================
 */
+    /*
+        ======================================
+        =            POST TESTS            =
+        ======================================
+    */
+    @Test
+    void shouldUpdateProjectFromFormAsProjectLead() throws Exception {
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
+
+        SubProject sp = new SubProject();
+        sp.setId(4);
+
+        when(projectService.updateSubProject(Mockito.any(SubProject.class))).thenReturn(1);
+
+        mockMvc.perform(post("/project/update-subproject")
+                        .sessionAttr("account", adminAccount)
+                        .param("id", "4")
+                        .param("name", "Test SubProject")
+                        .param("start_date", "2025-12-01")
+                        .param("end_date", "2025-12-31"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/editProjectPage"));
+
+        mockedStatic.close();
+
+        verify(projectService, times(1)).updateSubProject(Mockito.any(SubProject.class));
+    }
 
     @Test
     void shouldEditValidProject() throws Exception {
@@ -227,7 +282,7 @@ class ProjectControllerTest {
     void editProjectPageShouldRejectProjectWithEndDateInThePast() throws Exception {
 
         when(projectService.updateProject(any(Project.class)))
-                            .thenThrow(new InvalidDateException("End date cannot be in the past!", 2));
+                .thenThrow(new InvalidDateException("End date cannot be in the past!", 2));
 
         //todo: replace with mock implementation of accountService.getAccountsByRole (when it is implemented)
         when(accountService.getAccountByID(anyInt())).thenReturn(leadAccount);
@@ -378,11 +433,11 @@ class ProjectControllerTest {
         SubProject subProject = new SubProject();
         List<Task> taskList = new ArrayList<>();
         Task task = new Task();
-        List<Employee> employeeList = new ArrayList<>();
+        List<Account> employeeList = new ArrayList<>();
 
         project.setSubProjectsList(subProjectList);
         subProject.setTaskList(taskList);
-        task.setEmployeeList(employeeList);
+        task.setAccountList(employeeList);
 
 
         when(projectService.getFullProjectById(anyInt())).thenReturn(project);

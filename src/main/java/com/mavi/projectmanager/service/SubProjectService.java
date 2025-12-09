@@ -15,6 +15,9 @@ public class SubProjectService {
         this.subProjectRepository = subProjectRepository;
     }
 
+    public SubProject getSubProjectById(int id) {
+        return subProjectRepository.getSubProjectById(id);
+    }
 
     public SubProject createSubProject(SubProject subProject, int projectId) {
 

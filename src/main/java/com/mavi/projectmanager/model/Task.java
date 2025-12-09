@@ -10,10 +10,10 @@ public class Task {
     private LocalDate start_date;
     private LocalDate end_date;
     private String description;
-    private int estimatedDuration; //in hours
-    private int actualDuration;
+    private Integer estimatedDuration; //in hours
+    private Integer actualDuration;
     // TODO: Remember to swap this to account in sprint 2
-    private List<Employee> employeeList;
+    private List<Account> accountList;
 
     public int getId() {
         return id;
@@ -47,20 +47,20 @@ public class Task {
         this.end_date = end_date;
     }
 
-    public int getEstimatedDuration() {
+    public Integer getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    public void setEstimatedDuration(int estimatedDuration) {
+    public void setEstimatedDuration(Integer estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
 
-    public List<Employee> getEmployeeList() {
-        return employeeList;
+    public List<Account> getAccountList() {
+        return accountList;
     }
 
-    public void setEmployeeList(List<Employee> employeeList) {
-        this.employeeList = employeeList;
+    public void setAccountList(List<Account> accountList) {
+        this.accountList = accountList;
     }
 
     public String getDescription() {
@@ -83,22 +83,22 @@ public class Task {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && estimatedDuration == task.estimatedDuration && Objects.equals(name, task.name) && Objects.equals(start_date, task.start_date) && Objects.equals(end_date, task.end_date) && Objects.equals(description, task.description) && Objects.equals(employeeList, task.employeeList);
+        return id == task.id && estimatedDuration == task.estimatedDuration && Objects.equals(name, task.name) && Objects.equals(start_date, task.start_date) && Objects.equals(end_date, task.end_date) && Objects.equals(description, task.description) && Objects.equals(accountList, task.accountList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, start_date, end_date, description, estimatedDuration, employeeList);
+        return Objects.hash(id, name, start_date, end_date, description, estimatedDuration, accountList);
     }
 
-    public String employeesToString(){
+    public String accountsToString(){
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < employeeList.size(); i++) {
-            String fullName = employeeList.get(i).getFirstName() + " " + employeeList.get(i).getLastName();
+        for(int i = 0; i < accountList.size(); i++) {
+            String fullName = accountList.get(i).getFirstName() + " " + accountList.get(i).getLastName();
 
             stringBuilder.append(fullName);
 
-            if(i < employeeList.size() - 1){
+            if(i < accountList.size() - 1){
                 stringBuilder.append(", ");
             }
         }

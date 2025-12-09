@@ -65,7 +65,7 @@
                                                 <h5 th:text="#{projectOverviewPage.h.details}"></h5>
                                                 <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
                                                 <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${task.end_date}"></p>
-                                                <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.employeesToString()}"></p>
+                                                <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.accountsToString()}"></p>
                                                 <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${task.estimatedDuration} + #{projectOverviewPage.p.hours}"></p>
                                             </article>
                                             <div class="project-buttons-container">
