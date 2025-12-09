@@ -1,25 +1,18 @@
 package com.mavi.projectmanager.service;
 
-import com.mavi.projectmanager.exception.Field;
-import com.mavi.projectmanager.exception.InvalidFieldException;
-import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.model.SubProject;
-import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import com.mavi.projectmanager.repository.SubProjectRepository;
 import com.mavi.projectmanager.service.utils.DateUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SubProjectService {
 
     private final SubProjectRepository subProjectRepository;
-    private final ProjectRepository projectRepository;
 
-    public SubProjectService(SubProjectRepository subProjectRepository, ProjectRepository projectRepository) {
+    public SubProjectService(SubProjectRepository subProjectRepository) {
         this.subProjectRepository = subProjectRepository;
-        this.projectRepository = projectRepository;
     }
 
     public SubProject getSubProjectById(int id) {
@@ -35,5 +28,23 @@ public class SubProjectService {
         this.subProjectRepository.createSubProject(subProject, projectId);
 
         return subProject;
+    }
+
+    public void deleteSubProject(SubProject toDelete) {
+
+        int rowsAffected = this.subProjectRepository.deleteSubProject(toDelete);
+
+        if (rowsAffected != 1) {
+            throw new IllegalArgumentException("Unexpected number of subprojects with id: " + toDelete
+                    + " found in database! Expected: [1], actual: [" + rowsAffected + "]");
+        }
+    }
+
+    public SubProject getSubprojectById(int id) {
+        return subProjectRepository.getSubprojectById(id);
+    }
+
+    public int updateSubProject(SubProject subProject) {
+        return subProjectRepository.updateSubProject(subProject);
     }
 }

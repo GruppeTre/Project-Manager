@@ -1,6 +1,7 @@
 package com.mavi.projectmanager.repository;
 
 import com.mavi.projectmanager.model.*;
+import org.springframework.dao.DataAccessException;
 import com.mavi.projectmanager.model.SubProject;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -94,6 +95,60 @@ public class SubProjectRepository {
         subProject.setId(keyHolder.getKey().intValue());
 
         return keyHolder.getKey().intValue();
+    }
+
+    public int deleteSubProject(SubProject toDelete) {
+
+        String sql = """
+                DELETE FROM subproject
+                WHERE id = ?
+                """;
+
+        int rowsAffected;
+
+        try {
+            rowsAffected = jdbcTemplate.update(sql, toDelete);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occured while trying to delete subproject with id: " + toDelete);
+        }
+
+        return rowsAffected;
+    }
+
+    public SubProject getSubprojectById(int id) {
+
+        String sql = """
+                SELECT s.id, s.name, s.start_date, s.end_date 
+                FROM subproject s 
+                WHERE s.id = ?
+                """;
+
+        return jdbcTemplate.queryForObject(sql, subProjectRowMapper, id);
+
+    }
+
+    //returns rowsAffected - catches DataAccessException - checks for?
+    //Checks for consistency in end_date and start_date between these fields in SubProejct, Task and Project.
+    //ToDo: the above mentioned.
+    public int updateSubProject(SubProject subProject) {
+
+        String sql = """
+                UPDATE subproject
+                SET name = ?, start_date = ?, end_date = ?
+                WHERE id = ?""";
+
+        String name = subProject.getName();
+        LocalDate startDate = subProject.getStart_date();
+        LocalDate endDate = subProject.getEnd_date();
+        int id = subProject.getId();
+
+        int rowsAffected = jdbcTemplate.update(sql, name, startDate, endDate, id);
+
+        if(rowsAffected != 1) {
+            throw new RuntimeException("Could not update the Subproject");
+        }
+
+        return rowsAffected;
     }
 
 }

@@ -109,7 +109,7 @@ class ProjectControllerTest {
         mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
         SubProject sp = new SubProject();
-        when(projectService.getSubprojectById(4)).thenReturn(sp);
+        when(subProjectService.getSubprojectById(4)).thenReturn(sp);
 
 
         mockMvc.perform(get("/project/edit-subproject/4")
@@ -120,7 +120,7 @@ class ProjectControllerTest {
 
         mockedStatic.close();
 
-        verify(projectService, times(1)).getSubprojectById(4);
+        verify(subProjectService, times(1)).getSubprojectById(4);
 
     }
 
@@ -243,7 +243,7 @@ class ProjectControllerTest {
         SubProject sp = new SubProject();
         sp.setId(4);
 
-        when(projectService.updateSubProject(Mockito.any(SubProject.class))).thenReturn(1);
+        when(subProjectService.updateSubProject(Mockito.any(SubProject.class))).thenReturn(1);
 
         mockMvc.perform(post("/project/update-subproject")
                         .sessionAttr("account", adminAccount)
@@ -256,7 +256,7 @@ class ProjectControllerTest {
 
         mockedStatic.close();
 
-        verify(projectService, times(1)).updateSubProject(Mockito.any(SubProject.class));
+        verify(subProjectService, times(1)).updateSubProject(Mockito.any(SubProject.class));
     }
 
     @Test

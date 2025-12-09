@@ -154,7 +154,7 @@ public class ProjectController {
         return "projectOverviewPage";
     }
 
-    @GetMapping("/{projectId}/subProject/create")
+    @GetMapping("/{projectId}/create")
     public String getCreateSubProjectsPage(@PathVariable("projectId") int projectId, Model model) {
         SubProject subProject = new SubProject();
 
@@ -165,7 +165,7 @@ public class ProjectController {
 
     }
 
-    @PostMapping("/{projectId}/subProject/create")
+    @PostMapping("/{projectId}/create")
     public String createSubProject(HttpSession session, Model model, @ModelAttribute SubProject subProject, @PathVariable("projectId") Integer projectId, HttpServletResponse response) {
 
         if(!SessionUtils.isLoggedIn(session)) {
@@ -219,6 +219,29 @@ public class ProjectController {
         return "redirect:/overview?viewMode=projects";
     }
 
+    @PostMapping("/edit/{projectId}/subProject/delete")
+    public String deleteSubProject(@PathVariable int projectId, HttpSession session, @ModelAttribute SubProject toDelete, RedirectAttributes redirectAttributes) {
+
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not project lead
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        try {
+            subProjectService.deleteSubProject(toDelete);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", true);
+        }
+
+        //return to project view
+        return "redirect:/project/view/" + projectId;
+    }
+
     @PostMapping("/edit/{projectId}/task/delete")
     public String deleteTask(@PathVariable int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
 
@@ -248,13 +271,13 @@ public class ProjectController {
         return "redirect:/project/view/" + projectId;
     }
 
-    @GetMapping("/edit-subproject/{id}")
-    public String editSubproject(@PathVariable("id") int id, Model model, HttpSession session) {
+    @GetMapping("/edit/{projectId}/{subProjectId}")
+    public String editSubproject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId, Model model, HttpSession session) {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
 
-        //Reject user if user is not Admin
+        //Reject user if user is not project lead
         if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/overview?viewMode=projects";
         }
@@ -262,40 +285,40 @@ public class ProjectController {
         SubProject toEdit;
 
         try {
-            toEdit = projectService.getSubprojectById(id);
+            toEdit = subProjectService.getSubprojectById(subProjectId);
         } catch (IllegalArgumentException i) {
             //ToDO: add flash attribute
             return "redirect/overView?viewMode=projects";
         }
 
-        model.addAttribute("subproject", toEdit);
+        model.addAttribute("subProject", toEdit);
 
         return "editSubprojectPage";
     }
 
-    @PostMapping("/update-subproject")
-    public String updateSubproject(@ModelAttribute SubProject toUpdate, HttpSession session, Model model) {
+    @PostMapping("/edit/{projectId}/{subProjectId}") /// ::::
+    public String updateSubproject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId, @ModelAttribute SubProject toUpdate, HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/overviewPage";
         }
 
-        //Reject user if user is not Admin
-        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+        //Reject user if user is not project lead
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/overview?viewMode=projects";
         }
 
         model.addAttribute("project", toUpdate); // ensures Thymeleaf has it
 
         try {
-            projectService.updateSubProject(toUpdate);
+            subProjectService.updateSubProject(toUpdate);
         } catch (IllegalArgumentException i) {
             //ToDO: add flashattriibute/RedirectAttributes.
             return "redirect:/ProjectOverviewPage";
         }
 
         //SHOULD USER BE REDIRECTED TO EDITPROJECTPAGE?
-        return "/editProjectPage";
+        return "redirect:/project/view/" + projectId;
 
         //ToDO: add RedirectAttributes for whether the update was successful. - redirect to the same page and return the same object with it.
     }

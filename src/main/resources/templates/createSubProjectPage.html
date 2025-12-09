@@ -13,7 +13,7 @@
 
 <main class="container">
 
-    <form th:action="@{/project/{projectId}/subProject/create (projectId=${projectId})}" th:object="${subProject}" method="post">
+    <form th:action="@{/project/{projectId}/create (projectId=${projectId})}" th:object="${subProject}" method="post">
 
         <div>
             <h2 th:text="#{newSubProject.title}"></h2>

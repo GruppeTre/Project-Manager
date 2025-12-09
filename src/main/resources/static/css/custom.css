@@ -140,7 +140,7 @@ tbody td {
     flex-direction: column;
 }
 
-.project-buttons-container .button {
+.project-buttons-container .button, project-buttons-container button  {
     width: 12em;
 }
 
@@ -318,6 +318,9 @@ input[type="button"].button-primary:focus {
 button.delete-button {
     background-color: var(--warning-red);
     border-color: var(--warning-red);
+    margin-top: auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 button.delete-button:focus, button.delete-button:hover {
