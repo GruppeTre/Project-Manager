@@ -86,6 +86,26 @@ public class TaskRepository {
         return task;
     }
 
+    public void updateTask(Task task) {
+
+        String sql = """
+                UPDATE task
+                SET name = ?, description = ?, start_date = ?, end_date = ?, estimated_duration = ?
+                WHERE id = ?
+                """;
+
+        int rowsAffected = jdbcTemplate.update(sql, task.getName(),
+                task.getDescription(),
+                task.getStart_date(),
+                task.getEnd_date(),
+                task.getEstimatedDuration(),
+                task.getId());
+
+        if (rowsAffected != 1) {
+            throw new RuntimeException("Failed to update project! Expected rows changed: 1, actual: " + rowsAffected);
+        }
+    }
+
     public void addEmployeesToTaskJunction(Task task){
         String query = """
                 INSERT INTO account_task_junction (
@@ -105,6 +125,16 @@ public class TaskRepository {
             ps.setInt(1, task.getId());
             ps.setInt(2, accountId);
         });
+    }
+
+    public void deleteFromEmployeesToTaskJunction(int taskId) {
+
+        String sql = """
+                DELETE FROM account_task_junction
+                WHERE task_id = ?
+                """;
+
+        jdbcTemplate.update(sql, taskId);
     }
 
     public Task getTaskById(int id){

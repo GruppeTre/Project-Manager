@@ -16,31 +16,79 @@ import java.time.LocalDate;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final SubProjectService subProjectService;
 
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, SubProjectService subProjectService) {
         this.taskRepository = taskRepository;
+        this.subProjectService = subProjectService;
+    }
+
+    public Task getTask(int id) {
+        return this.taskRepository.getTaskById(id);
     }
 
     @Transactional
     public Task createTask(Task task, SubProject subProject){
 
-        if(!hasValidName(task)){
-            throw new InvalidFieldException("Name cannot be blank", Field.TITLE);
-        }
-        if(!hasValidEmployees(task)){
-            throw new InvalidFieldException("Employees cannot be empty", Field.EMPLOYEE);
-        }
-        if(!hasValidEstimation(task)){
-            throw new InvalidFieldException("Estimation cannot be empty", Field.ESTIMATION);
-        }
+        trimFields(task);
 
-        validateDates(task, subProject);
+        validateFields(task, subProject);
 
         Task newTask = taskRepository.createTask(task, subProject);
 
         taskRepository.addEmployeesToTaskJunction(task);
 
         return newTask;
+    }
+
+    @Transactional
+    public Task updateTask(Task task, SubProject subProject) {
+
+        trimFields(task);
+
+        validateFields(task, subProject);
+
+        //update task
+        taskRepository.updateTask(task);
+
+        //delete row(s) from junction table
+        taskRepository.deleteFromEmployeesToTaskJunction(task.getId());
+
+        //insert new rows
+        taskRepository.addEmployeesToTaskJunction(task);
+
+        return task;
+    }
+
+    private void trimFields(Task task) {
+        task.setName(task.getName().trim());
+        task.setDescription(task.getDescription().trim());
+    }
+
+    private void validateFields(Task task, SubProject subProject) {
+
+        boolean invalidName = task.getName().isBlank();
+        boolean invalidDescription = task.getDescription().isBlank();
+        boolean hasNoAssignedEmployees = task.getAccountList().isEmpty();
+        boolean invalidEstimation = task.getEstimatedDuration() == null || task.getEstimatedDuration() <= 0;
+
+        if (invalidName) {
+            throw new InvalidFieldException("Name cannot be blank", Field.TITLE);
+        }
+
+        if (invalidDescription) {
+            throw new InvalidFieldException("Description cannot be empty", Field.DESCRIPTION);
+        }
+
+        if (hasNoAssignedEmployees) {
+            throw new InvalidFieldException("Employees cannot be empty", Field.EMPLOYEE);
+        }
+
+        if (invalidEstimation) {
+            throw new InvalidFieldException("Estimation cannot be empty", Field.ESTIMATION);
+        }
+
+        validateDates(task, subProject);
     }
 
     private void validateDates(Task taskToCheck, SubProject subProjectToCompare) {
@@ -66,20 +114,5 @@ public class TaskService {
         if (taskToCheck.getEnd_date().isAfter(subProjectToCompare.getEnd_date())) {
             throw new InvalidDateException("Task end date cannot be after subproject end date", 8);
         }
-    }
-
-    private boolean hasValidName(Task taskToCheck) {
-        return !taskToCheck.getName().isBlank();
-
-    }
-
-    private boolean hasValidEmployees(Task taskToCheck){
-        return !taskToCheck.getAccountList().isEmpty();
-    }
-
-    private boolean hasValidEstimation(Task taskToCheck){
-        Integer estimation = taskToCheck.getEstimatedDuration();
-
-        return estimation != null && estimation > 0;
     }
 }
