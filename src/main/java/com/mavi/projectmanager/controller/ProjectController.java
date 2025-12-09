@@ -4,10 +4,7 @@ import com.mavi.projectmanager.controller.utils.SessionUtils;
 import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.*;
-import com.mavi.projectmanager.service.AccountService;
-import com.mavi.projectmanager.service.EmployeeService;
-import com.mavi.projectmanager.service.ProjectService;
-import com.mavi.projectmanager.service.SubProjectService;
+import com.mavi.projectmanager.service.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -15,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -25,11 +24,13 @@ public class ProjectController {
     private final ProjectService projectService;
     private final AccountService accountService;
     private final SubProjectService subProjectService;
+    private final TaskService taskService;
 
-    public ProjectController(ProjectService projectService, AccountService accountService, SubProjectService subProjectService) {
+    public ProjectController(ProjectService projectService, AccountService accountService, SubProjectService subProjectService, TaskService taskService) {
         this.projectService = projectService;
         this.accountService = accountService;
         this.subProjectService = subProjectService;
+        this.taskService = taskService;
     }
 
     @GetMapping("/create")
@@ -242,7 +243,9 @@ public class ProjectController {
     }
 
     @PostMapping("/edit/{projectId}/task/delete")
-    public String deleteTask(@PathVariable("projectId") int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String deleteTask(@PathVariable int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        System.out.println("entering endpoint");
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -255,7 +258,9 @@ public class ProjectController {
 
         //todo: check if lead is actual owner of project and task?
 
-        //make sure that id of task to be deleted is passed as a field for toDelete object
+        toDelete = taskService.getTask(toDelete.getId());
+
+        System.out.println("got task with id: " + toDelete.getId());
         try {
             projectService.deleteTask(toDelete);
         } catch (IllegalArgumentException e) {
@@ -316,7 +321,83 @@ public class ProjectController {
         return "redirect:/project/view/" + projectId;
 
         //ToDO: add RedirectAttributes for whether the update was successful. - redirect to the same page and return the same object with it.
+    }
 
+    @GetMapping("/{projectId}/subproject/{subprojectId}/task/{taskId}/edit")
+    public String getEditTaskPage(HttpSession session, @PathVariable("projectId") int projectId, @PathVariable("subprojectId") int subProjectId,
+                         @PathVariable int taskId, Model model) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/overviewPage";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        Task toEdit = taskService.getTask(taskId);
+        toEdit.setAccountList(this.accountService.getAccountsAssignedToTask(toEdit.getId()));
+
+        List<Account> teamMembers = accountService.getAccountsByRole(Role.TEAM_MEMBER);
+        SubProject subProject = subProjectService.getSubProjectById(subProjectId);
+
+        model.addAttribute("task", toEdit);
+        model.addAttribute("subproject", subProject);
+        model.addAttribute("teamMembers", teamMembers);
+
+        return "editTaskPage";
+    }
+
+    @PostMapping("/{projectId}/subproject/{subprojectId}/task/edit")
+    public String editTask(@RequestParam("employeeList") List<String> accountList, @PathVariable int projectId, @PathVariable int subprojectId, HttpSession session,
+                           @ModelAttribute Task toEdit, Model model, HttpServletResponse response) {
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/overviewPage";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        //set assigned accounts on task:
+
+        List<Account> assignedAccounts = new ArrayList<>();
+
+        for(String mail : accountList){
+            Account account = accountService.getAccountByMail(mail);
+            assignedAccounts.add(account);
+        }
+
+        toEdit.setAccountList(assignedAccounts);
+
+        SubProject subProject = subProjectService.getSubProjectById(subprojectId);
+
+        try {
+            this.taskService.updateTask(toEdit, subProject);
+        } catch (InvalidFieldException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            List<Account> teamMembers = accountService.getAccountsByRole(Role.TEAM_MEMBER);
+
+            //model attributes necessary for displaying error box
+            if (e instanceof InvalidDateException) {
+                int errorId = ((InvalidDateException) e).getErrorId();
+                model.addAttribute("errorId", errorId);
+            }
+            model.addAttribute("error", true);
+            model.addAttribute("invalidField", e.getField());
+
+            //model attributes necessary for displaying form contents
+            model.addAttribute("task", toEdit);
+            model.addAttribute("subproject", subProject);
+            model.addAttribute("teamMembers", teamMembers);
+
+            return "editTaskPage";
+        }
+
+        return "redirect:/project/view/" + projectId;
     }
 }
 

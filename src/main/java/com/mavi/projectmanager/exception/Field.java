@@ -8,7 +8,8 @@ public enum Field {
     EMPLOYEE("employee"),
     TITLE("title"),
     DATE("date"),
-    ESTIMATION("estimation");
+    ESTIMATION("estimation"),
+    DESCRIPTION("description");
 
     private final String value;
 
