@@ -44,15 +44,8 @@
                                     <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
                                 </article>
                                 <div class="project-buttons-container">
-                                    <!-- Edit link/button -->
-                                    <a class="button button-primary" th:href="@{/project/edit/subProject}" th:text="#{overview.button.edit}"></a>
-                                    <!-- Add Task link/button -->
-                                    <a class="button button-primary" th:href="@{/project/task/create}" th:text="#{projectOverviewPage.button.addTask}"></a>
-
-                                <!-- Delete subproject -->
-                                    <form th:action="@{/project/{projectId}/subProject/{subProjectId}/delete (projectId=${project.id}, subProjectId=${sb.id})}" th:object="${project}" method="post">
-                                        <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>
-                                    </form>
+                                    <a class="button button-primary" href="#" th:text="'Edit'"></a>
+                                    <a class="button button-primary" th:href="@{/task/{projectId}/{subProjectId}/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
                                 </div>
 
                             </div>
