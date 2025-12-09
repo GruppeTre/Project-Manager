@@ -250,7 +250,7 @@ public class ProjectController {
         }
 
         //Reject user if user is not Admin
-        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/overview?viewMode=projects";
         }
 
@@ -268,7 +268,7 @@ public class ProjectController {
         return "editSubprojectPage";
     }
 
-    @PostMapping("/update-subproject") /// ::::
+    @PostMapping("/update-subproject")
     public String updateSubproject(@ModelAttribute SubProject toUpdate, HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
