@@ -30,13 +30,21 @@ public class SubProjectService {
         return subProject;
     }
 
-    public void deleteSubProjectById(int subProjectId) {
+    public void deleteSubProject(SubProject toDelete) {
 
-        int rowsAffected = this.subProjectRepository.deleteSubProjectById(subProjectId);
+        int rowsAffected = this.subProjectRepository.deleteSubProject(toDelete);
 
         if (rowsAffected != 1) {
-            throw new IllegalArgumentException("Unexpected number of subprojects with id: " + subProjectId
+            throw new IllegalArgumentException("Unexpected number of subprojects with id: " + toDelete
                     + " found in database! Expected: [1], actual: [" + rowsAffected + "]");
         }
+    }
+
+    public SubProject getSubprojectById(int id) {
+        return subProjectRepository.getSubprojectById(id);
+    }
+
+    public int updateSubProject(SubProject subProject) {
+        return subProjectRepository.updateSubProject(subProject);
     }
 }
