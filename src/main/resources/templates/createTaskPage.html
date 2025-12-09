@@ -65,7 +65,7 @@
                 <div class="row">
                     <label for="employee" class="form-label" th:text="#{form.label.taskEmployee}"></label>
                     <label class="small-info" th:text="#{form.label.employeeInfo}"></label>
-                    <select id="employee" name="employeeList" multiple required>
+                    <select class="multiselect" id="employee" name="employeeList" multiple required>
                         <option th:each="t : ${teamList}" th:text="${t.firstName} + ' ' + ${t.lastName} + ', ' + ${t.mail}" th:value="${t.mail}"></option>
                     </select>
                 </div>
