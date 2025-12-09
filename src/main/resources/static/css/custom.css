@@ -140,7 +140,7 @@ tbody td {
     flex-direction: column;
 }
 
-.project-buttons-container .button {
+.project-buttons-container .button, project-buttons-container button  {
     width: 12em;
 }
 
