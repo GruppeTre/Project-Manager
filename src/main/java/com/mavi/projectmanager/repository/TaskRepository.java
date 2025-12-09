@@ -1,0 +1,119 @@
+package com.mavi.projectmanager.repository;
+import com.mavi.projectmanager.model.Account;
+import com.mavi.projectmanager.model.SubProject;
+import com.mavi.projectmanager.model.Task;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Repository
+public class TaskRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public TaskRepository(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public RowMapper<Task> taskRowMapper = ((rs, rowNum) ->{
+        Task task = new Task();
+
+        task.setId(rs.getInt("id"));
+        task.setName(rs.getString("name"));
+        task.setDescription(rs.getString("description"));
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        task.setStart_date(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        task.setEnd_date(convertedEndDate);
+
+        task.setEstimatedDuration(rs.getInt("estimated_duration"));
+
+        return task;
+    });
+
+    public Task createTask(Task task, SubProject subProject){
+
+        String query = """
+                INSERT INTO task (
+                name,
+                description,
+                start_date,
+                end_date,
+                estimated_duration,
+                subproject_id
+                )
+                VALUES (?,?,?,?,?,?)
+                """;
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, task.getName());
+                ps.setString(2, task.getDescription());
+                ps.setObject(3, task.getStart_date());
+                ps.setObject(4, task.getEnd_date());
+                ps.setInt(5, task.getEstimatedDuration());
+                ps.setInt(6, subProject.getId());
+
+                return ps;
+            }, keyHolder);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        //Returns the keyholder for check
+        if (keyHolder.getKey() == null) {
+            throw new RuntimeException("Failed to obtain generated key for new account");
+        }
+
+        task.setId(keyHolder.getKey().intValue());
+
+        return task;
+    }
+
+    public void addEmployeesToTaskJunction(Task task){
+        String query = """
+                INSERT INTO account_task_junction (
+                task_id,
+                account_id
+                )
+                VALUES (?, ?)
+                """;
+
+        List<Integer> accountIds = new ArrayList<>();
+
+        for(Account list : task.getAccountList()){
+            accountIds.add(list.getId());
+        }
+
+        jdbcTemplate.batchUpdate(query, accountIds, accountIds.size(), (ps, accountId) -> {
+            ps.setInt(1, task.getId());
+            ps.setInt(2, accountId);
+        });
+    }
+
+    public Task getTaskById(int id){
+        String query = """
+                SELECT *
+                FROM task
+                WHERE id = ?
+                """;
+
+        return jdbcTemplate.queryForObject(query, taskRowMapper, id);
+    }
+}
