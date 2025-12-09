@@ -44,7 +44,7 @@
                                     <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
                                 </article>
                                 <div class="project-buttons-container">
-                                    <a class="button button-primary" href="#" th:text="'Edit'"></a>
+                                    <a class="button button-primary" th:href="@{/project/edit-subproject/{id}(id=${sb.id})}" th:text="'Edit'"></a>
                                     <a class="button button-primary" th:href="@{/task/{projectId}/{subProjectId}/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
                                 </div>
                             </div>
