@@ -197,7 +197,6 @@ public class ProjectRepository {
         return keyHolder.getKey().intValue();
     }
 
-    // Todo: Should probably be return rowsAffected
     public Project updateProject(Project project) {
 
         String query = """

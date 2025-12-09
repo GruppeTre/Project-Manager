@@ -112,6 +112,10 @@ public class AccountService {
         return accountRepository.getAccountsByRole(role);
     }
 
+    public List<Account> getAccountsAssignedToTask(int taskId) {
+        return accountRepository.getAccountsByTaskId(taskId);
+    }
+
 
     public Account deleteAccount(Account toDelete) {
 

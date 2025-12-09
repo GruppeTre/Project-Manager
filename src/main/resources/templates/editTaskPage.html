@@ -13,10 +13,15 @@
 <main class="container">
     <section>
         <article>
-            <form th:action="@{/task/create}" th:object="${task}" method="post">
+            <form th:action="@{/project/{projectId}/subproject/{subprojectId}/task/edit(projectId=${projectId}, subprojectId=${subprojectId})}" th:object="${task}" method="post">
 
                 <input type="hidden" name="retrievedProjectId" th:value="${projectId}">
-                <input type="hidden" name="retrievedSubProjectId" th:value="${subProject.id}">
+                <input type="hidden" name="retrievedSubProjectId" th:value="${subprojectId}">
+                <input type="hidden" th:field="*{id}" th:value="*{id}">
+
+                <div>
+                    <h2 th:text="#{editTask.title}"></h2>
+                </div>
 
                 <!-- Error messages -->
                 <div th:if="${error}" class="form-error-container">
@@ -34,31 +39,30 @@
                     <div th:if="${invalidField == 'employee'}">
                         <label th:text="#{form.error.employee}"></label>
                     </div>
+                    <div th:if="${invalidField == 'description'}">
+                        <label th:text="#{form.error.description}"></label>
+                    </div>
                     <div th:if="${invalidField == 'estimation'}">
                         <label th:text="#{form.error.estimation}"></label>
                     </div>
                 </div>
 
-                <div>
-                    <h2 th:text="#{newTask.title}"></h2>
-                </div>
-
                 <!-- task name -->
                 <div class="row">
                     <label for="name" class="form-label" th:text="#{form.label.taskName}"></label>
-                    <input id="name" type="text" th:field="*{name}" th:placeholder="#{form.input.taskName.placeholder}" required>
+                    <input id="name" type="text" th:field="*{name}" th:value="*{name}" required>
                 </div>
 
                 <!-- task description -->
                 <div class="row">
                     <label for="description" class="form-label" th:text="#{form.label.taskDescription}"></label>
-                    <input id="description" type="text" th:field="*{description}" th:placeholder="#{form.input.taskDescription.placeholder}">
+                    <textarea id="description" th:field="*{description}" th:value="*{description}"></textarea>
                 </div>
 
                 <!-- task estimation -->
                 <div class="row">
                     <label for="estimation" class="form-label" th:text="#{form.label.taskEstimation}"></label>
-                    <input id="estimation" type="text" th:field="*{estimatedDuration}" th:placeholder="#{form.input.taskEstimation.placeholder}" required>
+                    <input id="estimation" type="text" th:field="*{estimatedDuration}" th:value="*{estimatedDuration}" required>
                 </div>
 
                 <!-- task employee -->
@@ -66,7 +70,10 @@
                     <label for="employee" class="form-label" th:text="#{form.label.taskEmployee}"></label>
                     <label class="small-info" th:text="#{form.label.employeeInfo}"></label>
                     <select class="multiselect" id="employee" name="employeeList" multiple required>
-                        <option th:each="t : ${teamList}" th:text="${t.firstName} + ' ' + ${t.lastName} + ', ' + ${t.mail}" th:value="${t.mail}"></option>
+                        <option th:each="t : ${teamMembers}"
+                                th:text="${t.firstName} + ' ' + ${t.lastName} + ', ' + ${t.mail}"
+                                th:value="${t.mail}"
+                                th:attr="selected=${task.accountList.contains(t)}"></option>
                     </select>
                 </div>
 
@@ -74,22 +81,32 @@
 
                 <div class="row">
                     <label for="start-date" class="form-label" th:text="#{form.label.startDate}"></label>
-                    <input id="start-date" type="date" th:field="*{start_date}" th:min="${#temporals.format(subProject.start_date, 'yyyy-MM-dd')}" required>
+                    <input id="start-date" type="date" name="start_date" th:value="*{start_date}" th:min="${#temporals.format(subproject.start_date, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- end date -->
 
                 <div class="row">
                     <label for="end-date" class="form-label" th:text="#{form.label.endDate}"></label>
-                    <input id="end-date" type="date" th:field="*{end_date}" th:max="${#temporals.format(subProject.end_date, 'yyyy-MM-dd')}" required>
+                    <input id="end-date" type="date" name="end_date" th:value="*{end_date}" th:max="${#temporals.format(subproject.end_date, 'yyyy-MM-dd')}" required>
                 </div>
 
-                <!-- BUTTONS -->
-                <div class="row">
-                    <a class="button" th:href="@{/project/view/{id}(id=${projectId})}" th:text="#{form.button.back}"></a>
-                    <button class="button" type="submit" th:text="#{form.button.submit}"></button>
-                </div>
+                <!--hidden submit input (so submit button can be outside of form -->
+                <input type="submit" id="hidden-submit" class="hidden">
             </form>
+            <!-- BUTTONS -->
+            <div class="row">
+                <!--Back-->
+                <a class="button button-primary" th:href="@{/project/view/{id}(id=${projectId})}" th:text="#{form.button.back}"></a>
+                <!--Submit-->
+                <label class="button button-primary" for="hidden-submit" th:text="#{form.button.submit}"></label>
+            </div>
+            <!--Delete-->
+            <form class="button-container-form" th:action="@{/project/edit/{projectId}/task/delete(projectId=${projectId})}" th:object="${task}" method="post">
+                <input id="hidden-id" th:field="*{id}" hidden="hidden">
+                <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>
+            </form>
+
         </article>
     </section>
 </main>
