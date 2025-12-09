@@ -4,10 +4,7 @@ import com.mavi.projectmanager.controller.utils.SessionUtils;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.model.*;
-import com.mavi.projectmanager.service.AccountService;
-import com.mavi.projectmanager.service.EmployeeService;
-import com.mavi.projectmanager.service.ProjectService;
-import com.mavi.projectmanager.service.SubProjectService;
+import com.mavi.projectmanager.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +40,8 @@ class ProjectControllerTest {
     private SubProjectService subProjectService;
     @MockitoBean
     private EmployeeService employeeService;
+    @MockitoBean
+    private TaskService taskService;
     @MockitoBean
     private TaskController taskController;
     @MockitoBean
@@ -94,7 +93,6 @@ class ProjectControllerTest {
         emptyProject = new Project();
         emptySubProject = new SubProject();
         projectLeads = new ArrayList<>();
-
     }
 
 /*
@@ -466,6 +464,10 @@ class ProjectControllerTest {
 
     @Test
     void shouldDeleteTask() throws Exception {
+
+        Task testTask = new Task();
+        testTask.setId(1);
+        when(taskService.getTask(testTask.getId())).thenReturn(testTask);
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
