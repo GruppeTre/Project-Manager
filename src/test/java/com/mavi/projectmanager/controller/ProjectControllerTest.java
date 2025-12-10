@@ -109,8 +109,8 @@ class ProjectControllerTest {
         mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
         SubProject sp = new SubProject();
-        when(subProjectService.getSubprojectById(4)).thenReturn(sp);
-
+        when(subProjectService.getSubprojectById(anyInt())).thenReturn(sp);
+        when(projectService.getProjectById(anyInt())).thenReturn(testProject);
 
         mockMvc.perform(get("/project/edit/{projectId}/{subprojectId}", 1, 4)
                         .sessionAttr("account", leadAccount))

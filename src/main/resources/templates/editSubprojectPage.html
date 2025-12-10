@@ -21,14 +21,20 @@
 
         <!-- Error messages -->
         <div th:if="${error}" class="form-error-container">
-            <label th:if="${invalidField == 'title'}" th:text="#{form.error.title}"></label>
             <div th:if="${invalidField == 'date'}">
-                <label th:if="${errorId == 1}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
-                <label th:if="${errorId == 2}" th:text="#{form.error.date.endDateInPast}"></label>
+                <label th:if="${errorId == 3}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
+                <label th:if="${errorId == 4}" th:text="#{form.error.date.endDateInPast}"></label>
+                <label th:if="${errorId == 5}" th:text="#{form.error.date.startDateBeforeProjectStartDate}"></label>
+                <label th:if="${errorId == 6}" th:text="#{form.error.date.startDateAfterProjectEndDate}"></label>
+                <label th:if="${errorId == 7}" th:text="#{form.error.date.endDateBeforeProjectStartDate}"></label>
+                <label th:if="${errorId == 8}" th:text="#{form.error.date.endDateAfterProjectEndDate}"></label>
+            </div>
+            <div th:if="${invalidField == 'title'}">
+                <label th:text="#{form.error.taskTitle}"></label>
             </div>
         </div>
 
-        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:value="*{id}" th:field="*{id}"/>
 
         <div class="row">
             <label for="name" class="form-label" th:text="Name"></label>
@@ -37,12 +43,12 @@
 
         <div class="row">
             <label for="start-date" class="form-label" th:text="'Start Date'"></label>
-            <input id="start-date" type="date" th:field="*{start_date}" th:min="${#temporals.format(subProject.start_date, 'yyyy-MM-dd')}" required>
+            <input id="start-date" type="date" name="start_date" th:value="*{start_date}" th:min="${#temporals.format(project.start_date, 'yyyy-MM-dd')}" required>
         </div>
 
         <div class="row">
             <label for="end-date" class="form-label" th:text="'End Date'"></label>
-            <input id="end-date" type="date" th:field="*{end_date}" th:max="${#temporals.format(subProject.end_date, 'yyyy-MM-dd')}" required>
+            <input id="end-date" type="date" name="end_date" th:value="*{end_date}" th:max="${#temporals.format(project.end_date, 'yyyy-MM-dd')}" required>
         </div>
 
 
@@ -50,10 +56,11 @@
         <div class="row">
             <a class="button" th:href="@{/project/view/{id}(id=${projectId})}" th:text="#{form.button.back}"></a>
             <button class="button" type="submit" th:text="#{form.button.submit}"></button>
-            <form th:action="@{/project/{projectId}/{subProjectId}/delete (projectId=${projectId}, subProjectId=${subProjectId})}" th:object="${subProject}" method="post">
-                <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>
-            </form>
         </div>
+    </form>
+
+    <form class="button-container-form" th:action="@{/project/{projectId}/subProject/{subProjectId}/delete (projectId=${project.id}, subProjectId=${subProject.id})}" method="post">
+        <button class="button-primary delete-button" onsubmit="return confirm(deleteWarning);" th:text="#{form.button.delete}"></button>
     </form>
 </main>
 </body>

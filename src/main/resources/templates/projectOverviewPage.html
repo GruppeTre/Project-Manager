@@ -39,7 +39,7 @@
                             <div class="project-header">
                                 <article>
 <!--                                    <h3 th:text="'Sub-project info:'"></h3>-->
-                                    <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
+                                    <p th:text="#{projectOverviewPage.p.start} + ' ' + ${sb.start_date}"></p>
                                     <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${sb.end_date}"></p>
                                     <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
                                 </article>
