@@ -219,9 +219,8 @@ public class ProjectController {
         return "redirect:/overview?viewMode=projects";
     }
 
-    @PostMapping("/edit/{projectId}/subProject/delete")
-    public String deleteSubProject(@PathVariable int projectId, HttpSession session, @ModelAttribute SubProject toDelete, RedirectAttributes redirectAttributes) {
-
+    @PostMapping("/{projectId}/subProject/{subProjectId}/delete")
+    public String deleteSubProject(@PathVariable int projectId, @PathVariable int subProjectId, HttpSession session, RedirectAttributes redirectAttributes) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -231,6 +230,10 @@ public class ProjectController {
         if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/overview?viewMode=projects";
         }
+
+        SubProject toDelete = subProjectService.getSubProjectById(subProjectId);
+
+        System.out.println("id: " + toDelete.getId());
 
         try {
             subProjectService.deleteSubProject(toDelete);
@@ -284,14 +287,19 @@ public class ProjectController {
 
         SubProject toEdit;
 
+        Project project = projectService.getProjectById(projectId);
+
         try {
             toEdit = subProjectService.getSubprojectById(subProjectId);
+
+            System.out.println("start date: " + toEdit.getStart_date());
         } catch (IllegalArgumentException i) {
             //ToDO: add flash attribute
             return "redirect/overView?viewMode=projects";
         }
 
         model.addAttribute("subProject", toEdit);
+        model.addAttribute("project", project);
 
         return "editSubprojectPage";
     }
@@ -310,11 +318,23 @@ public class ProjectController {
 
         model.addAttribute("project", toUpdate); // ensures Thymeleaf has it
 
+       Project project = projectService.getProjectById(projectId);
+
         try {
-            subProjectService.updateSubProject(toUpdate);
-        } catch (IllegalArgumentException i) {
-            //ToDO: add flashattriibute/RedirectAttributes.
-            return "redirect:/ProjectOverviewPage";
+            subProjectService.updateSubProject(toUpdate, project);
+
+        } catch (InvalidFieldException e) {
+
+            if (e instanceof InvalidDateException) {
+                int errorId = ((InvalidDateException) e).getErrorId();
+                model.addAttribute("errorId", errorId);
+            }
+            model.addAttribute("error", true);
+            model.addAttribute("invalidField", e.getField());
+            model.addAttribute("subProject", toUpdate);
+            model.addAttribute("project", project);
+
+            return "editSubProjectPage";
         }
 
         //SHOULD USER BE REDIRECTED TO EDITPROJECTPAGE?

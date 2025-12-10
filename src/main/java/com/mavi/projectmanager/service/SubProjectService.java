@@ -1,6 +1,11 @@
 package com.mavi.projectmanager.service;
 
+import com.mavi.projectmanager.exception.Field;
+import com.mavi.projectmanager.exception.InvalidDateException;
+import com.mavi.projectmanager.exception.InvalidFieldException;
+import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.model.SubProject;
+import com.mavi.projectmanager.model.Task;
 import com.mavi.projectmanager.repository.ProjectRepository;
 import com.mavi.projectmanager.repository.SubProjectRepository;
 import com.mavi.projectmanager.service.utils.DateUtils;
@@ -44,7 +49,47 @@ public class SubProjectService {
         return subProjectRepository.getSubprojectById(id);
     }
 
-    public int updateSubProject(SubProject subProject) {
+    public int updateSubProject(SubProject subProject, Project project) {
+
+        subProject.setName(subProject.getName().trim());
+        validateFields(subProject, project);
+
         return subProjectRepository.updateSubProject(subProject);
+    }
+
+    private void validateFields(SubProject subProject, Project project) {
+
+        boolean invalidName = subProject.getName().isBlank();
+
+        if (invalidName) {
+            throw new InvalidFieldException("Name cannot be blank", Field.TITLE);
+        }
+
+        validateDates(subProject, project);
+    }
+
+    private void validateDates(SubProject subProjectToCheck, Project projectToCompare) {
+        if (subProjectToCheck.getStart_date().isAfter(subProjectToCheck.getEnd_date())) {
+            throw new InvalidDateException("Subproject start date cannot be after end date!", 3);
+        }
+
+        if (subProjectToCheck.getEnd_date().isBefore(subProjectToCheck.getStart_date())) {
+            throw new InvalidDateException("Subproject end date cannot be before start date!", 4);
+        }
+
+        if (subProjectToCheck.getStart_date().isBefore(projectToCompare.getStart_date())) {
+            throw new InvalidDateException("Subproject start date cannot be before project start date!", 5);
+        }
+
+        if (subProjectToCheck.getStart_date().isAfter(projectToCompare.getEnd_date())) {
+            throw new InvalidDateException("Subproject start date cannot be after project end date!", 6);
+        }
+        if (subProjectToCheck.getEnd_date().isBefore(projectToCompare.getStart_date())) {
+            throw new InvalidDateException("Subproject end date cannot be before project start date!", 7);
+        }
+
+        if (subProjectToCheck.getEnd_date().isAfter(projectToCompare.getEnd_date())) {
+            throw new InvalidDateException("Subproject end date cannot be after project end date", 8);
+        }
     }
 }

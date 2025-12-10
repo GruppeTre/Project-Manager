@@ -107,9 +107,9 @@ public class SubProjectRepository {
         int rowsAffected;
 
         try {
-            rowsAffected = jdbcTemplate.update(sql, toDelete);
+            rowsAffected = jdbcTemplate.update(sql, toDelete.getId());
         } catch (DataAccessException e) {
-            throw new RuntimeException("An unexpected error occured while trying to delete subproject with id: " + toDelete);
+            throw new RuntimeException("An unexpected error occured while trying to delete subproject with id: " + toDelete.getId());
         }
 
         return rowsAffected;
