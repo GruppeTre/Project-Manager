@@ -43,8 +43,6 @@ class ProjectControllerTest {
     @MockitoBean
     private TaskService taskService;
     @MockitoBean
-    private TaskController taskController;
-    @MockitoBean
     private HttpSession session;
     @MockitoBean
     private Model model;
@@ -79,15 +77,15 @@ class ProjectControllerTest {
         testProject = new Project();
         testProject.setId(1);
         testProject.setName("Test Project");
-        testProject.setStart_date(LocalDate.of(2025, 11, 28));
-        testProject.setEnd_date(LocalDate.of(2025, 11, 30));
+        testProject.setStartDate(LocalDate.of(2025, 11, 28));
+        testProject.setEndDate(LocalDate.of(2025, 11, 30));
         testProject.setLeadsList(List.of(leadAccount));
 
         testSubProject = new SubProject();
         testSubProject.setId(1);
         testSubProject.setName("Test SubProject");
-        testSubProject.setStart_date(LocalDate.of(2025, 11, 28));
-        testSubProject.setEnd_date(LocalDate.of(2025, 11, 30));
+        testSubProject.setStartDate(LocalDate.of(2025, 11, 28));
+        testSubProject.setEndDate(LocalDate.of(2025, 11, 30));
 
         projectList = new ArrayList<>();
         emptyProject = new Project();
@@ -478,6 +476,34 @@ class ProjectControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/project/view/" + 1))
                 .andExpect(flash().attributeCount(0));
+        mockedStatic.close();
+    }
+
+    @Test
+    void shouldShowCreateTaskPage() throws Exception{
+
+        SubProject subProject = new SubProject();
+        Project project = new Project();
+        project.setId(1);
+        List<Account> teamList = new ArrayList<>();
+
+        when(subProjectService.getSubProjectById(anyInt())).thenReturn(subProject);
+        when(accountService.getAccountsByRole(Role.TEAM_MEMBER)).thenReturn(teamList);
+
+        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
+        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+
+        Task task = new Task();
+
+        mockMvc.perform(get("/project/{projectId}/subproject/{subProjectId}/task/create", 1, 1))
+                .andExpect(status().isOk())
+                .andExpect(view().name("createTaskPage"))
+                .andExpect(model().attribute("task", task))
+                .andExpect(model().attribute("subProject", subProject))
+                .andExpect(model().attribute("projectId", project.getId()))
+                .andExpect(model().attribute("teamList", teamList));
+
         mockedStatic.close();
     }
 }

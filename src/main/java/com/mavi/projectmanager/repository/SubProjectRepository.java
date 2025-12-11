@@ -1,6 +1,5 @@
 package com.mavi.projectmanager.repository;
 
-import com.mavi.projectmanager.model.*;
 import org.springframework.dao.DataAccessException;
 import com.mavi.projectmanager.model.SubProject;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,15 +15,12 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Comparator;
 
-import java.util.*;
-import java.sql.Date;
-
 @Repository
 public class SubProjectRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private ProjectRepository projectRepository;
-    private static final Comparator<SubProject> SUB_PROJECT_COMPARATOR = Comparator.comparing(SubProject::getStart_date).thenComparing(SubProject::getEnd_date);
+    private static final Comparator<SubProject> SUB_PROJECT_COMPARATOR = Comparator.comparing(SubProject::getStartDate).thenComparing(SubProject::getEndDate);
 
     public SubProjectRepository(JdbcTemplate jdbcTemplate, ProjectRepository projectRepository) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,11 +35,11 @@ public class SubProjectRepository {
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
-        subProject.setStart_date(convertedStartDate);
+        subProject.setStartDate(convertedStartDate);
 
         Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
-        subProject.setEnd_date(convertedEndDate);
+        subProject.setEndDate(convertedEndDate);
 
         return subProject;
     });
@@ -72,8 +68,8 @@ public class SubProjectRepository {
             rowsAffected = jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, subProject.getName());
-                ps.setObject(2, subProject.getStart_date());
-                ps.setObject(3, subProject.getEnd_date());
+                ps.setObject(2, subProject.getStartDate());
+                ps.setObject(3, subProject.getEndDate());
                 ps.setInt(4, projectId);
 
                 return ps;
@@ -138,8 +134,8 @@ public class SubProjectRepository {
                 WHERE id = ?""";
 
         String name = subProject.getName();
-        LocalDate startDate = subProject.getStart_date();
-        LocalDate endDate = subProject.getEnd_date();
+        LocalDate startDate = subProject.getStartDate();
+        LocalDate endDate = subProject.getEndDate();
         int id = subProject.getId();
 
         int rowsAffected = jdbcTemplate.update(sql, name, startDate, endDate, id);

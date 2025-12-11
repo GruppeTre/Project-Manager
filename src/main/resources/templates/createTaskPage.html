@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Template</title>
+    <title th:text="#{page.createTask.title}"></title>
     <link rel="stylesheet" th:href="@{/css/normalize.css}">
     <link rel="stylesheet" th:href="@{/css/skeleton.css}">
     <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -13,7 +13,7 @@
 <main class="container">
     <section>
         <article>
-            <form th:action="@{/task/create}" th:object="${task}" method="post">
+            <form th:action="@{/project/{projectId}/subproject/{subProjectId}/task/create(projectId=${projectId}, subProjectId=${subProject.id})}" th:object="${task}" method="post">
 
                 <input type="hidden" name="retrievedProjectId" th:value="${projectId}">
                 <input type="hidden" name="retrievedSubProjectId" th:value="${subProject.id}">
@@ -74,14 +74,14 @@
 
                 <div class="row">
                     <label for="start-date" class="form-label" th:text="#{form.label.startDate}"></label>
-                    <input id="start-date" type="date" th:field="*{start_date}" th:min="${#temporals.format(subProject.start_date, 'yyyy-MM-dd')}" required>
+                    <input id="start-date" type="date" th:field="*{startDate}" th:min="${#temporals.format(subProject.startDate, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- end date -->
 
                 <div class="row">
                     <label for="end-date" class="form-label" th:text="#{form.label.endDate}"></label>
-                    <input id="end-date" type="date" th:field="*{end_date}" th:max="${#temporals.format(subProject.end_date, 'yyyy-MM-dd')}" required>
+                    <input id="end-date" type="date" th:field="*{endDate}" th:max="${#temporals.format(subProject.endDate, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- BUTTONS -->

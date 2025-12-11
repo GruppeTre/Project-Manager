@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>Template</title>
+    <title th:text="#{page.projectOverviewPage.title}"></title>
     <link rel="stylesheet" th:href="@{/css/normalize.css}">
     <link rel="stylesheet" th:href="@{/css/skeleton.css}">
     <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -25,9 +25,9 @@
                 <div class="project-header">
                     <article>
                         <h5 th:text="*{name}"></h5>
-                        <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
-                        <p th:text="#{projectOverviewPage.p.deadline} + ' ' + *{end_date}"></p>
-                        <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + *{sumProjectDuration} + #{projectOverviewPage.p.hours}"></p>
+                        <p th:text="#{projectOverviewPage.p.start} + ' ' + *{startDate}"></p>
+                        <p th:text="#{projectOverviewPage.p.deadline} + ' ' + *{endDate}"></p>
+                        <p th:if="*{!subProjectsList.isEmpty}" th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + *{sumProjectDuration} + #{projectOverviewPage.p.hours}"></p>
                     </article>
                     <a class="button button-primary" th:href="@{/project/{projectId}/create (projectId=${project.id})}" th:text="'Add Subproject'"></a>
                 </div>
@@ -39,13 +39,13 @@
                             <div class="project-header">
                                 <article>
 <!--                                    <h3 th:text="'Sub-project info:'"></h3>-->
-                                    <p th:text="#{projectOverviewPage.p.start} + ' ' + ${sb.start_date}"></p>
-                                    <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${sb.end_date}"></p>
+                                    <p th:text="#{projectOverviewPage.p.start} + ' ' + ${sb.startDate}"></p>
+                                    <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${sb.endDate}"></p>
                                     <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
                                 </article>
                                 <div class="project-buttons-container">
                                     <a class="button button-primary" th:href="@{/project/edit/{projectId}/{subProjectId} (projectId=${project.id}, subProjectId=${sb.id})}" th:text="'Edit'"></a>
-                                    <a class="button button-primary" th:href="@{/task/{projectId}/{subProjectId}/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
+                                    <a class="button button-primary" th:href="@{/project/{projectId}/subproject/{subProjectId}/task/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
                                 </div>
 
                             </div>
@@ -56,8 +56,8 @@
                                         <div class="project-header">
                                             <article>
                                                 <h5 th:text="#{projectOverviewPage.h.details}"></h5>
-                                                <p th:text="#{projectOverviewPage.p.start} + ' ' + *{start_date}"></p>
-                                                <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${task.end_date}"></p>
+                                                <p th:text="#{projectOverviewPage.p.start} + ' ' + *{startDate}"></p>
+                                                <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${task.endDate}"></p>
                                                 <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.accountsToString()}"></p>
                                                 <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${task.estimatedDuration} + #{projectOverviewPage.p.hours}"></p>
                                             </article>

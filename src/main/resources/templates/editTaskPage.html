@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Template</title>
+    <title th:text="#{page.editTask.title}"></title>
     <link rel="stylesheet" th:href="@{/css/normalize.css}">
     <link rel="stylesheet" th:href="@{/css/skeleton.css}">
     <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -81,14 +81,14 @@
 
                 <div class="row">
                     <label for="start-date" class="form-label" th:text="#{form.label.startDate}"></label>
-                    <input id="start-date" type="date" name="start_date" th:value="*{start_date}" th:min="${#temporals.format(subproject.start_date, 'yyyy-MM-dd')}" required>
+                    <input id="start-date" type="date" name="start_date" th:value="*{startDate}" th:min="${#temporals.format(subproject.startDate, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- end date -->
 
                 <div class="row">
                     <label for="end-date" class="form-label" th:text="#{form.label.endDate}"></label>
-                    <input id="end-date" type="date" name="end_date" th:value="*{end_date}" th:max="${#temporals.format(subproject.end_date, 'yyyy-MM-dd')}" required>
+                    <input id="end-date" type="date" name="end_date" th:value="*{endDate}" th:max="${#temporals.format(subproject.endDate, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!--hidden submit input (so submit button can be outside of form -->

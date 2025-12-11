@@ -33,11 +33,11 @@ public class TaskRepository {
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
-        task.setStart_date(convertedStartDate);
+        task.setStartDate(convertedStartDate);
 
         Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
-        task.setEnd_date(convertedEndDate);
+        task.setEndDate(convertedEndDate);
 
         task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
@@ -64,8 +64,8 @@ public class TaskRepository {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, task.getName());
                 ps.setString(2, task.getDescription());
-                ps.setObject(3, task.getStart_date());
-                ps.setObject(4, task.getEnd_date());
+                ps.setObject(3, task.getStartDate());
+                ps.setObject(4, task.getEndDate());
                 ps.setInt(5, task.getEstimatedDuration());
                 ps.setInt(6, subProject.getId());
 
@@ -96,8 +96,8 @@ public class TaskRepository {
 
         int rowsAffected = jdbcTemplate.update(sql, task.getName(),
                 task.getDescription(),
-                task.getStart_date(),
-                task.getEnd_date(),
+                task.getStartDate(),
+                task.getEndDate(),
                 task.getEstimatedDuration(),
                 task.getId());
 

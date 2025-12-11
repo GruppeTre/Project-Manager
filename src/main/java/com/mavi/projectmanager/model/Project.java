@@ -7,8 +7,8 @@ import java.util.Objects;
 public class Project {
     private int id;
     private String name;
-    private LocalDate start_date;
-    private LocalDate end_date;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private List<Account> leadsList;
     private List<SubProject> subProjectsList;
 
@@ -29,20 +29,20 @@ public class Project {
         this.name = name;
     }
 
-    public LocalDate getStart_date() {
-        return start_date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date(LocalDate start_date) {
-        this.start_date = start_date;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public LocalDate getEnd_date() {
-        return end_date;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setEnd_date(LocalDate end_date) {
-        this.end_date = end_date;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public List<Account> getLeadsList() {
@@ -74,12 +74,12 @@ public class Project {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;
-        return id == project.id && Objects.equals(name, project.name) && Objects.equals(start_date, project.start_date) && Objects.equals(end_date, project.end_date);
+        return id == project.id && Objects.equals(name, project.name) && Objects.equals(startDate, project.startDate) && Objects.equals(endDate, project.endDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, start_date, end_date);
+        return Objects.hash(id, name, startDate, endDate);
     }
 
     public String leadsToString(){

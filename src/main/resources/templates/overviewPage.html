@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Overview</title>
+    <title th:text="#{page.overviewPage.title}"></title>
     <link rel="stylesheet" th:href="@{/css/normalize.css}">
     <link rel="stylesheet" th:href="@{/css/skeleton.css}">
     <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -75,7 +75,7 @@
                             <td th:text="${p.name}"></td>
                             <td th:if="${p.leadsList != null}" th:text="${p.leadsToString}"></td>
                             <td th:if="${p.leadsList == null}" th:text="'No project leader(s)'"></td>
-                            <td th:text="${p.end_date}"></td>
+                            <td th:text="${p.endDate}"></td>
                             <td>
                                 <a class="button button-primary" th:href="@{/project/edit/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>
                             </td>
@@ -107,7 +107,7 @@
                             <td th:text="${p.name}"></td>
                             <td th:if="${p.leadsList != null}" th:text="${p.leadsToString}"></td>
                             <td th:if="${p.leadsList == null}" th:text="'No project leader(s)'"></td>
-                            <td th:text="${p.end_date}"></td>
+                            <td th:text="${p.endDate}"></td>
                             <td>
                                 <a class="button button-primary" th:href="@{/project/view/{id}(id=${p.id})}" th:text="#{overview.button.view}"></a>
                             </td>

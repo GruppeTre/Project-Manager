@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
-class UserControllerTest {
+class AccountControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,8 +45,6 @@ class UserControllerTest {
     private EmployeeService employeeService;
     @MockitoBean
     private TaskService taskService;
-    @MockitoBean
-    private TaskController taskController;
     @MockitoBean
     private ProjectController projectController;
     @MockitoBean

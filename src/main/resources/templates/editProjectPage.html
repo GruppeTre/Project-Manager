@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Template</title>
+    <title th:text="#{page.editProject.title}"></title>
     <link rel="stylesheet" th:href="@{/css/normalize.css}">
     <link rel="stylesheet" th:href="@{/css/skeleton.css}">
     <link rel="stylesheet" th:href="@{/css/custom.css}">
@@ -34,12 +34,12 @@
 
             <div class="row">
                 <label for="start_date" class="form-label" th:text="#{form.label.startDate}"></label>
-                <input id="start_date" type="date" name="start_date" th:value="*{start_date}">
+                <input id="start_date" type="date" name="start_date" th:value="*{startDate}">
             </div>
 
             <div class="row">
                 <label for="end_date" class="form-label" th:text="#{form.label.endDate}"></label>
-                <input id="end_date" type="date" name="end_date" th:value="*{end_date}">
+                <input id="end_date" type="date" name="end_date" th:value="*{endDate}">
             </div>
 
             <div class="row">

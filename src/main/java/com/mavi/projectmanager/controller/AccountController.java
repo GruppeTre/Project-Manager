@@ -16,10 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/account")
-public class UserController {
+public class AccountController {
     private final AccountService service;
 
-    public UserController(AccountService service) {
+    public AccountController(AccountService service) {
         this.service = service;
     }
 
