@@ -134,6 +134,20 @@ public class AccountController {
         return "redirect:/overview?viewMode=accounts";
     }
 
+    @GetMapping("/generatePassword")
+    public String generatePassword(HttpSession session){
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/";
+        }
+
+        return service.generatePassword();
+    }
+
     private boolean sessionUserIsAdmin(HttpSession session) {
         return ((Account)session.getAttribute("account")).getRole() == Role.ADMIN;
     }
