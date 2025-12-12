@@ -16,10 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/account")
-public class UserController {
+public class AccountController {
     private final AccountService service;
 
-    public UserController(AccountService service) {
+    public AccountController(AccountService service) {
         this.service = service;
     }
 
@@ -132,6 +132,21 @@ public class UserController {
         }
 
         return "redirect:/overview?viewMode=accounts";
+    }
+
+    @GetMapping("/generatePassword")
+    @ResponseBody
+    public String generatePassword(HttpSession session){
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/";
+        }
+
+        return service.generatePassword();
     }
 
     private boolean sessionUserIsAdmin(HttpSession session) {

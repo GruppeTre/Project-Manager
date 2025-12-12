@@ -28,7 +28,7 @@ public class SubProjectService {
 
         subProject.setName(subProject.getName().trim());
 
-        DateUtils.validateDates(subProject.getStart_date(), subProject.getEnd_date());
+        DateUtils.validateDates(subProject.getStartDate(), subProject.getEndDate());
 
         this.subProjectRepository.createSubProject(subProject, projectId);
 
@@ -69,26 +69,26 @@ public class SubProjectService {
     }
 
     private void validateDates(SubProject subProjectToCheck, Project projectToCompare) {
-        if (subProjectToCheck.getStart_date().isAfter(subProjectToCheck.getEnd_date())) {
+        if (subProjectToCheck.getStartDate().isAfter(subProjectToCheck.getEndDate())) {
             throw new InvalidDateException("Subproject start date cannot be after end date!", 3);
         }
 
-        if (subProjectToCheck.getEnd_date().isBefore(subProjectToCheck.getStart_date())) {
+        if (subProjectToCheck.getEndDate().isBefore(subProjectToCheck.getStartDate())) {
             throw new InvalidDateException("Subproject end date cannot be before start date!", 4);
         }
 
-        if (subProjectToCheck.getStart_date().isBefore(projectToCompare.getStart_date())) {
+        if (subProjectToCheck.getStartDate().isBefore(projectToCompare.getStartDate())) {
             throw new InvalidDateException("Subproject start date cannot be before project start date!", 5);
         }
 
-        if (subProjectToCheck.getStart_date().isAfter(projectToCompare.getEnd_date())) {
+        if (subProjectToCheck.getStartDate().isAfter(projectToCompare.getEndDate())) {
             throw new InvalidDateException("Subproject start date cannot be after project end date!", 6);
         }
-        if (subProjectToCheck.getEnd_date().isBefore(projectToCompare.getStart_date())) {
+        if (subProjectToCheck.getEndDate().isBefore(projectToCompare.getStartDate())) {
             throw new InvalidDateException("Subproject end date cannot be before project start date!", 7);
         }
 
-        if (subProjectToCheck.getEnd_date().isAfter(projectToCompare.getEnd_date())) {
+        if (subProjectToCheck.getEndDate().isAfter(projectToCompare.getEndDate())) {
             throw new InvalidDateException("Subproject end date cannot be after project end date", 8);
         }
     }

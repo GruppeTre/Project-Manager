@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -20,7 +19,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -70,15 +68,15 @@ class ProjectServiceTest {
 
         dbProject = new Project();
         dbProject.setLeadsList(defaultLeadsList);
-        dbProject.setStart_date(startDate);
-        dbProject.setEnd_date(endDate);
+        dbProject.setStartDate(startDate);
+        dbProject.setEndDate(endDate);
         dbProject.setName(name);
         dbProject.setId(id);
 
         newProject = new Project();
         newProject.setLeadsList(defaultLeadsList);
-        newProject.setStart_date(startDate);
-        newProject.setEnd_date(endDate);
+        newProject.setStartDate(startDate);
+        newProject.setEndDate(endDate);
         newProject.setName(name);
         newProject.setId(id);
 
@@ -104,13 +102,13 @@ class ProjectServiceTest {
 
         LocalDate newDate = LocalDate.parse("2025-11-01");
 
-        dbProject.setStart_date(newDate);
+        dbProject.setStartDate(newDate);
 
         when(projectRepository.updateProject(dbProject)).thenReturn(dbProject);
 
         when(accountRepository.getAccountByMail(leadAccount.getMail())).thenReturn(leadAccount);
 
-        assertEquals(newDate, this.projectService.updateProject(dbProject).getStart_date());
+        assertEquals(newDate, this.projectService.updateProject(dbProject).getStartDate());
     }
 
     @Test
@@ -118,13 +116,13 @@ class ProjectServiceTest {
 
         LocalDate newDate = LocalDate.parse("2026-01-01");
 
-        dbProject.setEnd_date(newDate);
+        dbProject.setEndDate(newDate);
 
         when(projectRepository.updateProject(dbProject)).thenReturn(dbProject);
 
         when(accountRepository.getAccountByMail(leadAccount.getMail())).thenReturn(leadAccount);
 
-        assertEquals(newDate, this.projectService.updateProject(dbProject).getEnd_date());
+        assertEquals(newDate, this.projectService.updateProject(dbProject).getEndDate());
     }
 
     @Test
@@ -167,7 +165,7 @@ class ProjectServiceTest {
 
         LocalDate yesterday = LocalDate.now().minusDays(1);
 
-        dbProject.setEnd_date(yesterday);
+        dbProject.setEndDate(yesterday);
 
         InvalidDateException exception = assertThrows(InvalidDateException.class, () -> this.projectService.updateProject(dbProject));
 
@@ -182,8 +180,8 @@ class ProjectServiceTest {
         LocalDate startDate = LocalDate.now().plusDays(10);
         LocalDate endDate = startDate.minusDays(1);
 
-        dbProject.setStart_date(startDate);
-        dbProject.setEnd_date(endDate);
+        dbProject.setStartDate(startDate);
+        dbProject.setEndDate(endDate);
 
         InvalidDateException exception = assertThrows(InvalidDateException.class, () -> this.projectService.updateProject(dbProject));
 

@@ -19,7 +19,7 @@ import java.sql.Date;
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
     private AccountRepository accountRepository;
-    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStart_date).thenComparing(Project::getEnd_date);
+    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStartDate).thenComparing(Project::getEndDate);
 
     public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, EmployeeRepository employeeRepository) {
         this.jdbcTemplate = jdbcTemplate;
@@ -34,11 +34,11 @@ public class ProjectRepository {
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
-        project.setStart_date(convertedStartDate);
+        project.setStartDate(convertedStartDate);
 
         Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
-        project.setEnd_date(convertedEndDate);
+        project.setEndDate(convertedEndDate);
 
         List<Account> projectLeads = accountRepository.getAccountsByProjectId(projectId);
 
@@ -49,18 +49,18 @@ public class ProjectRepository {
 
     public RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
-        int projectId = rs.getInt(rs.getInt("id"));
+        int projectId = rs.getInt("id");
         project.setId(projectId);
 
         project.setName(rs.getString("name"));
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
-        project.setStart_date(convertedStartDate);
+        project.setStartDate(convertedStartDate);
 
         Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
-        project.setEnd_date(convertedEndDate);
+        project.setEndDate(convertedEndDate);
 
         List<SubProject> subProjectsList = getSubProjectsByProjectId(projectId);
 
@@ -78,11 +78,11 @@ public class ProjectRepository {
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
-        subProject.setStart_date(convertedStartDate);
+        subProject.setStartDate(convertedStartDate);
 
         Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
-        subProject.setEnd_date(convertedEndDate);
+        subProject.setEndDate(convertedEndDate);
 
         List<Task> taskList = getTaskBySubProjectId(subProjectId);
         subProject.setTaskList(taskList);
@@ -100,11 +100,11 @@ public class ProjectRepository {
 
         Date startDate = rs.getDate("start_date");
         LocalDate convertedStartDate = startDate.toLocalDate();
-        task.setStart_date(convertedStartDate);
+        task.setStartDate(convertedStartDate);
 
         Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
-        task.setEnd_date(convertedEndDate);
+        task.setEndDate(convertedEndDate);
 
         task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
@@ -173,8 +173,8 @@ public class ProjectRepository {
             rowsAffected = jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, project.getName());
-                ps.setObject(2, project.getStart_date());
-                ps.setObject(3, project.getEnd_date());
+                ps.setObject(2, project.getStartDate());
+                ps.setObject(3, project.getEndDate());
 
                 return ps;
             }, keyHolder);
@@ -206,7 +206,7 @@ public class ProjectRepository {
                 """;
 
         //returns rows affected
-        int rowsAffected = jdbcTemplate.update(query, project.getName(), project.getStart_date(), project.getEnd_date(), project.getId());
+        int rowsAffected = jdbcTemplate.update(query, project.getName(), project.getStartDate(), project.getEndDate(), project.getId());
 
         if (rowsAffected != 1) {
             throw new RuntimeException("Could not insert into junction table");

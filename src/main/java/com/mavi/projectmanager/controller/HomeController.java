@@ -86,10 +86,10 @@ public class HomeController {
 
         String viewModeContainer = viewMode;
 
-        if(viewMode == null && ((Account) session.getAttribute("account")).getRole() == Role.ADMIN){
+        if(viewMode == null || viewMode.isEmpty() && ((Account) session.getAttribute("account")).getRole() == Role.ADMIN){
             viewModeContainer = "accounts";
         }
-        if(viewMode == null && ((Account) session.getAttribute("account")).getRole() == Role.PROJECT_LEAD){
+        if(viewMode == null || viewMode.isEmpty() && ((Account) session.getAttribute("account")).getRole() == Role.PROJECT_LEAD){
             viewModeContainer = "projects";
         }
 

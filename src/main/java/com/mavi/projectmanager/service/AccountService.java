@@ -13,7 +13,9 @@ import com.mavi.projectmanager.exception.PageNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.management.RuntimeErrorException;
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,11 +85,22 @@ public class AccountService {
 
         //save desired new role in temp variable
         Role newRole = updatedAccount.getRole();
-
+        String newPassword = updatedAccount.getPassword();
         //Fill out Account data from repository (mainly to get ID from database)
         updatedAccount = getAccountByMail(updatedAccount.getMail());
         //Set the desired role from temp variable
         updatedAccount.setRole(newRole);
+
+        //Checks if the new password is not null or empty
+        if (newPassword != null && !newPassword.isEmpty()) {
+
+            //Checks if the new password matches the old password
+            if (!encoder.matches(newPassword, updatedAccount.getPassword())) {
+
+                String hashedPassword = encoder.encode(newPassword);
+                updatedAccount.setPassword(hashedPassword);
+            }
+        }
 
         return accountRepository.updatedAccount(updatedAccount);
     }
@@ -127,6 +140,42 @@ public class AccountService {
         //insert nullcheck for ID here
 
         return this.accountRepository.deleteAccount(toDelete);
+    }
+
+    public String generatePassword(){
+        SecureRandom secureRandom = new SecureRandom();
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        String lowerCasePool = "abcdefghijklmnopqrstuvxyz";
+        String upperCasePool = "ABCEDFGHIJKLMNOPQRSTUVWXYZ";
+        String numberPool = "1234567890";
+        String specialCharacterPool = "!#€%&/()=?+-*@${}";
+
+        //Could this be simplified, yes, but it was a nice and easy way to introduce randomly generated password with knowledge on hand.
+        for(int i = 0; i < 8; i++){
+            int randomIndex = secureRandom.nextInt(lowerCasePool.length());
+            sb.append(lowerCasePool.charAt(randomIndex));
+        }
+
+        for(int i = 0; i < 4; i++){
+            int randomIndex = secureRandom.nextInt(upperCasePool.length());
+            int insertIndex = secureRandom.nextInt(sb.length() + 1);
+            sb.insert(insertIndex, upperCasePool.charAt(randomIndex));
+        }
+
+        for(int i = 0; i < 2; i++){
+            int randomIndex = secureRandom.nextInt(numberPool.length());
+            int insertIndex = secureRandom.nextInt(sb.length() + 1);
+            sb.insert(insertIndex, numberPool.charAt(randomIndex));
+        }
+
+        for(int i = 0; i < 2; i++){
+            int randomIndex = secureRandom.nextInt(numberPool.length());
+            int insertIndex = secureRandom.nextInt(sb.length() + 1);
+            sb.insert(insertIndex, specialCharacterPool.charAt(randomIndex));
+        }
+
+        return sb.toString();
     }
 
     private boolean isValidPassword(String str){

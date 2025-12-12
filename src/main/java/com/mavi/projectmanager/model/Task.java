@@ -7,12 +7,11 @@ import java.util.Objects;
 public class Task {
     private int id;
     private String name;
-    private LocalDate start_date;
-    private LocalDate end_date;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String description;
     private Integer estimatedDuration; //in hours
-    private Integer actualDuration;
-    // TODO: Remember to swap this to account in sprint 2
+    private Integer actualDuration; //in hours
     private List<Account> accountList;
 
     public int getId() {
@@ -31,20 +30,20 @@ public class Task {
         this.name = name;
     }
 
-    public LocalDate getStart_date() {
-        return start_date;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date(LocalDate start_date) {
-        this.start_date = start_date;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public LocalDate getEnd_date() {
-        return end_date;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setEnd_date(LocalDate end_date) {
-        this.end_date = end_date;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public Integer getEstimatedDuration() {
@@ -83,12 +82,12 @@ public class Task {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && estimatedDuration == task.estimatedDuration && Objects.equals(name, task.name) && Objects.equals(start_date, task.start_date) && Objects.equals(end_date, task.end_date) && Objects.equals(description, task.description) && Objects.equals(accountList, task.accountList);
+        return id == task.id && estimatedDuration == task.estimatedDuration && Objects.equals(name, task.name) && Objects.equals(startDate, task.startDate) && Objects.equals(endDate, task.endDate) && Objects.equals(description, task.description) && Objects.equals(accountList, task.accountList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, start_date, end_date, description, estimatedDuration, accountList);
+        return Objects.hash(id, name, startDate, endDate, description, estimatedDuration, accountList);
     }
 
     public String accountsToString(){

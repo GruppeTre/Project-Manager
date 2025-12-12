@@ -92,26 +92,26 @@ public class TaskService {
     }
 
     private void validateDates(Task taskToCheck, SubProject subProjectToCompare) {
-        if (taskToCheck.getStart_date().isAfter(taskToCheck.getEnd_date())) {
+        if (taskToCheck.getStartDate().isAfter(taskToCheck.getEndDate())) {
             throw new InvalidDateException("Task start date cannot be after end date!", 3);
         }
 
-        if (taskToCheck.getEnd_date().isBefore(taskToCheck.getStart_date())) {
+        if (taskToCheck.getEndDate().isBefore(taskToCheck.getStartDate())) {
             throw new InvalidDateException("Task end date cannot be before start date!", 4);
         }
 
-        if (taskToCheck.getStart_date().isBefore(subProjectToCompare.getStart_date())) {
+        if (taskToCheck.getStartDate().isBefore(subProjectToCompare.getStartDate())) {
             throw new InvalidDateException("Task start date cannot be before subproject start date!", 5);
         }
 
-        if (taskToCheck.getStart_date().isAfter(subProjectToCompare.getEnd_date())) {
+        if (taskToCheck.getStartDate().isAfter(subProjectToCompare.getEndDate())) {
             throw new InvalidDateException("Task start date cannot be after subproject end date!", 6);
         }
-        if (taskToCheck.getEnd_date().isBefore(subProjectToCompare.getStart_date())) {
+        if (taskToCheck.getEndDate().isBefore(subProjectToCompare.getStartDate())) {
             throw new InvalidDateException("Task end date cannot be before subproject start date!", 7);
         }
 
-        if (taskToCheck.getEnd_date().isAfter(subProjectToCompare.getEnd_date())) {
+        if (taskToCheck.getEndDate().isAfter(subProjectToCompare.getEndDate())) {
             throw new InvalidDateException("Task end date cannot be after subproject end date", 8);
         }
     }

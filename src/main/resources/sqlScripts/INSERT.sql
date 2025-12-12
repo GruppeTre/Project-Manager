@@ -34,7 +34,7 @@ VALUES
 INSERT IGNORE INTO project (name, start_date, end_date)
 VALUES
 ('Project Alpha', '2025-12-10', '2025-12-24'),
-('Project Beta', '2025-12-15', '2026-1-30');
+('Project Beta', '2025-12-15', '2026-01-30');
 
 
 INSERT IGNORE INTO account_project_junction(account_id, project_id)

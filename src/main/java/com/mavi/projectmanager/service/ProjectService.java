@@ -51,7 +51,7 @@ public class ProjectService {
             throw new InvalidFieldException("Invalid name", Field.TITLE);
         }
 
-        DateUtils.validateDates(project.getStart_date(), project.getEnd_date());
+        DateUtils.validateDates(project.getStartDate(), project.getEndDate());
 
         int projectId = this.projectRepository.createProject(project);
         int accountId = this.accountRepository.getAccountByMail(project.getLeadsList().getFirst().getMail()).getId();
@@ -126,7 +126,7 @@ public class ProjectService {
             throw new InvalidFieldException("invalid name", Field.TITLE);
         }
 
-        DateUtils.validateDates(project.getStart_date(), project.getEnd_date());
+        DateUtils.validateDates(project.getStartDate(), project.getEndDate());
 
         //validate that project lead exists
         String mail = project.getLeadsList().getFirst().getMail();
