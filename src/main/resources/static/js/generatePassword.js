@@ -1,5 +1,4 @@
-//
-async function generateAndCopyPassword() {
+async function generatePassword() {
     //Stores the html elements in a constant (essentially variable/attribute in java)
     const passwordInput = document.getElementById('generatedPassword');
     const notification = document.getElementById('passwordNotification');

@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/normalize.css}">
     <link rel="stylesheet" th:href="@{/css/skeleton.css}">
     <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <script th:src="@{/js/generatePassword.js}"></script>
 </head>
 <body>
     <header th:replace="~{fragments/_commonElements :: header}"></header>
@@ -16,13 +17,29 @@
 
                     <input id="id" hidden="hidden" th:field="*{id}">
 
-                    <label for="userName" th:text="#{form.label.email}"></label>
-                    <input id="userName" th:type="text" th:field="*{employee.mail}" readonly>
+                    <!-- Username -->
+                    <div class="row">
+                        <label for="userName" th:text="#{form.label.email}"></label>
+                        <input id="userName" th:type="text" th:field="*{employee.mail}" readonly>
+                    </div>
 
-                    <label for="role" th:text="#{form.label.role}"></label>
-                    <select id="role" th:type="dropdown" th:field="*{role}">
-                        <option th:each="role : ${roles}" th:value="${role.name()}" th:text="${role.value}"/>
-                    </select>
+                    <!-- Password -->
+                    <div class="row">
+                        <div id="passwordNotification"></div>
+                        <label for="generatedPassword" th:text="#{form.label.password}"></label>
+                        <div>
+                            <input id="generatedPassword" th:type="password" th:field="*{password}"/>
+                            <a class="button button-primary" onclick="generatePassword()" th:text="#{form.button.resetPassword}"></a>
+                        </div>
+                    </div>
+
+                    <!-- Role -->
+                    <div class="row">
+                        <label for="role" th:text="#{form.label.role}"></label>
+                        <select id="role" th:type="dropdown" th:field="*{role}">
+                            <option th:each="role : ${roles}" th:value="${role.name()}" th:text="${role.value}"/>
+                        </select>
+                    </div>
 
                     <!--hidden submit input (so submit button can be outside of form -->
                     <input type="submit" id="hidden-submit" class="hidden">
@@ -32,7 +49,6 @@
                 <!--options -->
                 <div class="row form-button-container">
                     <label class="button button-primary" for="hidden-submit" th:text="#{form.button.submit}"></label>
-                    <a class="button button-primary" href="#" th:text="#{form.button.resetPassword}"></a>
                     <form  class="button-container-form" th:action="@{/account/deleteUser}" th:object="${account}" th:method="post">
                         <input id="hidden-mail" th:field="*{employee.mail}" hidden="hidden">
                         <button class="button-primary delete-button" id="delete-button" th:text="#{form.button.delete}"></button>

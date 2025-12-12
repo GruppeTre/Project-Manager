@@ -85,11 +85,22 @@ public class AccountService {
 
         //save desired new role in temp variable
         Role newRole = updatedAccount.getRole();
-
+        String newPassword = updatedAccount.getPassword();
         //Fill out Account data from repository (mainly to get ID from database)
         updatedAccount = getAccountByMail(updatedAccount.getMail());
         //Set the desired role from temp variable
         updatedAccount.setRole(newRole);
+
+        //Checks if the new password is not null or empty
+        if (newPassword != null && !newPassword.isEmpty()) {
+
+            //Checks if the new password matches the old password
+            if (!encoder.matches(newPassword, updatedAccount.getPassword())) {
+
+                String hashedPassword = encoder.encode(newPassword);
+                updatedAccount.setPassword(hashedPassword);
+            }
+        }
 
         return accountRepository.updatedAccount(updatedAccount);
     }

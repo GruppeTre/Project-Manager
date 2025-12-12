@@ -135,6 +135,7 @@ public class AccountController {
     }
 
     @GetMapping("/generatePassword")
+    @ResponseBody
     public String generatePassword(HttpSession session){
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
