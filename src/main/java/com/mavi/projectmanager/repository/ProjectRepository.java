@@ -26,6 +26,7 @@ public class ProjectRepository {
         this.accountRepository = accountRepository;
     }
 
+    //Jens Gotfredsen
     public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
         int projectId = rs.getInt("id");
@@ -47,6 +48,7 @@ public class ProjectRepository {
         return project;
     });
 
+    //Jens Gotfredsen
     public RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
         int projectId = rs.getInt("id");
@@ -69,6 +71,7 @@ public class ProjectRepository {
         return project;
     });
 
+    //Jens Gotfredsen
     public RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
         SubProject subProject = new SubProject();
 
@@ -90,6 +93,7 @@ public class ProjectRepository {
         return subProject;
     });
 
+    //Jens Gotfredsen
     public RowMapper<Task> taskRowMapper = ((rs, rowNum) -> {
         Task task = new Task();
 
@@ -114,6 +118,7 @@ public class ProjectRepository {
         return task;
     });
 
+    //Jens Gotfredsen
     public List<Project> getProjects() {
         String query = """
                  SELECT p.id, p.name, p.start_date, p.end_date
@@ -126,6 +131,7 @@ public class ProjectRepository {
         return projects;
     }
 
+    //Jens Gotfredsen
     public List<Project> getProjectsByLead(int id) {
         String query = """
                         SELECT
@@ -142,6 +148,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(query, projectRowMapper, id);
     }
 
+    //Jens Gotfredsen
     public Project getProjectById(int id) {
 
         String query = """
@@ -162,6 +169,7 @@ public class ProjectRepository {
     }
 
     //Inserts a project in the database
+    //Jacob Klitgaard
     public int createProject(Project project) {
 
         String query = "INSERT INTO project (name, start_date, end_date) VALUES (?,?,?)";
@@ -197,6 +205,7 @@ public class ProjectRepository {
         return keyHolder.getKey().intValue();
     }
 
+    //Magnus Sørensen
     public Project updateProject(Project project) {
 
         String query = """
@@ -228,6 +237,7 @@ public class ProjectRepository {
         }
     }
 
+    //Magnus Sørensen
     public void deleteFromAccountProjectJunction(int projectId) {
 
         String query = """
@@ -242,6 +252,7 @@ public class ProjectRepository {
         }
     }
 
+    //Jens Gotfredsen
     public Project getFullProjectById(int id) {
         String query = """
                 SELECT * FROM Project WHERE id = ?
@@ -250,6 +261,7 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(query, fullProjectRowMapper, id);
     }
 
+    //Jens Gotfredsen
     public List<SubProject> getSubProjectsByProjectId(int id) {
         String query = """
                 SELECT * FROM Subproject WHERE project_id = ?
@@ -258,6 +270,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(query, subProjectRowMapper, id);
     }
 
+    //Jens Gotfredsen
     public List<Task> getTaskBySubProjectId(int id) {
         String query = """
                 SELECT * FROM Task WHERE subproject_id = ?
@@ -266,6 +279,7 @@ public class ProjectRepository {
         return jdbcTemplate.query(query, taskRowMapper, id);
     }
 
+    //Emil Gurresø
     public int deleteProject(Project toDelete) {
 
         String sql = """
@@ -288,6 +302,7 @@ public class ProjectRepository {
         return rowsAffected;
     }
 
+    //Magnus Sørensen
     public int deleteTask(Task toDelete) {
 
         String sql = """

@@ -29,7 +29,8 @@ public class EmployeeRepository {
 
         return employee;
     });
-  
+
+    //Jacob Klitgaard
     public Employee getEmployeeByMail(String mail) {
 
         String query = "SELECT * FROM Employee WHERE mail = ?";

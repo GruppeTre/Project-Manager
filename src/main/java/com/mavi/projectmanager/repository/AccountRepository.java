@@ -47,6 +47,7 @@ public class AccountRepository {
     });
 
     //Inserts an account in the database
+    //Jacob Klitgaard
     public Account createUser(Account account) {
 
         String query = "INSERT INTO account (role, password, emp_id) VALUES (?,?,?)";
@@ -76,6 +77,7 @@ public class AccountRepository {
         return account;
     }
 
+    //Jens Gotfredsen
     public Account getAccountByID(int id){
         String query= """
                         SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
@@ -90,6 +92,7 @@ public class AccountRepository {
         }
     }
 
+    //Jens Gotfredsen
     public Account updatedAccount(Account updatedAccount){
         String query = "UPDATE Account SET role = ?, password = ? WHERE id = ?";
 
@@ -111,6 +114,7 @@ public class AccountRepository {
 
     }
 
+    //Jens Gotfredsen
     public Account getAccountByMail(String mail) {
         String query = """
                         SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
@@ -125,7 +129,8 @@ public class AccountRepository {
             return null;
         }
     }
-  
+
+    //Jens Gotfredsen
     public List<Account> getAccounts() {
         String query = """
                         SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName
@@ -140,6 +145,7 @@ public class AccountRepository {
         return accounts;
     }
 
+    //Magnus Sørensen
     public Account deleteAccount(Account toDelete) {
 
         String sql = """
@@ -153,6 +159,7 @@ public class AccountRepository {
         return rowsAffected == 0 ? null : toDelete;
     }
 
+    //Jens Gotfredsen
     public List<Account> getAccountsByProjectId(int id){
         String query = """
                 SELECT
@@ -173,6 +180,7 @@ public class AccountRepository {
         return jdbcTemplate.query(query, accountRowMapper, id);
     }
 
+    //Jacob Klitgaard
     public List<Account> getAccountsByRole(Role role) {
 
         String query = """
@@ -185,6 +193,7 @@ public class AccountRepository {
         return jdbcTemplate.query(query, accountRowMapper, role.getId());
     }
 
+    //Jens Gotfredsen
     public List<Account> getAccountsByTaskId(int id) {
         String query = """
                 SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a

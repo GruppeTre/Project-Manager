@@ -20,14 +20,13 @@ public class HomeController {
 
     private final AccountService accountService;
     private final ProjectService projectService;
-    private final View view;
 
-    public HomeController(AccountService accountService, ProjectService projectService, View view){
+    public HomeController(AccountService accountService, ProjectService projectService){
         this.accountService = accountService;
         this.projectService = projectService;
-        this.view = view;
     }
 
+    //Jens Gotfredsen
     @GetMapping
     public String getLogin(Model model){
         Employee employee = new Employee();
@@ -39,6 +38,8 @@ public class HomeController {
 
         return "index";
     }
+
+    //Jens Gotfredsen
     @PostMapping("/login")
     public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account){
 
@@ -70,6 +71,7 @@ public class HomeController {
         }
     }
 
+    //Jens Gotfredsen
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
@@ -77,6 +79,7 @@ public class HomeController {
         return "redirect:/";
     }
 
+    //Jens Gotfredsen
     @GetMapping("/overview")
     public String getOverviewPage(@RequestParam(value = "viewMode", required = false) String viewMode, HttpSession session, Model model) {
 

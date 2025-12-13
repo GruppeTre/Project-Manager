@@ -24,6 +24,7 @@ public class AccountController {
     }
 
     //Shows the createUSerPage
+    //Jacob Klitgaard
     @GetMapping("/create")
     public String getCreateUserPage(HttpSession session, Model model) {
 
@@ -42,6 +43,7 @@ public class AccountController {
     }
 
     //Creates a new account
+    //Jacob Klitgaard
     @PostMapping("/create")
     public String createNewUser(HttpSession session, Model model, @ModelAttribute Account newAccount, HttpServletResponse response) {
 
@@ -64,7 +66,8 @@ public class AccountController {
 
         return "redirect:/overview?viewMode=accounts";
     }
-  
+
+    //Jens Gotfredsen
     @GetMapping("/edit/{id}")
     public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
 
@@ -86,6 +89,7 @@ public class AccountController {
         return "editUserPage";
     }
 
+    //Jens Gotfredsen
     @PostMapping("/editUser")
     public String editUser(HttpSession session, @ModelAttribute Account updatedAccount){
 
@@ -103,6 +107,7 @@ public class AccountController {
         return "redirect:/overview?viewMode=accounts";
     }
 
+    //Magnus Sørensen
     @PostMapping("/deleteUser")
     public String deleteUser(HttpSession session, RedirectAttributes redirectAttributes, @ModelAttribute Account toDelete) {
 
@@ -134,6 +139,7 @@ public class AccountController {
         return "redirect:/overview?viewMode=accounts";
     }
 
+    //Jens Gotfredsen
     @GetMapping("/generatePassword")
     @ResponseBody
     public String generatePassword(HttpSession session){

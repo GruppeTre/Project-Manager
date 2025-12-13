@@ -82,6 +82,7 @@ public class Project {
         return Objects.hash(id, name, startDate, endDate);
     }
 
+    //Jens Gotfredsen
     public String leadsToString(){
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < leadsList.size(); i++) {

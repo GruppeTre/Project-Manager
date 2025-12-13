@@ -20,10 +20,12 @@ public class SubProjectService {
         this.subProjectRepository = subProjectRepository;
     }
 
+    //Jens Gotfredsen
     public SubProject getSubProjectById(int id) {
         return subProjectRepository.getSubProjectById(id);
     }
 
+    //Jacob Klitgaard
     public SubProject createSubProject(SubProject subProject, int projectId) {
 
         subProject.setName(subProject.getName().trim());
@@ -35,6 +37,7 @@ public class SubProjectService {
         return subProject;
     }
 
+    //Jacob Klitgaard
     public void deleteSubProject(SubProject toDelete) {
 
         int rowsAffected = this.subProjectRepository.deleteSubProject(toDelete);
@@ -45,10 +48,12 @@ public class SubProjectService {
         }
     }
 
+    //Jacob Klitgaard
     public SubProject getSubprojectById(int id) {
         return subProjectRepository.getSubprojectById(id);
     }
 
+    //Jacob Klitgaard
     public int updateSubProject(SubProject subProject, Project project) {
 
         subProject.setName(subProject.getName().trim());
@@ -57,6 +62,7 @@ public class SubProjectService {
         return subProjectRepository.updateSubProject(subProject);
     }
 
+    //Jacob Klitgaard
     private void validateFields(SubProject subProject, Project project) {
 
         boolean invalidName = subProject.getName().isBlank();
@@ -68,6 +74,7 @@ public class SubProjectService {
         validateDates(subProject, project);
     }
 
+    //Jacob Klitgaard
     private void validateDates(SubProject subProjectToCheck, Project projectToCompare) {
         if (subProjectToCheck.getStartDate().isAfter(subProjectToCheck.getEndDate())) {
             throw new InvalidDateException("Subproject start date cannot be after end date!", 3);

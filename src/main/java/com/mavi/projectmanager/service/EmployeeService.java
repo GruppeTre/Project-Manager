@@ -20,13 +20,8 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    //Jacob Klitgaard
     public Employee getEmployeeByMail(String mail) {
-
-        //har lige udkommenteret exceptionen her, ved ikke om det er det rigtige sted at throwe i en getter
-//        if (employee == null) {
-//            throw new InvalidFieldException("Mail does not exist", Field.EMAIL);
-//        }
-
         return employeeRepository.getEmployeeByMail(mail);
     }
 

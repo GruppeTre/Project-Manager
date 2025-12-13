@@ -90,6 +90,7 @@ public class Task {
         return Objects.hash(id, name, startDate, endDate, description, estimatedDuration, accountList);
     }
 
+    //Jens Gotfredsen
     public String accountsToString(){
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < accountList.size(); i++) {

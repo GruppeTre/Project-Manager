@@ -26,10 +26,12 @@ public class ProjectService {
         this.accountRepository = accountRepository;
     }
 
+    //Magnus Sørensen
     public List<Project> getProjects(){
         return projectRepository.getProjects();
     }
 
+    //Magnus Sørensen
     public Project getProjectById(int id) {
         try {
             return this.projectRepository.getProjectById(id);
@@ -38,10 +40,12 @@ public class ProjectService {
         }
     }
 
+    //Magnus Sørensen
     public List<Project> getProjectsByLead(int id){
         return projectRepository.getProjectsByLead(id);
     }
 
+    //Jacob Klitgaard
     @Transactional
     public Project createProject(Project project) {
 
@@ -61,6 +65,7 @@ public class ProjectService {
         return project;
     }
 
+    //Magnus Sørensen
     @Transactional
     public Project updateProject(Project project) {
 
@@ -81,10 +86,12 @@ public class ProjectService {
         return project;
     }
 
+    //Jens Gotfredsen
     public Project getFullProjectById(int id){
         return this.projectRepository.getFullProjectById(id);
     }
 
+    //Emil Gurresø
     public void deleteProject(Project toDelete) {
 
         int rowsAffected = projectRepository.deleteProject(toDelete);
@@ -96,6 +103,7 @@ public class ProjectService {
         }
     }
 
+    //Magnus Sørensen
     public void deleteTask(Task toDelete) {
 
         int rowsAffected = projectRepository.deleteTask(toDelete);
@@ -106,16 +114,14 @@ public class ProjectService {
         }
     }
 
+    //Jacob Klitgaard
     private boolean hasValidName(Project projectToCheck) {
 
         return !projectToCheck.getName().isBlank();
 
     }
 
-    private boolean hasProjectLead(Project projectToCheck) {
-        return true;
-    }
-
+    //Magnus Sørensen
     private Project validateUpdatedProject(Project project) {
 
         //trim name for leading and trailing whitespaces

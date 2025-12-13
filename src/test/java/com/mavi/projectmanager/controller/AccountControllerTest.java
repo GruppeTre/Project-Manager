@@ -88,6 +88,7 @@ class AccountControllerTest {
     =            GETTER TESTS            =
     ======================================
      */
+    //Magnus Sørensen
     @Test
     void shouldShowLoginPage() throws Exception {
         mockMvc.perform(get("/"))
@@ -96,6 +97,7 @@ class AccountControllerTest {
                 .andExpect(model().attribute("account", emptyAccount));
     }
 
+    //Jens Gotfredsen
     @Test
     void shouldShowEditUserPage() throws Exception{
 
@@ -113,6 +115,7 @@ class AccountControllerTest {
         mockedStatic.close();
     }
 
+    //Jens Gotfredsen
     @Test
     void shouldShowOverviewPage() throws Exception {
         Mockito.when(accountService.getAccounts()).thenReturn(accountList);
@@ -138,6 +141,7 @@ class AccountControllerTest {
      */
 
 
+    //Magnus Sørensen
     @Test
     void shouldLogInUser() throws Exception{
 
@@ -156,6 +160,7 @@ class AccountControllerTest {
                 .andExpect(request().sessionAttribute("account", testAccount));
     }
 
+    //Magnus Sørensen
     @Test
     void shouldRedirectUserToLoginPageOnWrongCredentials() throws Exception {
 
@@ -171,6 +176,7 @@ class AccountControllerTest {
                 .andExpect(model().attribute("account", Matchers.instanceOf(Account.class)));
     }
 
+    //Magnus Sørensen
     @Test
     void shouldEditUser() throws Exception{
 
@@ -187,6 +193,7 @@ class AccountControllerTest {
         mockedStatic.close();
     }
 
+    //Jacob Klitgaard
     @Test
     void shouldCreateUser() throws Exception {
         Account createdTestAccount = testAccount;
@@ -203,6 +210,7 @@ class AccountControllerTest {
         mockedStatic.close();
     }
 
+    //Magnus Sørensen
     @Test
     void shouldNotCreateUserOnInvalidEmail() throws Exception {
 
@@ -222,6 +230,7 @@ class AccountControllerTest {
         mockedStatic.close();
     }
 
+    //Magnus Sørennsen
     @Test
     void shouldNotCreateUserOnDuplicateEmail() throws Exception {
 
@@ -241,6 +250,7 @@ class AccountControllerTest {
         mockedStatic.close();
     }
 
+    //Magnus Sørensen
     @Test
     void shouldNotCreateUserOnInvalidPassword() throws Exception {
 
@@ -260,6 +270,7 @@ class AccountControllerTest {
         mockedStatic.close();
     }
 
+    //Magnus Sørensen
     @Test
     void shouldDeleteAccount() throws Exception {
 
@@ -282,6 +293,7 @@ class AccountControllerTest {
         verify(accountService).deleteAccount(any(Account.class));
     }
 
+    //Magnus Sørensen
     @Test
     void shouldNotDeleteAccountIfUserIsNotAdmin() throws Exception {
 
@@ -302,6 +314,7 @@ class AccountControllerTest {
         verify(accountService, never()).deleteAccount(any(Account.class));
     }
 
+    //Magnus Sørensen
     @Test
     void shouldGiveErrorIfAccountWasNotDeleted() throws Exception {
 

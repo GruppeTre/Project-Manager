@@ -16,17 +16,16 @@ import java.time.LocalDate;
 public class TaskService {
 
     private final TaskRepository taskRepository;
-    private final SubProjectService subProjectService;
 
-    public TaskService(TaskRepository taskRepository, SubProjectService subProjectService) {
+    public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.subProjectService = subProjectService;
     }
 
     public Task getTask(int id) {
         return this.taskRepository.getTaskById(id);
     }
 
+    //Jens Gotfredsen
     @Transactional
     public Task createTask(Task task, SubProject subProject){
 
@@ -41,6 +40,7 @@ public class TaskService {
         return newTask;
     }
 
+    //Magnus Sørensen
     @Transactional
     public Task updateTask(Task task, SubProject subProject) {
 
@@ -60,11 +60,13 @@ public class TaskService {
         return task;
     }
 
+    //Magnus Sørensen
     private void trimFields(Task task) {
         task.setName(task.getName().trim());
         task.setDescription(task.getDescription().trim());
     }
 
+    //Magnus Sørensen
     private void validateFields(Task task, SubProject subProject) {
 
         boolean invalidName = task.getName().isBlank();
@@ -91,6 +93,7 @@ public class TaskService {
         validateDates(task, subProject);
     }
 
+    //Jens Gotfredsen
     private void validateDates(Task taskToCheck, SubProject subProjectToCompare) {
         if (taskToCheck.getStartDate().isAfter(taskToCheck.getEndDate())) {
             throw new InvalidDateException("Task start date cannot be after end date!", 3);

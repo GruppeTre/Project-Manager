@@ -55,6 +55,7 @@ public class SubProject {
         this.taskList = taskList;
     }
 
+    //Jens Gotfredsen
     public int sumDuration(){
         int sum = 0;
         for(Task d : taskList){

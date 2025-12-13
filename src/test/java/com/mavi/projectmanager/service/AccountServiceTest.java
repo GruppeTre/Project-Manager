@@ -74,6 +74,7 @@ class AccountServiceTest {
         dbAccount.setId(id);
     }
 
+    //Magnus Sørensen
     @Test
     void logInShouldReturnTrueOnValidLogin() {
         when(repository.getAccountByMail(logInAccount.getMail())).thenReturn(dbAccount);
@@ -81,6 +82,7 @@ class AccountServiceTest {
         assertTrue(this.accountService.accountLogin(logInAccount));
     }
 
+    //Magnus Sørensen
     @Test
     void logInShouldReturnFalseOnWrongPassword() {
         String wrongPassword = "wrong";
@@ -92,6 +94,7 @@ class AccountServiceTest {
         assertFalse(this.accountService.accountLogin(logInAccount));
     }
 
+    //Magnus Sørensen
     @Test
     void logInShouldReturnFalseOnWrongMail() {
         String wrongMail = "wrong@wrong.com";
@@ -103,6 +106,7 @@ class AccountServiceTest {
         assertFalse(this.accountService.accountLogin(logInAccount));
     }
 
+    //Magnus Sørensen
     @Test
     void createUserShouldAcceptValidUser() {
 
@@ -113,6 +117,7 @@ class AccountServiceTest {
         assertEquals(dbAccount, accountService.createUser(registerAccount));
     }
 
+    //Magnus Sørensen
     @Test
     void createUserShouldRejectInvalidMail() {
 
@@ -127,6 +132,7 @@ class AccountServiceTest {
         assertEquals("Employee not found", exception.getMessage());
     }
 
+    //Magnus Sørensen
     @Test
     void createUserShouldRejectDuplicateMail() {
 
@@ -143,6 +149,7 @@ class AccountServiceTest {
         assertEquals("An account with that mail already exists!", exception.getMessage());
     }
 
+    //Magnus Sørensen
     @Test
     void createUserShouldRejectPasswordWithWhitespace() {
 
@@ -157,6 +164,7 @@ class AccountServiceTest {
         assertEquals("Invalid password", exception.getMessage());
     }
 
+    //Magnus Sørensen
     @Test
     void createUserShouldRejectBlankPassword() {
 
@@ -171,6 +179,7 @@ class AccountServiceTest {
         assertEquals("Invalid password", exception.getMessage());
     }
 
+    //Magnus Sørensen
     @Test
     void createUserShouldRejectEmptyPassword() {
 
@@ -185,6 +194,7 @@ class AccountServiceTest {
         assertEquals("Invalid password", exception.getMessage());
     }
 
+    //Magnus Sørensen
     @Test
     void shouldDeleteAccount() {
 
@@ -195,6 +205,7 @@ class AccountServiceTest {
         assertNotNull(this.accountService.deleteAccount(dbAccount));
     }
 
+    //Magnus Sørensen
     @Test
     void shouldNotDeleteSuperAdmin() {
 

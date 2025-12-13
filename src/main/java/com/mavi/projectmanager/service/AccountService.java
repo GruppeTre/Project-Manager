@@ -35,6 +35,7 @@ public class AccountService {
     }
 
     //Registers a user
+    //Magnus Sørensen
     public Account createUser(Account account) {
 
         trimFields(account);
@@ -67,6 +68,7 @@ public class AccountService {
         return account;
     }
 
+    //Jens Gotfredsen
     public Account getAccountByID(int id){
         Account account = accountRepository.getAccountByID(id);
 
@@ -77,10 +79,13 @@ public class AccountService {
         return account;
     }
 
+
+    //Jens Gotfredsen
     public Account getAccountByMail(String mail){
         return accountRepository.getAccountByMail(mail);
     }
 
+    //Jens Gotfredsen
     public Account updatedAccount(Account updatedAccount){
 
         //save desired new role in temp variable
@@ -106,11 +111,13 @@ public class AccountService {
     }
 
     //Get all accounts stored in a List
+    //Jens Gotfredsen
     public List<Account> getAccounts() {
         return accountRepository.getAccounts();
     }
 
 
+    //Magnus Sørensen
     public boolean accountLogin(Account account){
         try {
         Account getAccount = accountRepository.getAccountByMail(account.getMail());
@@ -121,15 +128,17 @@ public class AccountService {
         }
     }
 
+    //Jacob Klitgaard
     public List<Account> getAccountsByRole(Role role) {
         return accountRepository.getAccountsByRole(role);
     }
 
+    //Magnus Sørensen
     public List<Account> getAccountsAssignedToTask(int taskId) {
         return accountRepository.getAccountsByTaskId(taskId);
     }
 
-
+    //Magnus Sørensen
     public Account deleteAccount(Account toDelete) {
 
         //User should not be able to delete every account
@@ -142,33 +151,36 @@ public class AccountService {
         return this.accountRepository.deleteAccount(toDelete);
     }
 
+    //Jens Gotfredsen
     public String generatePassword(){
         SecureRandom secureRandom = new SecureRandom();
-        Random random = new Random();
         StringBuilder sb = new StringBuilder();
         String lowerCasePool = "abcdefghijklmnopqrstuvxyz";
         String upperCasePool = "ABCEDFGHIJKLMNOPQRSTUVWXYZ";
         String numberPool = "1234567890";
         String specialCharacterPool = "!#€%&/()=?+-*@${}";
 
-        //Could this be simplified, yes, but it was a nice and easy way to introduce randomly generated password with knowledge on hand.
+        //Appends 8 secure random lowercase characters in string builder
         for(int i = 0; i < 8; i++){
             int randomIndex = secureRandom.nextInt(lowerCasePool.length());
             sb.append(lowerCasePool.charAt(randomIndex));
         }
 
+        //Inserts 4 secure random upper case characters to string builder
         for(int i = 0; i < 4; i++){
             int randomIndex = secureRandom.nextInt(upperCasePool.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
             sb.insert(insertIndex, upperCasePool.charAt(randomIndex));
         }
 
+        //Inserts 2 secure random numbers in string builder
         for(int i = 0; i < 2; i++){
             int randomIndex = secureRandom.nextInt(numberPool.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
             sb.insert(insertIndex, numberPool.charAt(randomIndex));
         }
 
+        //Inserts 2 secure random special characters in string builder
         for(int i = 0; i < 2; i++){
             int randomIndex = secureRandom.nextInt(numberPool.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
@@ -178,6 +190,7 @@ public class AccountService {
         return sb.toString();
     }
 
+    //Magnus Sørensen
     private boolean isValidPassword(String str){
 
         int MIN_LENGTH;
@@ -195,6 +208,7 @@ public class AccountService {
         return true;
     }
 
+    //Magnus Sørensen
     private boolean containsWhitespace(String str) {
         String regex = "^\\S+$";
 
@@ -203,6 +217,7 @@ public class AccountService {
         return !found;
     }
 
+    //Magnus Sørensen
     private void trimFields(Account account) {
         account.getEmployee().setMail(account.getMail().trim());
     }

@@ -24,6 +24,7 @@ public class TaskRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //Jens Gotfredsen
     public RowMapper<Task> taskRowMapper = ((rs, rowNum) ->{
         Task task = new Task();
 
@@ -44,6 +45,7 @@ public class TaskRepository {
         return task;
     });
 
+    //Jens Gotfredsen
     public Task createTask(Task task, SubProject subProject){
 
         String query = """
@@ -86,6 +88,7 @@ public class TaskRepository {
         return task;
     }
 
+    //Magnus Sørensen
     public void updateTask(Task task) {
 
         String sql = """
@@ -106,6 +109,7 @@ public class TaskRepository {
         }
     }
 
+    //Jens Gotfredsen
     public void addEmployeesToTaskJunction(Task task){
         String query = """
                 INSERT INTO account_task_junction (
@@ -127,6 +131,7 @@ public class TaskRepository {
         });
     }
 
+    //Magnus Sørensen
     public void deleteFromEmployeesToTaskJunction(int taskId) {
 
         String sql = """
@@ -137,6 +142,7 @@ public class TaskRepository {
         jdbcTemplate.update(sql, taskId);
     }
 
+    //Jens Gotfredsen
     public Task getTaskById(int id){
         String query = """
                 SELECT *

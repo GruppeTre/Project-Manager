@@ -100,6 +100,7 @@ class ProjectControllerTest {
 */
 
 
+    //Emil Gurresø
     @Test
     void shouldShowEditSubProjectPageWithFetchedSubProject() throws Exception {
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
@@ -122,6 +123,7 @@ class ProjectControllerTest {
 
     }
 
+    //Jens Gotfredsen
     @Test
     void shouldShowProjectsAsAdmin() throws Exception {
 
@@ -141,6 +143,7 @@ class ProjectControllerTest {
         verify(projectService, times(1)).getProjects();
     }
 
+    //Jens Gotfredsen
     @Test
     void shouldShowProjectsAsProjectLead() throws Exception {
 
@@ -164,6 +167,7 @@ class ProjectControllerTest {
     }
 
     //todo: shouldShowEditProjectPage
+    //Magnus Sørensen
     @Test
     void shouldShowEditProjectPage() throws Exception {
 
@@ -187,6 +191,7 @@ class ProjectControllerTest {
         verify(projectService, times(1)).getProjectById(testProject.getId());
     }
 
+    //Jacob Klitgaard
     @Test
     void shouldShowCreateProjectPage() throws Exception {
 
@@ -204,6 +209,7 @@ class ProjectControllerTest {
 
     }
 
+    //Jacob Klitgaard
     @Test
     void shouldShowCreateSubProjectPage() throws Exception {
 
@@ -257,6 +263,7 @@ class ProjectControllerTest {
 //        verify(subProjectService, times(1)).updateSubProject(Mockito.any(SubProject.class));
 //    }
 
+    //Magnus Sørensen
     @Test
     void shouldEditValidProject() throws Exception {
 
@@ -274,6 +281,7 @@ class ProjectControllerTest {
     }
 
 
+    //Magnus Sørensen
     @Test
     void editProjectPageShouldRejectProjectWithEndDateInThePast() throws Exception {
 
@@ -302,6 +310,7 @@ class ProjectControllerTest {
         verify(projectService).updateProject(any(Project.class));
     }
 
+    //Magnus Sørensen
     @Test
     void editProjectPageShouldRejectProjectWithEndDateBeforeStartDate() throws Exception {
 
@@ -330,6 +339,7 @@ class ProjectControllerTest {
         verify(projectService).updateProject(any(Project.class));
     }
 
+    //Jacob Klitgaard
     @Test
     void shouldCreateValidProject() throws Exception {
 
@@ -348,6 +358,7 @@ class ProjectControllerTest {
 
     //todo: shouldRejectProjectWithEndDateInThePast
 
+    //Jacob Klitgaard
     @Test
     void shouldRejectProjectWithEndDateInThePast() throws Exception {
 
@@ -375,6 +386,7 @@ class ProjectControllerTest {
         verify(projectService).createProject(any(Project.class));
     }
 
+    //Jacob Klitgaard
     @Test
     void shouldRejectProjectWithEndDateBeforeStartDate() throws Exception {
 
@@ -402,6 +414,7 @@ class ProjectControllerTest {
         verify(projectService).createProject(any(Project.class));
     }
 
+    //Jacob Klitgaard
     @Test
     void shouldCreateValidSubProject() throws Exception {
 
@@ -419,6 +432,7 @@ class ProjectControllerTest {
         verify(subProjectService).createSubProject(any(SubProject.class), eq(1));
     }
 
+    //Jens Gotfredsen
     @Test
     void shouldShowProjectOverviewPage() throws Exception {
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
@@ -446,6 +460,7 @@ class ProjectControllerTest {
         mockedStatic.close();
     }
 
+    //Emil Gurresø
     @Test
     void shouldDeleteProject() throws Exception {
 
@@ -460,6 +475,7 @@ class ProjectControllerTest {
         mockedStatic.close();
     }
 
+    //Magnus Sørensen
     @Test
     void shouldDeleteTask() throws Exception {
 
@@ -479,6 +495,7 @@ class ProjectControllerTest {
         mockedStatic.close();
     }
 
+    //Jens Gotfredsen
     @Test
     void shouldShowCreateTaskPage() throws Exception{
 
