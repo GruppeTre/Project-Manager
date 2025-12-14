@@ -81,14 +81,14 @@
 
                 <div class="row">
                     <label for="start-date" class="form-label" th:text="#{form.label.startDate}"></label>
-                    <input id="start-date" type="date" name="start_date" th:value="*{startDate}" th:min="${#temporals.format(subproject.startDate, 'yyyy-MM-dd')}" required>
+                    <input id="start-date" type="date" name="startDate" th:value="*{startDate}" th:min="${#temporals.format(subproject.startDate, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- end date -->
 
                 <div class="row">
                     <label for="end-date" class="form-label" th:text="#{form.label.endDate}"></label>
-                    <input id="end-date" type="date" name="end_date" th:value="*{endDate}" th:max="${#temporals.format(subproject.endDate, 'yyyy-MM-dd')}" required>
+                    <input id="end-date" type="date" name="endDate" th:value="*{endDate}" th:max="${#temporals.format(subproject.endDate, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!--hidden submit input (so submit button can be outside of form -->
