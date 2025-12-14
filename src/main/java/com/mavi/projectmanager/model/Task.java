@@ -12,6 +12,7 @@ public class Task {
     private String description;
     private Integer estimatedDuration; //in hours
     private Integer actualDuration; //in hours
+    private Integer archived;
     private List<Account> accountList;
 
     public int getId() {
@@ -70,12 +71,30 @@ public class Task {
         this.description = description;
     }
 
-    public int getActualDuration() {
+    public Integer getActualDuration() {
         return actualDuration;
     }
 
-    public void setActualDuration(int actualDuration) {
+    public void setActualDuration(Integer actualDuration) {
         this.actualDuration = actualDuration;
+    }
+
+    public Integer getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Integer archived) {
+        this.archived = archived;
+    }
+
+
+    public int percentageDuration() {
+        // Return 0 when actualDuration is missing or zero to avoid / by zero.
+        if (actualDuration == null || actualDuration == 0) {
+            return 0;
+        }
+        double percentage = (actualDuration * 100.0) / estimatedDuration;
+        return (int) Math.round(percentage);
     }
 
     @Override
@@ -90,6 +109,7 @@ public class Task {
         return Objects.hash(id, name, startDate, endDate, description, estimatedDuration, accountList);
     }
 
+    //Jens Gotfredsen
     public String accountsToString(){
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < accountList.size(); i++) {

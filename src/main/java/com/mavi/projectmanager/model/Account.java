@@ -1,6 +1,5 @@
 package com.mavi.projectmanager.model;
 
-import java.util.Comparator;
 import java.util.Objects;
 
 public class Account {

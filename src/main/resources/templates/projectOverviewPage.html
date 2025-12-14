@@ -14,13 +14,12 @@
         <section class="overview" th:object="${project}">
 
             <nav class="project_nav">
-                <a th:href="@{/overview(viewMode=projects)}" th:text="'Go back'"></a>
-                <a th:href="@{/project/view/{id}(id=*{id})}" th:text="'Project Overivew'"></a>
-                <a href="#" th:text="'Project Statistics'"></a>
-                <a href="#" th:text="'Gannt Diagram'"></a>
+                <a th:href="@{/overview(viewMode='projects')}" th:text="#{nav.a.back}"></a>
+                <a th:href="@{/project/view/{id}(id=*{id}, viewMode='project')}" th:text="#{nav.a.projectOverview}"></a>
+                <a th:if="${session.account.role.id == 2}" th:href="@{/project/view/{id}(id=*{id}, viewMode='statistics')}" th:text="#{nav.a.projectStatistic}"></a>
             </nav>
 
-            <div class="overview-content">
+            <div class="overview-content" th:if="${viewMode == 'project'}">
 
                 <div class="project-header">
                     <article>
@@ -44,26 +43,27 @@
                                     <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
                                 </article>
                                 <div class="project-buttons-container">
-                                    <a class="button button-primary" th:href="@{/project/edit/{projectId}/{subProjectId} (projectId=${project.id}, subProjectId=${sb.id})}" th:text="'Edit'"></a>
-                                    <a class="button button-primary" th:href="@{/project/{projectId}/subproject/{subProjectId}/task/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
+                                    <a class="button button-primary" th:if="${session.account.role.id == 2}" th:href="@{/project/edit/{projectId}/{subProjectId} (projectId=${project.id}, subProjectId=${sb.id})}" th:text="'Edit'"></a>
+                                    <a class="button button-primary" th:if="${session.account.role.id == 2}" th:href="@{/project/{projectId}/subproject/{subProjectId}/task/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
                                 </div>
 
                             </div>
                             <article class="task-list" th:each="task : ${sb.getTaskList()}">
                                 <details>
-                                    <summary th:text="${task.name}"></summary>
+                                    <summary th:if="${task.archived == 1}" th:text="${task.name} + ' - &#x2705 ' + #{projectOverviewPage.summary.taskOpen}"></summary>
+                                    <summary th:if="${task.archived == 0}" th:text="${task.name} + ' - &#x274C ' + #{projectOverviewPage.summary.taskClose}"></summary>
                                     <div class="collapsed_content">
                                         <div class="project-header">
                                             <article>
                                                 <h5 th:text="#{projectOverviewPage.h.details}"></h5>
-                                                <p th:text="#{projectOverviewPage.p.start} + ' ' + *{startDate}"></p>
+                                                <p th:text="#{projectOverviewPage.p.start} + ' ' + ${task.startDate}"></p>
                                                 <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${task.endDate}"></p>
                                                 <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.accountsToString()}"></p>
                                                 <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${task.estimatedDuration} + #{projectOverviewPage.p.hours}"></p>
                                             </article>
                                             <div class="project-buttons-container">
-                                                <a class="button button-primary" th:href="@{/project/{projectId}/subproject/{subprojectId}/task/{taskId}/edit(projectId=${project.id}, subprojectId=${sb.id}, taskId=${task.id})}" th:text="#{overview.button.edit}"></a>
-                                                <a class="button button-primary" href="#" th:text="#{projectOverviewPage.button.timespend}"></a>
+                                                <a class="button button-primary" th:if="${session.account.role.id == 2 && task.archived == 1}" th:href="@{/project/{projectId}/subproject/{subprojectId}/task/{taskId}/edit(projectId=${project.id}, subprojectId=${sb.id}, taskId=${task.id})}" th:text="#{overview.button.edit}"></a>
+                                                <a class="button button-primary" th:if="${session.account.role.id == 2 && task.archived == 1}" th:href="@{/project/{projectId}/task/{taskId}/archive(projectId=${project.id}, taskId=${task.id})}" th:text="#{projectOverviewPage.button.close}"></a>
                                             </div>
                                         </div>
                                         <div class="task-description-wrapper">
@@ -78,6 +78,36 @@
                 </article>
                 <article th:if="*{subProjectsList.isEmpty}">
                     <p>No subprojects found!</p>
+                </article>
+            </div>
+            <div class="overview-content" th:if="${viewMode == 'statistics'}">
+                <article>
+                    <details>
+                        <summary th:text="#{projectOverviewPage.summary.timeStatistic}"></summary>
+                        <div>
+                            <h5 th:text="${project.name}"></h5>
+                            <p th:text="#{projectOverviewPage.p.estimatedDuration} + ${project.sumProjectDuration} + #{projectOverviewPage.p.hours}"></p>
+                            <p th:text="#{projectOverviewPage.p.actualDuration} + ${project.sumActualDuration} + #{projectOverviewPage.p.hours}"></p>
+                            <p th:if="${project.percentageDuration != 0}" th:text="#{projectOverviewPage.p.percentageDuration} + ${project.percentageDuration} + '%'"></p>
+                            <p th:if="${project.percentageDuration == 0}" th:text="#{projectOverviewPage.p.tasksNotClosed}" ></p>
+                        </div>
+                        <div th:each="sp : ${project.subProjectsList}">
+                            <div>
+                                <h5 th:text="${sp.name}"></h5>
+                                <p th:text="#{projectOverviewPage.p.estimatedDuration} + ${sp.sumDuration} + #{projectOverviewPage.p.hours}"></p>
+                                <p th:text="#{projectOverviewPage.p.actualDuration} + ${sp.sumActualDuration} + #{projectOverviewPage.p.hours}"></p>
+                                <p th:if="${sp.percentageDuration != 0}" th:text="#{projectOverviewPage.p.percentageDuration} + ${sp.percentageDuration} + '%'"></p>
+                                <p th:if="${sp.percentageDuration == 0}" th:text="#{projectOverviewPage.p.tasksNotClosed}"></p>
+                            </div>
+                            <div th:each="t : ${sp.getTaskList}">
+                                <h5 th:text="${t.name}"></h5>
+                                <p th:text="#{projectOverviewPage.p.estimatedDuration} + ${t.estimatedDuration} + #{projectOverviewPage.p.hours}"></p>
+                                <p th:if="${t.actualDuration != null || t.actualDuration != 0}" th:text="#{projectOverviewPage.p.actualDuration} + ${t.actualDuration} + #{projectOverviewPage.p.hours}"></p>
+                                <p th:if="${t.percentageDuration != 0}" th:text="#{projectOverviewPage.p.percentageDuration} + ${t.percentageDuration} + '%'"></p>
+                                <p th:if="${t.percentageDuration == 0}" th:text="#{projectOverviewPage.p.taskNotClosed}"></p>
+                            </div>
+                        </div>
+                    </details>
                 </article>
             </div>
         </section>

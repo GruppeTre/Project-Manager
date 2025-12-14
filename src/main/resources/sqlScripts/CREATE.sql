@@ -29,6 +29,7 @@ CREATE TABLE project (
                          name VARCHAR(50) NOT NULL,
                          start_date DATE NOT NULL,
                          end_date DATE NOT NULL,
+                         archived BIT NOT NULL,
 
                          PRIMARY KEY(id)
 );
@@ -53,6 +54,7 @@ CREATE TABLE task (
                       end_date DATE NOT NULL,
                       estimated_duration INT NOT NULL,
                       actual_duration INT,
+                      archived BIT NOT NULL,
                       subproject_id INT NOT NULL,
 
                       PRIMARY KEY(id),

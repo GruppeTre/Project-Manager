@@ -1,12 +1,12 @@
 package com.mavi.projectmanager.service.utils;
 
 import com.mavi.projectmanager.exception.InvalidDateException;
-import com.mavi.projectmanager.model.Project;
 
 import java.time.LocalDate;
 
 public class DateUtils {
 
+    //Jacob Klitgaard
     public static void validateDates(LocalDate start_date, LocalDate end_date) {
 
         LocalDate today = LocalDate.now();

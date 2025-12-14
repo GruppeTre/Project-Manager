@@ -84,6 +84,7 @@ class ProjectServiceTest {
         dbTask.setId(id);
     }
 
+    //Magnus Sørensen
     @Test
     void shouldEditProjectName () {
 
@@ -97,6 +98,7 @@ class ProjectServiceTest {
         assertEquals(newName, this.projectService.updateProject(dbProject).getName());
     }
 
+    //Magnus Sørensen
     @Test
     void shouldEditProjectStartDate () {
 
@@ -111,6 +113,7 @@ class ProjectServiceTest {
         assertEquals(newDate, this.projectService.updateProject(dbProject).getStartDate());
     }
 
+    //Magnus Sørensen
     @Test
     void shouldEditProjectEndDate () {
 
@@ -125,6 +128,7 @@ class ProjectServiceTest {
         assertEquals(newDate, this.projectService.updateProject(dbProject).getEndDate());
     }
 
+    //Magnus Sørensen
     @Test
     void shouldEditProjectLead () {
 
@@ -147,6 +151,7 @@ class ProjectServiceTest {
         assertEquals(newLeadList, this.projectService.updateProject(dbProject).getLeadsList());
     }
 
+    //Magnus Sørensen
     @Test
     void editProjectShouldRejectProjectWithInvalidName () {
 
@@ -160,6 +165,7 @@ class ProjectServiceTest {
         assertEquals(Field.TITLE.getValue(), exception.getField());
     }
 
+    //Magnus Sørensen
     @Test
     void editProjectShouldRejectProjectWithEndDateInThePast () {
 
@@ -174,6 +180,7 @@ class ProjectServiceTest {
         assertEquals(2, exception.getErrorId());
     }
 
+    //Magnus Sørensen
     @Test
     void editProjectShouldRejectProjectWithEndDateBeforeStartDate () {
 
@@ -190,6 +197,7 @@ class ProjectServiceTest {
         assertEquals(1, exception.getErrorId());
     }
 
+    //Magnus Sørensen
     @Test
     void editProjectShouldNotInsertToJunctionIfUpdateProjectFails () {
 
@@ -204,6 +212,7 @@ class ProjectServiceTest {
         verify(projectRepository, never()).insertIntoAccountProjectJunction(anyInt(), anyInt());
     }
 
+    //Emil Gurresø
     @Test
     void shouldDeleteProject() {
 
@@ -214,6 +223,7 @@ class ProjectServiceTest {
         verify(projectRepository).deleteProject(dbProject);
     }
 
+    //Magnus Sørensen
     @Test
     void shouldDeleteTask() {
 

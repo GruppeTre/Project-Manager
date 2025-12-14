@@ -55,6 +55,7 @@ public class SubProject {
         this.taskList = taskList;
     }
 
+    //Jens Gotfredsen
     public int sumDuration(){
         int sum = 0;
         for(Task d : taskList){
@@ -62,6 +63,51 @@ public class SubProject {
         }
 
         return sum;
+    }
+
+    public int sumActualDuration(){
+        int sum = 0;
+        for(Task t : taskList){
+            if(t.getActualDuration() != null || t.getActualDuration() != 0 ) {
+                sum += t.getActualDuration();
+            }
+        }
+
+        return sum;
+    }
+
+
+
+    public int percentageDuration() {
+        if (taskList == null || taskList.isEmpty()) {
+            return 0;
+        }
+
+        int sumEstimatedDuration = 0;
+        int sumActualDuration = 0;
+
+        for (Task t : taskList) {
+            if (t == null) {
+                continue;
+            }
+
+            Integer estimatedDuration = t.getEstimatedDuration();
+            Integer actualDuration = t.getActualDuration();
+
+            if (estimatedDuration != null && estimatedDuration >= 0) {
+                sumEstimatedDuration += estimatedDuration;
+            }
+            if (actualDuration != null && actualDuration >= 0) {
+                sumActualDuration += actualDuration;
+            }
+        }
+
+        if (sumActualDuration == 0) {
+            return 0;
+        }
+
+        double percentage = (sumActualDuration * 100.0) / sumEstimatedDuration;
+        return (int) Math.round(percentage);
     }
 
     @Override

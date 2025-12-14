@@ -1,7 +1,5 @@
 package com.mavi.projectmanager.exception;
 
-import com.mavi.projectmanager.model.Role;
-
 public class InvalidDateException extends InvalidFieldException {
 
     private int errorId;

@@ -19,14 +19,17 @@ import java.sql.Date;
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
     private AccountRepository accountRepository;
-    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStartDate).thenComparing(Project::getEndDate);
+    private SubProjectRepository subProjectRepository;
+    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getEndDate).thenComparing(Project::getStartDate).thenComparing(Project::getName);
 
-    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, EmployeeRepository employeeRepository) {
+    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, SubProjectRepository subProjectRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.accountRepository = accountRepository;
+        this.subProjectRepository = subProjectRepository;
     }
 
-    public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
+    //Jens Gotfredsen
+    public final RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
         int projectId = rs.getInt("id");
         project.setId(projectId);
@@ -39,6 +42,8 @@ public class ProjectRepository {
         Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
         project.setEndDate(convertedEndDate);
+
+        project.setArchived(rs.getInt("archived"));
 
         List<Account> projectLeads = accountRepository.getAccountsByProjectId(projectId);
 
@@ -47,7 +52,8 @@ public class ProjectRepository {
         return project;
     });
 
-    public RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
+    //Jens Gotfredsen
+    public final RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
         int projectId = rs.getInt("id");
         project.setId(projectId);
@@ -62,62 +68,19 @@ public class ProjectRepository {
         LocalDate convertedEndDate = endDate.toLocalDate();
         project.setEndDate(convertedEndDate);
 
-        List<SubProject> subProjectsList = getSubProjectsByProjectId(projectId);
+        List<SubProject> subProjectsList = subProjectRepository.getSubProjectsByProjectId(projectId);
 
         project.setSubProjectsList(subProjectsList);
 
         return project;
     });
 
-    public RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
-        SubProject subProject = new SubProject();
-
-        int subProjectId = rs.getInt("id");
-        subProject.setId(subProjectId);
-        subProject.setName(rs.getString("name"));
-
-        Date startDate = rs.getDate("start_date");
-        LocalDate convertedStartDate = startDate.toLocalDate();
-        subProject.setStartDate(convertedStartDate);
-
-        Date endDate = rs.getDate("end_date");
-        LocalDate convertedEndDate = endDate.toLocalDate();
-        subProject.setEndDate(convertedEndDate);
-
-        List<Task> taskList = getTaskBySubProjectId(subProjectId);
-        subProject.setTaskList(taskList);
-
-        return subProject;
-    });
-
-    public RowMapper<Task> taskRowMapper = ((rs, rowNum) -> {
-        Task task = new Task();
-
-        int taskId = rs.getInt("id");
-        task.setId(taskId);
-        task.setName(rs.getString("name"));
-        task.setDescription(rs.getString("description"));
-
-        Date startDate = rs.getDate("start_date");
-        LocalDate convertedStartDate = startDate.toLocalDate();
-        task.setStartDate(convertedStartDate);
-
-        Date endDate = rs.getDate("end_date");
-        LocalDate convertedEndDate = endDate.toLocalDate();
-        task.setEndDate(convertedEndDate);
-
-        task.setEstimatedDuration(rs.getInt("estimated_duration"));
-
-        List<Account> accountList = accountRepository.getAccountsByTaskId(taskId);
-        task.setAccountList(accountList);
-
-        return task;
-    });
-
+    //Jens Gotfredsen
     public List<Project> getProjects() {
         String query = """
-                 SELECT p.id, p.name, p.start_date, p.end_date
+                 SELECT p.id, p.name, p.start_date, p.end_date, p.archived
                  FROM Project p
+                 WHERE p.archived = 1
                 """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
 
@@ -126,26 +89,29 @@ public class ProjectRepository {
         return projects;
     }
 
+    //Jens Gotfredsen
     public List<Project> getProjectsByLead(int id) {
         String query = """
                         SELECT
                             p.id,
                             p.name,
                             p.start_date,
-                            p.end_date
+                            p.end_date,
+                            p.archived
                         FROM Project p
                         INNER JOIN account_project_junction apj
                             ON p.id = apj.project_id
-                        WHERE apj.account_id = ?
+                        WHERE apj.account_id = ? AND p.archived = 1
                 """;
 
         return jdbcTemplate.query(query, projectRowMapper, id);
     }
 
+    //Jens Gotfredsen
     public Project getProjectById(int id) {
 
         String query = """
-                 SELECT p.id, p.name, p.start_date, p.end_date,
+                 SELECT p.id, p.name, p.start_date, p.end_date, p.archived,
                                GROUP_CONCAT(
                                    CONCAT(e.firstName, ' ', e.lastName)
                                    SEPARATOR','
@@ -162,9 +128,10 @@ public class ProjectRepository {
     }
 
     //Inserts a project in the database
+    //Jacob Klitgaard
     public int createProject(Project project) {
 
-        String query = "INSERT INTO project (name, start_date, end_date) VALUES (?,?,?)";
+        String query = "INSERT INTO project (name, start_date, end_date, archived) VALUES (?,?,?, 1)";
 
         int rowsAffected;
 
@@ -173,8 +140,8 @@ public class ProjectRepository {
             rowsAffected = jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, project.getName());
-                ps.setObject(2, project.getStartDate());
-                ps.setObject(3, project.getEndDate());
+                ps.setObject(2, java.sql.Date.valueOf(project.getStartDate()));
+                ps.setObject(3, java.sql.Date.valueOf(project.getEndDate()));
 
                 return ps;
             }, keyHolder);
@@ -197,6 +164,7 @@ public class ProjectRepository {
         return keyHolder.getKey().intValue();
     }
 
+    //Magnus Sørensen
     public Project updateProject(Project project) {
 
         String query = """
@@ -228,6 +196,7 @@ public class ProjectRepository {
         }
     }
 
+    //Magnus Sørensen
     public void deleteFromAccountProjectJunction(int projectId) {
 
         String query = """
@@ -242,6 +211,7 @@ public class ProjectRepository {
         }
     }
 
+    //Jens Gotfredsen
     public Project getFullProjectById(int id) {
         String query = """
                 SELECT * FROM Project WHERE id = ?
@@ -250,22 +220,7 @@ public class ProjectRepository {
         return jdbcTemplate.queryForObject(query, fullProjectRowMapper, id);
     }
 
-    public List<SubProject> getSubProjectsByProjectId(int id) {
-        String query = """
-                SELECT * FROM Subproject WHERE project_id = ?
-                """;
-
-        return jdbcTemplate.query(query, subProjectRowMapper, id);
-    }
-
-    public List<Task> getTaskBySubProjectId(int id) {
-        String query = """
-                SELECT * FROM Task WHERE subproject_id = ?
-                """;
-
-        return jdbcTemplate.query(query, taskRowMapper, id);
-    }
-
+    //Emil Gurresø
     public int deleteProject(Project toDelete) {
 
         String sql = """
@@ -288,6 +243,7 @@ public class ProjectRepository {
         return rowsAffected;
     }
 
+    //Magnus Sørensen
     public int deleteTask(Task toDelete) {
 
         String sql = """
@@ -306,5 +262,60 @@ public class ProjectRepository {
         }
 
         return rowsAffected;
+    }
+
+    public List<Project> getProjectByTeamMember(int id) {
+        String query = """
+                        SELECT
+                            p.id,
+                            p.name,
+                            p.start_date,
+                            p.end_date,
+                            p.archived
+                        FROM Project p
+                        WHERE EXISTS (
+                        SELECT 1
+                        FROM Subproject sp
+                        JOIN Task t
+                            ON t.subproject_id = sp.id
+                        JOIN account_task_junction atj
+                            ON atj.task_id = t.id
+                        WHERE sp.project_id = p.id
+                            AND atj.account_id = ?
+                            AND p.archived = 1
+                        )
+                """;
+
+        return jdbcTemplate.query(query, projectRowMapper, id);
+    }
+
+    public int archiveProject(Project project){
+        String query = """
+                    UPDATE Project
+                    SET archived = 0
+                    WHERE id = ?
+                """;
+
+        int rowsAffected;
+        try {
+            rowsAffected = jdbcTemplate.update(query, project.getId());
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occurred when attempting to archive project with id: " + project.getId());
+        }
+
+        return rowsAffected;
+    }
+
+    public List<Project> getArchivedProjects(){
+        String query = """
+             SELECT p.id, p.name, p.start_date, p.end_date, p.archived
+             FROM Project p
+             WHERE p.archived = 0
+            """;
+        List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
+
+        projects.sort(PROJECT_COMPARATOR);
+
+        return projects;
     }
 }

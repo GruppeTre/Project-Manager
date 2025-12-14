@@ -4,20 +4,14 @@ import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
-import com.mavi.projectmanager.repository.EmployeeRepository;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.stereotype.Repository;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.exception.PageNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.management.RuntimeErrorException;
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class AccountService {
@@ -25,16 +19,15 @@ public class AccountService {
     private final int SUPER_ADMIN_ID = 1;
     private final AccountRepository accountRepository;
     private final EmployeeService employeeService;
-    private final EmployeeRepository employeeRepository;
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
-    public AccountService(AccountRepository accountRepository, EmployeeService employeeService, EmployeeRepository employeeRepository) {
+    public AccountService(AccountRepository accountRepository, EmployeeService employeeService) {
         this.accountRepository = accountRepository;
         this.employeeService = employeeService;
-        this.employeeRepository = employeeRepository;
     }
 
     //Registers a user
+    //Magnus Sørensen
     public Account createUser(Account account) {
 
         trimFields(account);
@@ -67,6 +60,7 @@ public class AccountService {
         return account;
     }
 
+    //Jens Gotfredsen
     public Account getAccountByID(int id){
         Account account = accountRepository.getAccountByID(id);
 
@@ -77,10 +71,13 @@ public class AccountService {
         return account;
     }
 
+
+    //Jens Gotfredsen
     public Account getAccountByMail(String mail){
         return accountRepository.getAccountByMail(mail);
     }
 
+    //Jens Gotfredsen
     public Account updatedAccount(Account updatedAccount){
 
         //save desired new role in temp variable
@@ -106,11 +103,13 @@ public class AccountService {
     }
 
     //Get all accounts stored in a List
+    //Jens Gotfredsen
     public List<Account> getAccounts() {
         return accountRepository.getAccounts();
     }
 
 
+    //Magnus Sørensen
     public boolean accountLogin(Account account){
         try {
         Account getAccount = accountRepository.getAccountByMail(account.getMail());
@@ -121,15 +120,17 @@ public class AccountService {
         }
     }
 
+    //Jacob Klitgaard
     public List<Account> getAccountsByRole(Role role) {
         return accountRepository.getAccountsByRole(role);
     }
 
+    //Magnus Sørensen
     public List<Account> getAccountsAssignedToTask(int taskId) {
         return accountRepository.getAccountsByTaskId(taskId);
     }
 
-
+    //Magnus Sørensen
     public Account deleteAccount(Account toDelete) {
 
         //User should not be able to delete every account
@@ -142,33 +143,36 @@ public class AccountService {
         return this.accountRepository.deleteAccount(toDelete);
     }
 
+    //Jens Gotfredsen
     public String generatePassword(){
         SecureRandom secureRandom = new SecureRandom();
-        Random random = new Random();
         StringBuilder sb = new StringBuilder();
         String lowerCasePool = "abcdefghijklmnopqrstuvxyz";
         String upperCasePool = "ABCEDFGHIJKLMNOPQRSTUVWXYZ";
         String numberPool = "1234567890";
         String specialCharacterPool = "!#€%&/()=?+-*@${}";
 
-        //Could this be simplified, yes, but it was a nice and easy way to introduce randomly generated password with knowledge on hand.
+        //Appends 8 secure random lowercase characters in string builder
         for(int i = 0; i < 8; i++){
             int randomIndex = secureRandom.nextInt(lowerCasePool.length());
             sb.append(lowerCasePool.charAt(randomIndex));
         }
 
+        //Inserts 4 secure random upper case characters to string builder
         for(int i = 0; i < 4; i++){
             int randomIndex = secureRandom.nextInt(upperCasePool.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
             sb.insert(insertIndex, upperCasePool.charAt(randomIndex));
         }
 
+        //Inserts 2 secure random numbers in string builder
         for(int i = 0; i < 2; i++){
             int randomIndex = secureRandom.nextInt(numberPool.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
             sb.insert(insertIndex, numberPool.charAt(randomIndex));
         }
 
+        //Inserts 2 secure random special characters in string builder
         for(int i = 0; i < 2; i++){
             int randomIndex = secureRandom.nextInt(numberPool.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
@@ -178,23 +182,22 @@ public class AccountService {
         return sb.toString();
     }
 
+    //Magnus Sørensen
     private boolean isValidPassword(String str){
 
-        int MIN_LENGTH;
+        int MIN_LENGTH = 16;
 
         //todo: Insert password validation here (min amount of characters etc)
+        if(str.length() < MIN_LENGTH) return false;
 
         if(containsWhitespace(str)) {
             return false;
         }
 
-        if(str.isBlank()){
-            return false;
-        }
-
-        return true;
+        return !str.isBlank();
     }
 
+    //Magnus Sørensen
     private boolean containsWhitespace(String str) {
         String regex = "^\\S+$";
 
@@ -203,6 +206,7 @@ public class AccountService {
         return !found;
     }
 
+    //Magnus Sørensen
     private void trimFields(Account account) {
         account.getEmployee().setMail(account.getMail().trim());
     }

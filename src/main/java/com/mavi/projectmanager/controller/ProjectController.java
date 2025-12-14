@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -33,6 +32,7 @@ public class ProjectController {
         this.taskService = taskService;
     }
 
+    //Jacob Klitgaard
     @GetMapping("/create")
     public String getCreateProjectPage(Model model) {
         Project project = new Project();
@@ -45,6 +45,7 @@ public class ProjectController {
         return "createProjectPage";
     }
 
+    //Jacob Klitgaard
     @PostMapping("/create")
     public String createProject(HttpSession session, Model model, @ModelAttribute Project newProject, @ModelAttribute Employee employee, HttpServletResponse response) {
 
@@ -79,6 +80,7 @@ public class ProjectController {
         return "redirect:/overview?viewMode=projects";
     }
 
+    //Jacob Klitgaard & Magnus Sørensen
     @GetMapping("/edit/{id}")
     public String getEditProjectPage(RedirectAttributes redirectAttributes, HttpSession session, @PathVariable int id, Model model) {
 
@@ -108,6 +110,7 @@ public class ProjectController {
         return "editProjectPage";
     }
 
+    //Jacob Klitgaard og Magnus Sørensen
     @PostMapping("/update")
     public String updateProject(HttpServletResponse response, Model model, HttpSession session, @ModelAttribute Project project) {
 
@@ -143,28 +146,67 @@ public class ProjectController {
         return "redirect:/overview?viewMode=projects";
     }
 
+    //Jens Gotfredsen
     @GetMapping("/view/{id}")
-    public String getProjectOverview(@PathVariable("id") int id, Model model, HttpSession session) {
+    public String getProjectOverview(@PathVariable("id") int id, @RequestParam( value = "viewMode", required=false) String viewMode, Model model, HttpSession session) {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
 
         model.addAttribute("project", projectService.getFullProjectById(id));
+        model.addAttribute("session", session.getAttribute("account"));
+        model.addAttribute("viewMode", viewMode);
 
         return "projectOverviewPage";
     }
 
+    @GetMapping("/{projectId}/task/{taskId}/archive")
+    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, Model model){
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/project/view/" + projectId;
+        }
+
+        model.addAttribute("task", taskService.getTask(taskId));
+
+        return "closeTaskPage";
+    }
+
+    @PostMapping("/{projectId}/task/{taskId}/archive")
+    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, @ModelAttribute Task task){
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/project/view/" + projectId;
+        }
+
+        Task taskToArchive = taskService.getTask(taskId);
+        taskToArchive.setActualDuration(task.getActualDuration());
+
+        taskService.archiveTask(taskToArchive);
+
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
+    }
+
+    //Jacob Klitgaard
     @GetMapping("/{projectId}/create")
     public String getCreateSubProjectsPage(@PathVariable("projectId") int projectId, Model model) {
         SubProject subProject = new SubProject();
 
         model.addAttribute("subProject", subProject);
         model.addAttribute("projectId", projectId);
+        model.addAttribute("project", projectService.getProjectById(projectId));
 
         return "createSubProjectPage";
 
     }
 
+    //Jacob KLitgaard
     @PostMapping("/{projectId}/create")
     public String createSubProject(HttpSession session, Model model, @ModelAttribute SubProject subProject, @PathVariable("projectId") Integer projectId, HttpServletResponse response) {
 
@@ -191,13 +233,17 @@ public class ProjectController {
 
             model.addAttribute("error", true);
             model.addAttribute("invalidField", e.getField());
+            model.addAttribute("project", projectService.getProjectById(projectId));
             model.addAttribute("subProject", subProject);
             return "createSubProjectPage";
         }
 
-        return "redirect:/project/view/" + projectId;
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
     }
 
+    //Emil Gurresø
     @PostMapping("/delete")
     public String deleteProject(HttpSession session, @ModelAttribute Project toDelete, RedirectAttributes redirectAttributes) {
 
@@ -219,6 +265,7 @@ public class ProjectController {
         return "redirect:/overview?viewMode=projects";
     }
 
+    //Jacob Klitgaard
     @PostMapping("/{projectId}/subProject/{subProjectId}/delete")
     public String deleteSubProject(@PathVariable int projectId, @PathVariable int subProjectId, HttpSession session, RedirectAttributes redirectAttributes) {
 
@@ -241,10 +288,12 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
         //return to project view
-        return "redirect:/project/view/" + projectId;
+        return redirect;
     }
 
+    //Magnus Sørensen
     @PostMapping("/edit/{projectId}/task/delete")
     public String deleteTask(@PathVariable int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
 
@@ -270,10 +319,13 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
         //return to project view
-        return "redirect:/project/view/" + projectId;
+        return redirect;
     }
 
+    //Emil Gurresø
     @GetMapping("/edit/{projectId}/{subProjectId}")
     public String editSubproject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId, Model model, HttpSession session) {
         if (!SessionUtils.isLoggedIn(session)) {
@@ -295,7 +347,7 @@ public class ProjectController {
             System.out.println("start date: " + toEdit.getStartDate());
         } catch (IllegalArgumentException i) {
             //ToDO: add flash attribute
-            return "redirect/overView?viewMode=projects";
+            return "redirect/overviewPage?viewMode=projects";
         }
 
         model.addAttribute("subProject", toEdit);
@@ -304,7 +356,8 @@ public class ProjectController {
         return "editSubprojectPage";
     }
 
-    @PostMapping("/edit/{projectId}/{subProjectId}") /// ::::
+    //Jacob Klitgaard
+    @PostMapping("/edit/{projectId}/{subProjectId}")
     public String updateSubproject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId, @ModelAttribute SubProject toUpdate, HttpSession session, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
@@ -334,15 +387,17 @@ public class ProjectController {
             model.addAttribute("subProject", toUpdate);
             model.addAttribute("project", project);
 
-            return "editSubProjectPage";
+            return "editSubprojectPage";
         }
 
-        //SHOULD USER BE REDIRECTED TO EDITPROJECTPAGE?
-        return "redirect:/project/view/" + projectId;
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
 
         //ToDO: add RedirectAttributes for whether the update was successful. - redirect to the same page and return the same object with it.
     }
 
+    //Magnus Sørensen
     @GetMapping("/{projectId}/subproject/{subprojectId}/task/{taskId}/edit")
     public String getEditTaskPage(HttpSession session, @PathVariable("projectId") int projectId, @PathVariable("subprojectId") int subProjectId,
                          @PathVariable int taskId, Model model) {
@@ -369,6 +424,7 @@ public class ProjectController {
         return "editTaskPage";
     }
 
+    //Magnus Sørensen
     @PostMapping("/{projectId}/subproject/{subprojectId}/task/edit")
     public String editTask(@RequestParam("employeeList") List<String> accountList, @PathVariable int projectId, @PathVariable int subprojectId, HttpSession session,
                            @ModelAttribute Task toEdit, Model model, HttpServletResponse response) {
@@ -417,9 +473,12 @@ public class ProjectController {
             return "editTaskPage";
         }
 
-        return "redirect:/project/view/" + projectId;
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
     }
 
+    //Jens Gotfredsen
     @GetMapping("/{projectId}/subproject/{subProjectId}/task/create")
     public String createTask(@PathVariable int subProjectId, @PathVariable int projectId, Model model, HttpSession session){
         if(!SessionUtils.isLoggedIn(session)){
@@ -439,6 +498,7 @@ public class ProjectController {
         return "createTaskPage";
     }
 
+    //Jens Gotfredsen
     @PostMapping("/{projectId}/subproject/{subProjectId}/task/create")
     public String createTask(@RequestParam("employeeList") List<String> accountList, @RequestParam("retrievedProjectId") int projectId, @RequestParam("retrievedSubProjectId") int subProjectId, @ModelAttribute Task task, HttpSession session, Model model){
         if(!SessionUtils.isLoggedIn(session)){
@@ -477,7 +537,26 @@ public class ProjectController {
             return "createTaskPage";
         }
 
-        return "redirect:/project/view/" + projectId;
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
+    }
+
+    @PostMapping("/{id}/archive")
+    public String archiveProject(@PathVariable("id") int id, HttpSession session){
+        if(!SessionUtils.isLoggedIn(session)){
+            return "redirect:/";
+        }
+
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)){
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        Project projectToArchive = projectService.getProjectById(id);
+
+        projectService.archiveProject(projectToArchive);
+
+        return "redirect:/overview?viewMode=projects";
     }
 }
 

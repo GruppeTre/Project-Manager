@@ -29,6 +29,7 @@ public class TaskRepositoryTest {
     @BeforeEach
     void setup(){}
 
+    //Jens Gotfredsen
     @Test
     void shouldInsertIntoTask() {
 
@@ -51,6 +52,7 @@ public class TaskRepositoryTest {
         assertEquals(taskRepository.getTaskById(expectedId), dbTaskToInsert);
     }
 
+    //Jens Gotfredsen
     @Test
     void shouldGetTaskById() {
         Task retrievedTask = taskRepository.getTaskById(2);

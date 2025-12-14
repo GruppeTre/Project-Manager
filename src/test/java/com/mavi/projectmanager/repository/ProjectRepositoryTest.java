@@ -140,6 +140,7 @@ class ProjectRepositoryTest {
 
     }
 
+    //Jacob Klitgaard
     @Test
     void shouldInsertIntoProject() {
 
@@ -151,11 +152,14 @@ class ProjectRepositoryTest {
 
         assertEquals(this.projectRepository.getProjectById(expectedId), dbProjectToInsert);
     }
+
+    //Emil Gurresø
     @Test
     void shouldDeleteProject() {
         assertEquals(1, this.projectRepository.deleteProject(dbProjectWithLead));
     }
 
+    //Magnus Sørensen
     @Test
     void shouldDeleteTask() {
 

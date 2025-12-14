@@ -31,11 +31,6 @@ async function generatePassword() {
 
         notification.textContent = 'New password generated and copied to clipboard! Ensure that it is securely delivered to the employee';
 
-        //Removes the notification box
-        setTimeout(() => {
-            notification.textContent = '';
-        }, 3000);
-
     } catch (error) {
         console.error('Password generation failed:', error);
         notification.textContent = 'Failed to generate password.';

@@ -49,6 +49,7 @@ class AccountRepositoryTest {
         dbAccount.setEmployee(empWithAccount);
     }
 
+    //Magnus Sørensen
     @Test
     void shouldCreateUser() {
 
@@ -71,6 +72,7 @@ class AccountRepositoryTest {
         assertEquals(empWithoutAcc.getMail(), account.getMail());
     }
 
+    //Magnus Sørensen
     @Test
     void shouldDeleteAccount() {
 
@@ -81,6 +83,7 @@ class AccountRepositoryTest {
         assertNull(this.repository.getAccountByMail(dbAccount.getMail()));
     }
 
+    //Magnus Sørensen
     @Test
     void shouldReturnNullWhenNoAccountIsDeleted() {
 

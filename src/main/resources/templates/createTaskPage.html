@@ -74,19 +74,19 @@
 
                 <div class="row">
                     <label for="start-date" class="form-label" th:text="#{form.label.startDate}"></label>
-                    <input id="start-date" type="date" th:field="*{startDate}" th:min="${#temporals.format(subProject.startDate, 'yyyy-MM-dd')}" required>
+                    <input id="start-date" type="date" th:field="*{startDate}" th:min="${#temporals.format(subProject.startDate, 'yyyy-MM-dd')}" th:max="${#temporals.format(subProject.endDate, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- end date -->
 
                 <div class="row">
                     <label for="end-date" class="form-label" th:text="#{form.label.endDate}"></label>
-                    <input id="end-date" type="date" th:field="*{endDate}" th:max="${#temporals.format(subProject.endDate, 'yyyy-MM-dd')}" required>
+                    <input id="end-date" type="date" th:field="*{endDate}" th:min="${#temporals.format(subProject.startDate, 'yyyy-MM-dd')}" th:max="${#temporals.format(subProject.endDate, 'yyyy-MM-dd')}" required>
                 </div>
 
                 <!-- BUTTONS -->
                 <div class="row">
-                    <a class="button" th:href="@{/project/view/{id}(id=${projectId})}" th:text="#{form.button.back}"></a>
+                    <a class="button" th:href="@{/project/view/{id}(id=${projectId}, viewMode='project')}" th:text="#{form.button.back}"></a>
                     <button class="button" type="submit" th:text="#{form.button.submit}"></button>
                 </div>
             </form>

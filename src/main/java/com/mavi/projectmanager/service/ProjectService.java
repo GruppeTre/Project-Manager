@@ -1,7 +1,6 @@
 package com.mavi.projectmanager.service;
 
 import com.mavi.projectmanager.exception.Field;
-import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.AccountRepository;
@@ -11,8 +10,6 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,10 +23,12 @@ public class ProjectService {
         this.accountRepository = accountRepository;
     }
 
+    //Magnus Sørensen
     public List<Project> getProjects(){
         return projectRepository.getProjects();
     }
 
+    //Magnus Sørensen
     public Project getProjectById(int id) {
         try {
             return this.projectRepository.getProjectById(id);
@@ -38,10 +37,12 @@ public class ProjectService {
         }
     }
 
+    //Magnus Sørensen
     public List<Project> getProjectsByLead(int id){
         return projectRepository.getProjectsByLead(id);
     }
 
+    //Jacob Klitgaard
     @Transactional
     public Project createProject(Project project) {
 
@@ -61,6 +62,7 @@ public class ProjectService {
         return project;
     }
 
+    //Magnus Sørensen
     @Transactional
     public Project updateProject(Project project) {
 
@@ -81,10 +83,12 @@ public class ProjectService {
         return project;
     }
 
+    //Jens Gotfredsen
     public Project getFullProjectById(int id){
         return this.projectRepository.getFullProjectById(id);
     }
 
+    //Emil Gurresø
     public void deleteProject(Project toDelete) {
 
         int rowsAffected = projectRepository.deleteProject(toDelete);
@@ -96,6 +100,12 @@ public class ProjectService {
         }
     }
 
+    //Jens Gotfredsen
+    public List<Project> getProjectByTeamMember(int id) {
+        return projectRepository.getProjectByTeamMember(id);
+    }
+
+    //Magnus Sørensen
     public void deleteTask(Task toDelete) {
 
         int rowsAffected = projectRepository.deleteTask(toDelete);
@@ -106,16 +116,24 @@ public class ProjectService {
         }
     }
 
+    public void archiveProject(Project project){
+        int rowsAffected = projectRepository.archiveProject(project);
+        if(rowsAffected != 1){
+            throw new IllegalArgumentException("An unexpected number of projects with id: " + project.getId()
+                    + " found in database! Expected: [1], found: [" + rowsAffected + "]");
+        }
+    }
+
+    public List<Project> getArchivedProjects(){
+        return projectRepository.getArchivedProjects();
+    }
+
+    //Jacob Klitgaard
     private boolean hasValidName(Project projectToCheck) {
-
         return !projectToCheck.getName().isBlank();
-
     }
 
-    private boolean hasProjectLead(Project projectToCheck) {
-        return true;
-    }
-
+    //Magnus Sørensen
     private Project validateUpdatedProject(Project project) {
 
         //trim name for leading and trailing whitespaces

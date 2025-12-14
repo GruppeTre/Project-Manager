@@ -2,6 +2,7 @@ package com.mavi.projectmanager.repository;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.SubProject;
 import com.mavi.projectmanager.model.Task;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,12 +20,15 @@ import java.util.List;
 public class TaskRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private AccountRepository accountRepository;
 
-    public TaskRepository(JdbcTemplate jdbcTemplate){
+    public TaskRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository){
         this.jdbcTemplate = jdbcTemplate;
+        this.accountRepository = accountRepository;
     }
 
-    public RowMapper<Task> taskRowMapper = ((rs, rowNum) ->{
+    //Jens Gotfredsen
+    public final RowMapper<Task> taskRowMapper = ((rs, rowNum) ->{
         Task task = new Task();
 
         task.setId(rs.getInt("id"));
@@ -41,9 +45,43 @@ public class TaskRepository {
 
         task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
+        task.setActualDuration(rs.getInt("actual_duration"));
+
+        task.setArchived(rs.getInt("archived"));
+
         return task;
     });
 
+    //Jens Gotfredsen
+    public final RowMapper<Task> taskRowMapperForFullProject = ((rs, rowNum) -> {
+        Task task = new Task();
+
+        int taskId = rs.getInt("id");
+        task.setId(taskId);
+        task.setName(rs.getString("name"));
+        task.setDescription(rs.getString("description"));
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        task.setStartDate(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        task.setEndDate(convertedEndDate);
+
+        task.setEstimatedDuration(rs.getInt("estimated_duration"));
+
+        task.setActualDuration(rs.getInt("actual_duration"));
+
+        task.setArchived(rs.getInt("archived"));
+
+        List<Account> accountList = accountRepository.getAccountsByTaskId(taskId);
+        task.setAccountList(accountList);
+
+        return task;
+    });
+
+    //Jens Gotfredsen
     public Task createTask(Task task, SubProject subProject){
 
         String query = """
@@ -53,9 +91,10 @@ public class TaskRepository {
                 start_date,
                 end_date,
                 estimated_duration,
+                archived,
                 subproject_id
                 )
-                VALUES (?,?,?,?,?,?)
+                VALUES (?,?,?,?,?, 1, ?)
                 """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -64,8 +103,8 @@ public class TaskRepository {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, task.getName());
                 ps.setString(2, task.getDescription());
-                ps.setObject(3, task.getStartDate());
-                ps.setObject(4, task.getEndDate());
+                ps.setDate(3, java.sql.Date.valueOf(task.getStartDate()));
+                ps.setObject(4, java.sql.Date.valueOf(task.getEndDate()));
                 ps.setInt(5, task.getEstimatedDuration());
                 ps.setInt(6, subProject.getId());
 
@@ -86,6 +125,7 @@ public class TaskRepository {
         return task;
     }
 
+    //Magnus Sørensen
     public void updateTask(Task task) {
 
         String sql = """
@@ -106,6 +146,7 @@ public class TaskRepository {
         }
     }
 
+    //Jens Gotfredsen
     public void addEmployeesToTaskJunction(Task task){
         String query = """
                 INSERT INTO account_task_junction (
@@ -127,6 +168,7 @@ public class TaskRepository {
         });
     }
 
+    //Magnus Sørensen
     public void deleteFromEmployeesToTaskJunction(int taskId) {
 
         String sql = """
@@ -137,6 +179,7 @@ public class TaskRepository {
         jdbcTemplate.update(sql, taskId);
     }
 
+    //Jens Gotfredsen
     public Task getTaskById(int id){
         String query = """
                 SELECT *
@@ -145,5 +188,31 @@ public class TaskRepository {
                 """;
 
         return jdbcTemplate.queryForObject(query, taskRowMapper, id);
+    }
+
+    public int archiveTask(Task task){
+        String query = """
+                    UPDATE Task
+                    SET archived = 0, actual_duration = ?
+                    WHERE id = ?
+                """;
+
+        int rowsAffected;
+        try {
+            rowsAffected = jdbcTemplate.update(query, task.getActualDuration(), task.getId());
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occurred when attempting to archive project with id: " + task.getId());
+        }
+
+        return rowsAffected;
+    }
+
+    //Jens Gotfredsen
+    public List<Task> getTaskBySubProjectId(int id) {
+        String query = """
+                SELECT * FROM Task WHERE subproject_id = ?
+                """;
+
+        return jdbcTemplate.query(query, taskRowMapperForFullProject, id);
     }
 }
