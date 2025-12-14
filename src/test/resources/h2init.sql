@@ -26,6 +26,7 @@ CREATE TABLE project (
                          name VARCHAR(50) NOT NULL,
                          start_date DATE NOT NULL,
                          end_date DATE NOT NULL,
+                         archived BIT NOT NULL,
 
                          PRIMARY KEY(id)
 );
@@ -50,6 +51,7 @@ CREATE TABLE task (
                       end_date DATE NOT NULL,
                       estimated_duration INT NOT NULL,
                       actual_duration INT,
+                      archived BIT NOT NULL,
                       subproject_id INT NOT NULL,
 
                       PRIMARY KEY(id),
@@ -111,9 +113,9 @@ INSERT INTO account(role, password, emp_id)
 VALUES (1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 1),
        (2, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 2);
 
-INSERT INTO project(name, start_date, end_date)
-VALUES ('Projekt Alpha', '2025-11-28', '2025-11-30'),
-       ('Projekt Beta', '2025-12-01', '2025-12-17');
+INSERT INTO project(name, start_date, end_date, archived)
+VALUES ('Projekt Alpha', '2025-11-28', '2025-11-30', 1),
+       ('Projekt Beta', '2025-12-01', '2025-12-17', 1);
 
 INSERT INTO account_project_junction(account_id, project_id)
 VALUES (2,1);
@@ -123,10 +125,10 @@ VALUES
 ('Subproject Charlie', '2025-12-12', '2025-12-18', 1),
 ('Subproject Delta', '2025-12-18', '2025-12-20', 1);
 
-INSERT INTO task(name, description, start_date, end_date, estimated_duration, subproject_id)
+INSERT INTO task(name, description, start_date, end_date, estimated_duration, subproject_id, archived)
 VALUES
-('Task A', 'Test beskrivelse', '2025-12-12', '2025-12-13', 8, 1),
-('Task B', 'Test beskrivelse', '2025-12-13', '2025-12-15', 24, 1);
+('Task A', 'Test beskrivelse', '2025-12-12', '2025-12-13', 8, 1, 1),
+('Task B', 'Test beskrivelse', '2025-12-13', '2025-12-15', 24, 1, 1);
 
 INSERT INTO account_task_junction(account_id, task_id)
 VALUES

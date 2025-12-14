@@ -23,7 +23,7 @@
                     <label for="search_bar"></label>
                     <input id="search_bar" type="search" th:placeholder="#{overview.search.placeholder}"></h2>
                 </div>
-                <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block">
+                <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block float-right">
                     <a class="button button-primary" th:href="@{/account/create}" th:text="#{overview.button.createAccount}"></a>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                     <label for="project_search_bar"></label>
                     <input id="project_search_bar" type="search" th:placeholder="#{overview.search.placeholder}" />
                 </div>
-                <div class="inline-block">
+                <div class="inline-block float-right">
                     <a class="button button-primary" th:href="@{/project/create}" th:text="#{overview.button.createProject}"></a>
                 </div>
 
@@ -78,10 +78,14 @@
                             <td th:if="${p.leadsList == null}" th:text="'No project leader(s)'"></td>
                             <td th:text="${p.endDate}"></td>
                             <td>
-                                <a class="button button-primary" th:href="@{/project/edit/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>
-                                <form th:action="@{/project/{id}/archive(id=${p.id})}" method="post">
-                                    <button class="button button-primary" type="submit" th:text="#{overview.button.archive}"></button>
-                                </form>
+                                <div class="inline-block">
+                                    <a class="button button-primary" th:href="@{/project/edit/{id}(id=${p.id})}" th:text="#{overview.button.edit}"></a>
+                                </div>
+                                <div class="inline-block">
+                                    <form th:action="@{/project/{id}/archive(id=${p.id})}" method="post">
+                                        <button class="button button-primary" type="submit" th:text="#{overview.button.archive}"></button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

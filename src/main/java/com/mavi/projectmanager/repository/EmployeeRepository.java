@@ -1,14 +1,10 @@
 package com.mavi.projectmanager.repository;
 
-import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Role;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class EmployeeRepository {

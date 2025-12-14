@@ -5,8 +5,8 @@ public enum Role {
     PROJECT_LEAD (2, "Project Lead"),
     TEAM_MEMBER (3, "Team Member");
 
-    private int id;
-    private String value;
+    private final int id;
+    private final String value;
 
     Role (int id, String value) {
         this.id = id;

@@ -217,11 +217,14 @@ class ProjectControllerTest {
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
         mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
 
+        when(projectService.getProjectById(anyInt())).thenReturn(testProject);
+
         mockMvc.perform(get("/project/{projectId}/create", 1)
                         .sessionAttr("account", leadAccount))
                 .andExpect(status().isOk())
                 .andExpect(view().name("createSubProjectPage"))
-                .andExpect(model().attribute("subProject", emptySubProject));
+                .andExpect(model().attribute("subProject", emptySubProject))
+                .andExpect(model().attribute("project", testProject));
         mockedStatic.close();
 
     }
@@ -232,36 +235,6 @@ class ProjectControllerTest {
     =            POST TESTS            =
     ======================================
 */
-    /*
-        ======================================
-        =            POST TESTS            =
-        ======================================
-    */
-//    @Test
-//    void shouldUpdateProjectFromFormAsProjectLead() throws Exception {
-//
-//        MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
-//        mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
-//        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), any(Role.class))).thenReturn(true);
-//
-//        SubProject sp = new SubProject();
-//        sp.setId(4);
-//
-//        when(subProjectService.updateSubProject(Mockito.any(SubProject.class))).thenReturn(1);
-//
-//        mockMvc.perform(post("/project/edit/{projectId}/{subProjectId}", 1, 4)
-//                        .sessionAttr("account", leadAccount)
-//                        .param("id", "4")
-//                        .param("name", "Test SubProject")
-//                        .param("start_date", "2025-12-01")
-//                        .param("end_date", "2025-12-31"))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("/editProjectPage"));
-//
-//        mockedStatic.close();
-//
-//        verify(subProjectService, times(1)).updateSubProject(Mockito.any(SubProject.class));
-//    }
 
     //Magnus Sørensen
     @Test
@@ -427,7 +400,7 @@ class ProjectControllerTest {
                         .sessionAttr("account", leadAccount)
                 )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/project/view/1"));
+                .andExpect(redirectedUrl("/project/view/" + 1 + "?viewMode=project"));
 
         verify(subProjectService).createSubProject(any(SubProject.class), eq(1));
     }
@@ -452,7 +425,9 @@ class ProjectControllerTest {
 
         when(projectService.getFullProjectById(anyInt())).thenReturn(project);
 
-        mockMvc.perform(get("/project/view/{id}", 1))
+        mockMvc.perform(get("/project/view/{id}", 1)
+                    .sessionAttr("account", leadAccount)
+                    .param("viewMode", "project"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("projectOverviewPage"))
                 .andExpect(model().attribute("project", project));
@@ -490,7 +465,7 @@ class ProjectControllerTest {
         mockMvc.perform(post("/project/edit/{projectId}/task/delete", 1)
                         .sessionAttr("account", leadAccount).param("id", "1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/project/view/" + 1))
+                .andExpect(redirectedUrl("/project/view/" + 1 + "?viewMode=project"))
                 .andExpect(flash().attributeCount(0));
         mockedStatic.close();
     }

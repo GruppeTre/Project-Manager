@@ -4,20 +4,14 @@ import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.repository.AccountRepository;
-import com.mavi.projectmanager.repository.EmployeeRepository;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.stereotype.Repository;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.exception.PageNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.management.RuntimeErrorException;
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class AccountService {
@@ -25,13 +19,11 @@ public class AccountService {
     private final int SUPER_ADMIN_ID = 1;
     private final AccountRepository accountRepository;
     private final EmployeeService employeeService;
-    private final EmployeeRepository employeeRepository;
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
-    public AccountService(AccountRepository accountRepository, EmployeeService employeeService, EmployeeRepository employeeRepository) {
+    public AccountService(AccountRepository accountRepository, EmployeeService employeeService) {
         this.accountRepository = accountRepository;
         this.employeeService = employeeService;
-        this.employeeRepository = employeeRepository;
     }
 
     //Registers a user
@@ -193,19 +185,16 @@ public class AccountService {
     //Magnus Sørensen
     private boolean isValidPassword(String str){
 
-        int MIN_LENGTH;
+        int MIN_LENGTH = 16;
 
         //todo: Insert password validation here (min amount of characters etc)
+        if(str.length() < MIN_LENGTH) return false;
 
         if(containsWhitespace(str)) {
             return false;
         }
 
-        if(str.isBlank()){
-            return false;
-        }
-
-        return true;
+        return !str.isBlank();
     }
 
     //Magnus Sørensen

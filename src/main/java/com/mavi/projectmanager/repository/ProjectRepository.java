@@ -20,7 +20,7 @@ public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
     private AccountRepository accountRepository;
     private SubProjectRepository subProjectRepository;
-    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStartDate).thenComparing(Project::getEndDate);
+    private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getEndDate).thenComparing(Project::getStartDate).thenComparing(Project::getName);
 
     public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, SubProjectRepository subProjectRepository) {
         this.jdbcTemplate = jdbcTemplate;
@@ -29,7 +29,7 @@ public class ProjectRepository {
     }
 
     //Jens Gotfredsen
-    public RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
+    public final RowMapper<Project> projectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
         int projectId = rs.getInt("id");
         project.setId(projectId);
@@ -53,7 +53,7 @@ public class ProjectRepository {
     });
 
     //Jens Gotfredsen
-    public RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
+    public final RowMapper<Project> fullProjectRowMapper = ((rs, rowNum) -> {
         Project project = new Project();
         int projectId = rs.getInt("id");
         project.setId(projectId);
@@ -140,8 +140,8 @@ public class ProjectRepository {
             rowsAffected = jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, project.getName());
-                ps.setObject(2, project.getStartDate());
-                ps.setObject(3, project.getEndDate());
+                ps.setObject(2, java.sql.Date.valueOf(project.getStartDate()));
+                ps.setObject(3, java.sql.Date.valueOf(project.getEndDate()));
 
                 return ps;
             }, keyHolder);

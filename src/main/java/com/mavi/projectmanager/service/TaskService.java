@@ -3,14 +3,11 @@ package com.mavi.projectmanager.service;
 import com.mavi.projectmanager.exception.Field;
 import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
-import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.model.SubProject;
 import com.mavi.projectmanager.model.Task;
 import com.mavi.projectmanager.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 
 @Service
 public class TaskService {

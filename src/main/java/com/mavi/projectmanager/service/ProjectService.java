@@ -1,7 +1,6 @@
 package com.mavi.projectmanager.service;
 
 import com.mavi.projectmanager.exception.Field;
-import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.AccountRepository;
@@ -11,8 +10,6 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -133,9 +130,7 @@ public class ProjectService {
 
     //Jacob Klitgaard
     private boolean hasValidName(Project projectToCheck) {
-
         return !projectToCheck.getName().isBlank();
-
     }
 
     //Magnus Sørensen

@@ -93,8 +93,8 @@ public class Task {
         if (actualDuration == null || actualDuration == 0) {
             return 0;
         }
-        double pct = (actualDuration * 100.0) / estimatedDuration;
-        return (int) Math.round(pct);
+        double percentage = (actualDuration * 100.0) / estimatedDuration;
+        return (int) Math.round(percentage);
     }
 
     @Override

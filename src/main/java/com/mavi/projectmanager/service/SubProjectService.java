@@ -5,8 +5,6 @@ import com.mavi.projectmanager.exception.InvalidDateException;
 import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.model.SubProject;
-import com.mavi.projectmanager.model.Task;
-import com.mavi.projectmanager.repository.ProjectRepository;
 import com.mavi.projectmanager.repository.SubProjectRepository;
 import com.mavi.projectmanager.service.utils.DateUtils;
 import org.springframework.stereotype.Service;

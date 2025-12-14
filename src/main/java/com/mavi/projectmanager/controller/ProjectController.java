@@ -7,14 +7,12 @@ import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.service.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.bouncycastle.math.raw.Mod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -190,7 +188,9 @@ public class ProjectController {
 
         taskService.archiveTask(taskToArchive);
 
-        return "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
     }
 
     //Jacob Klitgaard
@@ -347,7 +347,7 @@ public class ProjectController {
             System.out.println("start date: " + toEdit.getStartDate());
         } catch (IllegalArgumentException i) {
             //ToDO: add flash attribute
-            return "redirect/overView?viewMode=projects";
+            return "redirect/overviewPage?viewMode=projects";
         }
 
         model.addAttribute("subProject", toEdit);
@@ -387,7 +387,7 @@ public class ProjectController {
             model.addAttribute("subProject", toUpdate);
             model.addAttribute("project", project);
 
-            return "editSubProjectPage";
+            return "editSubprojectPage";
         }
 
         String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";

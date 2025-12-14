@@ -3,7 +3,6 @@ package com.mavi.projectmanager.controller;
 import com.mavi.projectmanager.controller.utils.SessionUtils;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.Employee;
-import com.mavi.projectmanager.model.Project;
 import com.mavi.projectmanager.model.Role;
 import com.mavi.projectmanager.service.AccountService;
 import com.mavi.projectmanager.service.ProjectService;
@@ -12,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.View;
 
 @Controller
 @RequestMapping("/")
@@ -55,7 +53,6 @@ public class HomeController {
         session.setAttribute("account", account);
         String redirect = "redirect:/overview";
 
-        Account roleId = (Account) session.getAttribute("account");
         if(SessionUtils.userHasRole(session, Role.ADMIN)) {
             String viewMode = "?viewMode=accounts";
 

@@ -29,7 +29,7 @@ public class SubProjectRepository {
         this.taskRepository = taskRepository;
     }
 
-    public RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
+    public final RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
         SubProject subProject = new SubProject();
         int subProjectId = rs.getInt("id");
         subProject.setId(subProjectId);
@@ -47,7 +47,7 @@ public class SubProjectRepository {
     });
 
     //Jens Gotfredsen
-    public RowMapper<SubProject> subProjectRowMapperForFullProject = ((rs, rowNum) -> {
+    public final RowMapper<SubProject> subProjectRowMapperForFullProject = ((rs, rowNum) -> {
         SubProject subProject = new SubProject();
 
         int subProjectId = rs.getInt("id");
@@ -92,8 +92,8 @@ public class SubProjectRepository {
             rowsAffected = jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, subProject.getName());
-                ps.setObject(2, subProject.getStartDate());
-                ps.setObject(3, subProject.getEndDate());
+                ps.setDate(2, java.sql.Date.valueOf(subProject.getStartDate()));
+                ps.setDate(3, java.sql.Date.valueOf(subProject.getEndDate()));
                 ps.setInt(4, projectId);
 
                 return ps;
@@ -138,8 +138,8 @@ public class SubProjectRepository {
     public SubProject getSubprojectById(int id) {
 
         String sql = """
-                SELECT s.id, s.name, s.start_date, s.end_date 
-                FROM subproject s 
+                SELECT s.id, s.name, s.start_date, s.end_date
+                FROM subproject s
                 WHERE s.id = ?
                 """;
 

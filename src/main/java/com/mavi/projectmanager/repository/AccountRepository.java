@@ -19,12 +19,10 @@ import org.springframework.jdbc.core.RowMapper;
 public class AccountRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final EmployeeRepository employeeRepository;
     private static final Comparator<Account> ACCOUNT_COMPARATOR = Comparator.comparingInt((Account a) -> a.getRole().getId()).thenComparing(Account::getFirstName).thenComparing(Account::getLastName);
 
-    public AccountRepository(JdbcTemplate jdbcTemplate, EmployeeRepository employeeRepository){
+    public AccountRepository(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
-        this.employeeRepository = employeeRepository;
     }
 
     public final RowMapper<Account> accountRowMapper = ((rs, rowNum) -> {
@@ -173,7 +171,7 @@ public class AccountRepository {
                 INNER JOIN
                     account_project_junction apj ON a.id = apj.account_id
                 INNER JOIN
-                    Employee e ON a.emp_id = e.id 
+                    Employee e ON a.emp_id = e.id
                 WHERE apj.project_id = ?
                 """;
 

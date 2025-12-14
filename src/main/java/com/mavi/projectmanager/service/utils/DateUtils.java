@@ -1,7 +1,6 @@
 package com.mavi.projectmanager.service.utils;
 
 import com.mavi.projectmanager.exception.InvalidDateException;
-import com.mavi.projectmanager.model.Project;
 
 import java.time.LocalDate;
 

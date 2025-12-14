@@ -40,7 +40,7 @@ class AccountServiceTest {
     @BeforeEach
     void setUp() {
         String mail = "test@alphasolutions.com";
-        String password = "test123";
+        String password = "testTEST1234#€%&";
         String passwordHash = encoder.encode(password);
         String firstName = "Erik";
         String lastName = "Eriksen";

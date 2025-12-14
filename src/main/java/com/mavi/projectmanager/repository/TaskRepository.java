@@ -28,7 +28,7 @@ public class TaskRepository {
     }
 
     //Jens Gotfredsen
-    public RowMapper<Task> taskRowMapper = ((rs, rowNum) ->{
+    public final RowMapper<Task> taskRowMapper = ((rs, rowNum) ->{
         Task task = new Task();
 
         task.setId(rs.getInt("id"));
@@ -53,7 +53,7 @@ public class TaskRepository {
     });
 
     //Jens Gotfredsen
-    public RowMapper<Task> taskRowMapperForFullProject = ((rs, rowNum) -> {
+    public final RowMapper<Task> taskRowMapperForFullProject = ((rs, rowNum) -> {
         Task task = new Task();
 
         int taskId = rs.getInt("id");
@@ -103,8 +103,8 @@ public class TaskRepository {
                 PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, task.getName());
                 ps.setString(2, task.getDescription());
-                ps.setObject(3, task.getStartDate());
-                ps.setObject(4, task.getEndDate());
+                ps.setDate(3, java.sql.Date.valueOf(task.getStartDate()));
+                ps.setObject(4, java.sql.Date.valueOf(task.getEndDate()));
                 ps.setInt(5, task.getEstimatedDuration());
                 ps.setInt(6, subProject.getId());
 

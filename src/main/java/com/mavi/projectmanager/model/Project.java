@@ -123,11 +123,11 @@ public class Project {
             return 0;
         }
 
-        double pct = (sumActualDuration * 100.0) / sumActualDuration;
-        return (int) Math.round(pct);
+        double percentage = (sumActualDuration * 100.0) / sumEstimatedDuration;
+        return (int) Math.round(percentage);
     }
 
-        @Override
+    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;

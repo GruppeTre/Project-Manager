@@ -43,19 +43,20 @@
                                     <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${sb.sumDuration} + #{projectOverviewPage.p.hours}"></p>
                                 </article>
                                 <div class="project-buttons-container">
-                                    <a class="button button-primary" th:href="@{/project/edit/{projectId}/{subProjectId} (projectId=${project.id}, subProjectId=${sb.id})}" th:text="'Edit'"></a>
-                                    <a class="button button-primary" th:href="@{/project/{projectId}/subproject/{subProjectId}/task/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
+                                    <a class="button button-primary" th:if="${session.account.role.id == 2}" th:href="@{/project/edit/{projectId}/{subProjectId} (projectId=${project.id}, subProjectId=${sb.id})}" th:text="'Edit'"></a>
+                                    <a class="button button-primary" th:if="${session.account.role.id == 2}" th:href="@{/project/{projectId}/subproject/{subProjectId}/task/create(projectId=${project.id}, subProjectId=${sb.id})}" th:text="#{projectOverviewPage.button.addTask}"></a>
                                 </div>
 
                             </div>
                             <article class="task-list" th:each="task : ${sb.getTaskList()}">
                                 <details>
-                                    <summary th:text="${task.name}"></summary>
+                                    <summary th:if="${task.archived == 1}" th:text="${task.name} + ' - &#x2705 ' + #{projectOverviewPage.summary.taskOpen}"></summary>
+                                    <summary th:if="${task.archived == 0}" th:text="${task.name} + ' - &#x274C ' + #{projectOverviewPage.summary.taskClose}"></summary>
                                     <div class="collapsed_content">
                                         <div class="project-header">
                                             <article>
                                                 <h5 th:text="#{projectOverviewPage.h.details}"></h5>
-                                                <p th:text="#{projectOverviewPage.p.start} + ' ' + *{startDate}"></p>
+                                                <p th:text="#{projectOverviewPage.p.start} + ' ' + ${task.startDate}"></p>
                                                 <p th:text="#{projectOverviewPage.p.deadline} + ' ' + ${task.endDate}"></p>
                                                 <p th:text="#{projectOverviewPage.p.employees} + ' ' + ${task.accountsToString()}"></p>
                                                 <p th:text="#{projectOverviewPage.p.estimatedDuration} + ' ' + ${task.estimatedDuration} + #{projectOverviewPage.p.hours}"></p>
