@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Close Task</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<header th:replace="~{fragments/_commonElements :: header}"></header>
+<main class="container">
+    <section>
+        <article>
+            <form th:action="@{/project/{projectId}/task/{taskId}/archive(projectId=${projectId}, taskId=${task.id})}" th:object="${task}" method="post">
+
+                <input type="hidden" name="retrievedProjectId" th:value="${projectId}">
+                <input type="hidden" th:field="*{id}" th:value="*{id}">
+
+                <div>
+                    <h2 th:text="#{closeTask.title}"></h2>
+                </div>
+
+                <!-- Error messages -->
+                <div th:if="${error}" class="form-error-container">
+                    <div th:if="${invalidField == 'estimation'}">
+                        <label th:text="#{form.error.estimation}"></label>
+                    </div>
+                </div>
+
+                <!-- task name -->
+                <div class="row">
+                    <h3 th:text="*{name}"></h3>
+                </div>
+
+                <!-- task estimation -->
+                <div class="row">
+                    <label for="estimation" class="form-label" th:text="#{form.label.taskEstimation}"></label>
+                    <input id="estimation" type="text" th:field="*{actualDuration}" required>
+                </div>
+                <!--hidden submit input (so submit button can be outside of form -->
+                <input type="submit" id="hidden-submit" class="hidden">
+            </form>
+            <!-- BUTTONS -->
+            <div class="row">
+                <!--Back-->
+                <a class="button button-primary" th:href="@{/project/view/{id}(id=${projectId})}" th:text="#{form.button.back}"></a>
+                <!--Submit-->
+                <label class="button button-primary" for="hidden-submit" th:text="#{form.button.submit}"></label>
+            </div>
+        </article>
+    </section>
+</main>
+<footer th:replace="~{fragments/_commonElements :: footer}"></footer>
+</body>
+</html>

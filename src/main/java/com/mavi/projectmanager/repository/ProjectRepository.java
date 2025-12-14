@@ -123,6 +123,7 @@ public class ProjectRepository {
         String query = """
                  SELECT p.id, p.name, p.start_date, p.end_date
                  FROM Project p
+                 WHERE p.archived = 1
                 """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
 
@@ -142,7 +143,7 @@ public class ProjectRepository {
                         FROM Project p
                         INNER JOIN account_project_junction apj
                             ON p.id = apj.project_id
-                        WHERE apj.account_id = ?
+                        WHERE apj.account_id = ? AND p.archived = 1
                 """;
 
         return jdbcTemplate.query(query, projectRowMapper, id);
@@ -172,7 +173,7 @@ public class ProjectRepository {
     //Jacob Klitgaard
     public int createProject(Project project) {
 
-        String query = "INSERT INTO project (name, start_date, end_date) VALUES (?,?,?)";
+        String query = "INSERT INTO project (name, start_date, end_date, archived) VALUES (?,?,?, 1)";
 
         int rowsAffected;
 
@@ -331,7 +332,7 @@ public class ProjectRepository {
                             p.start_date,
                             p.end_date
                         FROM Project p
-                        WHERE EXIST (
+                        WHERE EXISTS (
                         SELECT 1
                         FROM Subproject sp
                         JOIN Task t
@@ -340,8 +341,40 @@ public class ProjectRepository {
                             ON atj.task_id = t.id
                         WHERE sp.project_id = p.id
                             AND atj.account_id = ?
+                            AND p.archived = 1
+                        )
                 """;
 
         return jdbcTemplate.query(query, projectRowMapper, id);
+    }
+
+    public int archiveProject(Project project){
+        String query = """
+                    UPDATE Project
+                    SET archived = 0
+                    WHERE id = ?
+                """;
+
+        int rowsAffected;
+        try {
+            rowsAffected = jdbcTemplate.update(query, project.getId());
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occurred when attempting to archive project with id: " + project.getId());
+        }
+
+        return rowsAffected;
+    }
+
+    public List<Project> getArchivedProjects(){
+        String query = """
+             SELECT p.id, p.name, p.start_date, p.end_date
+             FROM Project p
+             WHERE p.archived = 0
+            """;
+        List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
+
+        projects.sort(PROJECT_COMPARATOR);
+
+        return projects;
     }
 }

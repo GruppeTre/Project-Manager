@@ -7,6 +7,7 @@ import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.service.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.bouncycastle.math.raw.Mod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -153,10 +154,41 @@ public class ProjectController {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-
         model.addAttribute("project", projectService.getFullProjectById(id));
+        model.addAttribute("session", session.getAttribute("account"));
 
         return "projectOverviewPage";
+    }
+
+    @GetMapping("/{projectId}/task/{taskId}/archive")
+    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, Model model){
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/project/view/" + projectId;
+        }
+
+        model.addAttribute("task", taskService.getTask(taskId));
+
+        return "closeTaskPage";
+    }
+
+    @PostMapping("/{projectId}/task/{taskId}/archive")
+    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, @ModelAttribute Task task){
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/project/view/" + projectId;
+        }
+
+        Task taskToArchive = taskService.getTask(taskId);
+        taskToArchive.setActualDuration(task.getActualDuration());
+
+        taskService.archiveTask(taskToArchive);
+
+        return "redirect:/project/view/" + projectId;
     }
 
     //Jacob Klitgaard
@@ -494,6 +526,23 @@ public class ProjectController {
         }
 
         return "redirect:/project/view/" + projectId;
+    }
+
+    @PostMapping("/{id}/archive")
+    public String archiveProject(@PathVariable("id") int id, HttpSession session){
+        if(!SessionUtils.isLoggedIn(session)){
+            return "redirect:/";
+        }
+
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)){
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        Project projectToArchive = projectService.getProjectById(id);
+
+        projectService.archiveProject(projectToArchive);
+
+        return "redirect:/overview?viewMode=projects";
     }
 }
 

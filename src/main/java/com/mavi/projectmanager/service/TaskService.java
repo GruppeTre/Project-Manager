@@ -60,6 +60,14 @@ public class TaskService {
         return task;
     }
 
+    public void archiveTask(Task task){
+        int rowsAffected = taskRepository.archiveTask(task);
+        if(rowsAffected != 1){
+            throw new IllegalArgumentException("An unexpected number of projects with id: " + task.getId()
+                    + " found in database! Expected: [1], found: [" + rowsAffected + "]");
+        }
+    }
+
     //Magnus Sørensen
     private void trimFields(Task task) {
         task.setName(task.getName().trim());

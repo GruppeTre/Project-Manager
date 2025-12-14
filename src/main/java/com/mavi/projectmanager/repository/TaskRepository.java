@@ -2,6 +2,7 @@ package com.mavi.projectmanager.repository;
 import com.mavi.projectmanager.model.Account;
 import com.mavi.projectmanager.model.SubProject;
 import com.mavi.projectmanager.model.Task;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -42,6 +43,10 @@ public class TaskRepository {
 
         task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
+        task.setActualDuration(rs.getInt("actual_duration"));
+
+        task.setArchived(rs.getInt("archived"));
+
         return task;
     });
 
@@ -55,9 +60,10 @@ public class TaskRepository {
                 start_date,
                 end_date,
                 estimated_duration,
+                archived,
                 subproject_id
                 )
-                VALUES (?,?,?,?,?,?)
+                VALUES (?,?,?,?,?, 1, ?)
                 """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -151,5 +157,22 @@ public class TaskRepository {
                 """;
 
         return jdbcTemplate.queryForObject(query, taskRowMapper, id);
+    }
+
+    public int archiveTask(Task task){
+        String query = """
+                    UPDATE Task
+                    SET archived = 0, actual_duration = ?
+                    WHERE id = ?
+                """;
+
+        int rowsAffected;
+        try {
+            rowsAffected = jdbcTemplate.update(query, task.getActualDuration(), task.getId());
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occurred when attempting to archive project with id: " + task.getId());
+        }
+
+        return rowsAffected;
     }
 }

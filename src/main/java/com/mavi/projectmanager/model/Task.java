@@ -12,6 +12,7 @@ public class Task {
     private String description;
     private Integer estimatedDuration; //in hours
     private Integer actualDuration; //in hours
+    private Integer archived;
     private List<Account> accountList;
 
     public int getId() {
@@ -70,12 +71,24 @@ public class Task {
         this.description = description;
     }
 
-    public int getActualDuration() {
+    public Integer getActualDuration() {
         return actualDuration;
     }
 
-    public void setActualDuration(int actualDuration) {
+    public void setActualDuration(Integer actualDuration) {
         this.actualDuration = actualDuration;
+    }
+
+    public Integer getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Integer archived) {
+        this.archived = archived;
+    }
+
+    public int calculateDurationDifference(){
+        return estimatedDuration / actualDuration * 100;
     }
 
     @Override

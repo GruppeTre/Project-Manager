@@ -92,7 +92,7 @@ public class HomeController {
         if(viewMode == null || viewMode.isEmpty() && ((Account) session.getAttribute("account")).getRole() == Role.ADMIN){
             viewModeContainer = "accounts";
         }
-        if(viewMode == null || viewMode.isEmpty() && ((Account) session.getAttribute("account")).getRole() == Role.PROJECT_LEAD){
+        if(viewMode == null || viewMode.isEmpty() && ((Account) session.getAttribute("account")).getRole() == Role.PROJECT_LEAD || ((Account) session.getAttribute("account")).getRole() == Role.TEAM_MEMBER){
             viewModeContainer = "projects";
         }
 
@@ -106,6 +106,13 @@ public class HomeController {
         if(viewModeContainer.equals("projects") && SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
             int projectLeadId = ((Account) session.getAttribute("account")).getId();
             model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
+        }
+        if(viewModeContainer.equals("projects") && SessionUtils.userHasRole(session, Role.TEAM_MEMBER)){
+            int teamMemberId = ((Account) session.getAttribute("account")).getId();
+            model.addAttribute("projectsByTeam", projectService.getProjectByTeamMember(teamMemberId));
+        }
+        if(viewModeContainer.equals("archive") && SessionUtils.userHasRole(session, Role.ADMIN)){
+            model.addAttribute("archivedProjects", projectService.getArchivedProjects());
         }
 
         return "overviewPage";
