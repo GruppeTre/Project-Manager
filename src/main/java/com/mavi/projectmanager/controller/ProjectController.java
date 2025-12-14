@@ -150,12 +150,14 @@ public class ProjectController {
 
     //Jens Gotfredsen
     @GetMapping("/view/{id}")
-    public String getProjectOverview(@PathVariable("id") int id, Model model, HttpSession session) {
+    public String getProjectOverview(@PathVariable("id") int id, @RequestParam( value = "viewMode", required=false) String viewMode, Model model, HttpSession session) {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
+
         model.addAttribute("project", projectService.getFullProjectById(id));
         model.addAttribute("session", session.getAttribute("account"));
+        model.addAttribute("viewMode", viewMode);
 
         return "projectOverviewPage";
     }
@@ -188,7 +190,7 @@ public class ProjectController {
 
         taskService.archiveTask(taskToArchive);
 
-        return "redirect:/project/view/" + projectId;
+        return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     //Jacob Klitgaard
@@ -198,6 +200,7 @@ public class ProjectController {
 
         model.addAttribute("subProject", subProject);
         model.addAttribute("projectId", projectId);
+        model.addAttribute("project", projectService.getProjectById(projectId));
 
         return "createSubProjectPage";
 
@@ -235,7 +238,9 @@ public class ProjectController {
             return "createSubProjectPage";
         }
 
-        return "redirect:/project/view/" + projectId;
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
     }
 
     //Emil Gurresø
@@ -283,8 +288,9 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
         //return to project view
-        return "redirect:/project/view/" + projectId;
+        return redirect;
     }
 
     //Magnus Sørensen
@@ -313,8 +319,10 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
         //return to project view
-        return "redirect:/project/view/" + projectId;
+        return redirect;
     }
 
     //Emil Gurresø
@@ -382,8 +390,9 @@ public class ProjectController {
             return "editSubProjectPage";
         }
 
-        //SHOULD USER BE REDIRECTED TO EDITPROJECTPAGE?
-        return "redirect:/project/view/" + projectId;
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
 
         //ToDO: add RedirectAttributes for whether the update was successful. - redirect to the same page and return the same object with it.
     }
@@ -464,7 +473,9 @@ public class ProjectController {
             return "editTaskPage";
         }
 
-        return "redirect:/project/view/" + projectId;
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
     }
 
     //Jens Gotfredsen
@@ -526,7 +537,9 @@ public class ProjectController {
             return "createTaskPage";
         }
 
-        return "redirect:/project/view/" + projectId;
+        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+
+        return redirect;
     }
 
     @PostMapping("/{id}/archive")

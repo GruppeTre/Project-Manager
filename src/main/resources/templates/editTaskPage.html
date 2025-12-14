@@ -97,7 +97,7 @@
             <!-- BUTTONS -->
             <div class="row">
                 <!--Back-->
-                <a class="button button-primary" th:href="@{/project/view/{id}(id=${projectId})}" th:text="#{form.button.back}"></a>
+                <a class="button button-primary" th:href="@{/project/view/{id}(id=${projectId}, viewMode='project')}" th:text="#{form.button.back}"></a>
                 <!--Submit-->
                 <label class="button button-primary" for="hidden-submit" th:text="#{form.button.submit}"></label>
             </div>

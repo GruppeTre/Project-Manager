@@ -87,8 +87,14 @@ public class Task {
         this.archived = archived;
     }
 
-    public int calculateDurationDifference(){
-        return estimatedDuration / actualDuration * 100;
+
+    public int percentageDuration() {
+        // Return 0 when actualDuration is missing or zero to avoid / by zero.
+        if (actualDuration == null || actualDuration == 0) {
+            return 0;
+        }
+        double pct = (actualDuration * 100.0) / estimatedDuration;
+        return (int) Math.round(pct);
     }
 
     @Override

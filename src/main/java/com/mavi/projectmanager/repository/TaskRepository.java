@@ -71,6 +71,10 @@ public class TaskRepository {
 
         task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
+        task.setActualDuration(rs.getInt("actual_duration"));
+
+        task.setArchived(rs.getInt("archived"));
+
         List<Account> accountList = accountRepository.getAccountsByTaskId(taskId);
         task.setAccountList(accountList);
 

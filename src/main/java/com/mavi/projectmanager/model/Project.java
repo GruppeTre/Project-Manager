@@ -9,6 +9,7 @@ public class Project {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
+    private int archived;
     private List<Account> leadsList;
     private List<SubProject> subProjectsList;
 
@@ -61,16 +62,72 @@ public class Project {
         this.subProjectsList = subProjectsList;
     }
 
-    public int sumProjectDuration(){
-            int sum = 0;
-            for(SubProject sb : subProjectsList){
-                sum += sb.sumDuration();
-            }
+    public int getArchived() {
+        return archived;
+    }
 
-            return sum;
+    public void setArchived(int archived) {
+        this.archived = archived;
+    }
+
+    public int sumProjectDuration(){
+        int sum = 0;
+        for(SubProject sb : subProjectsList){
+            sum += sb.sumDuration();
         }
 
-    @Override
+        return sum;
+    }
+
+    public int sumActualDuration(){
+        int sum = 0;
+        for(SubProject sp : subProjectsList){
+            sum += sp.sumActualDuration();
+        }
+
+        return sum;
+    }
+
+
+    public int percentageDuration() {
+        if (subProjectsList == null || subProjectsList.isEmpty()) {
+            return 0;
+        }
+
+        long sumEstimatedDuration = 0;
+        long sumActualDuration = 0;
+
+        for (SubProject sp : subProjectsList) {
+            if (sp == null || sp.getTaskList() == null){
+                continue;
+            }
+
+            for (Task t : sp.getTaskList()) {
+                if (t == null) {
+                    continue;
+                }
+
+                Integer estimatedDuration = t.getEstimatedDuration();
+                Integer actualDuration = t.getActualDuration();
+
+                if (estimatedDuration != null && estimatedDuration >= 0) {
+                    sumEstimatedDuration += estimatedDuration;
+                }
+                if (actualDuration != null && actualDuration >= 0) {
+                    sumActualDuration += actualDuration;
+                }
+            }
+        }
+
+        if (sumActualDuration == 0) {
+            return 0;
+        }
+
+        double pct = (sumActualDuration * 100.0) / sumActualDuration;
+        return (int) Math.round(pct);
+    }
+
+        @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;

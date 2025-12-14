@@ -43,6 +43,8 @@ public class ProjectRepository {
         LocalDate convertedEndDate = endDate.toLocalDate();
         project.setEndDate(convertedEndDate);
 
+        project.setArchived(rs.getInt("archived"));
+
         List<Account> projectLeads = accountRepository.getAccountsByProjectId(projectId);
 
         project.setLeadsList(projectLeads);
@@ -76,7 +78,7 @@ public class ProjectRepository {
     //Jens Gotfredsen
     public List<Project> getProjects() {
         String query = """
-                 SELECT p.id, p.name, p.start_date, p.end_date
+                 SELECT p.id, p.name, p.start_date, p.end_date, p.archived
                  FROM Project p
                  WHERE p.archived = 1
                 """;
@@ -94,7 +96,8 @@ public class ProjectRepository {
                             p.id,
                             p.name,
                             p.start_date,
-                            p.end_date
+                            p.end_date,
+                            p.archived
                         FROM Project p
                         INNER JOIN account_project_junction apj
                             ON p.id = apj.project_id
@@ -108,7 +111,7 @@ public class ProjectRepository {
     public Project getProjectById(int id) {
 
         String query = """
-                 SELECT p.id, p.name, p.start_date, p.end_date,
+                 SELECT p.id, p.name, p.start_date, p.end_date, p.archived,
                                GROUP_CONCAT(
                                    CONCAT(e.firstName, ' ', e.lastName)
                                    SEPARATOR','
@@ -267,7 +270,8 @@ public class ProjectRepository {
                             p.id,
                             p.name,
                             p.start_date,
-                            p.end_date
+                            p.end_date,
+                            p.archived
                         FROM Project p
                         WHERE EXISTS (
                         SELECT 1
@@ -304,7 +308,7 @@ public class ProjectRepository {
 
     public List<Project> getArchivedProjects(){
         String query = """
-             SELECT p.id, p.name, p.start_date, p.end_date
+             SELECT p.id, p.name, p.start_date, p.end_date, p.archived
              FROM Project p
              WHERE p.archived = 0
             """;
