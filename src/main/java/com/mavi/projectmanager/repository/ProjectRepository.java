@@ -322,4 +322,26 @@ public class ProjectRepository {
 
         return rowsAffected;
     }
+
+    public List<Project> getProjectByTeamMember(int id) {
+        String query = """
+                        SELECT
+                            p.id,
+                            p.name,
+                            p.start_date,
+                            p.end_date
+                        FROM Project p
+                        WHERE EXIST (
+                        SELECT 1
+                        FROM Subproject sp
+                        JOIN Task t
+                            ON t.subproject_id = sp.id
+                        JOIN account_task_junction atj
+                            ON atj.task_id = t.id
+                        WHERE sp.project_id = p.id
+                            AND atj.account_id = ?
+                """;
+
+        return jdbcTemplate.query(query, projectRowMapper, id);
+    }
 }
