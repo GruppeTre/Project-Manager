@@ -20,9 +20,11 @@ import java.util.List;
 public class TaskRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private AccountRepository accountRepository;
 
-    public TaskRepository(JdbcTemplate jdbcTemplate){
+    public TaskRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository){
         this.jdbcTemplate = jdbcTemplate;
+        this.accountRepository = accountRepository;
     }
 
     //Jens Gotfredsen
@@ -46,6 +48,31 @@ public class TaskRepository {
         task.setActualDuration(rs.getInt("actual_duration"));
 
         task.setArchived(rs.getInt("archived"));
+
+        return task;
+    });
+
+    //Jens Gotfredsen
+    public RowMapper<Task> taskRowMapperForFullProject = ((rs, rowNum) -> {
+        Task task = new Task();
+
+        int taskId = rs.getInt("id");
+        task.setId(taskId);
+        task.setName(rs.getString("name"));
+        task.setDescription(rs.getString("description"));
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        task.setStartDate(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        task.setEndDate(convertedEndDate);
+
+        task.setEstimatedDuration(rs.getInt("estimated_duration"));
+
+        List<Account> accountList = accountRepository.getAccountsByTaskId(taskId);
+        task.setAccountList(accountList);
 
         return task;
     });
@@ -174,5 +201,14 @@ public class TaskRepository {
         }
 
         return rowsAffected;
+    }
+
+    //Jens Gotfredsen
+    public List<Task> getTaskBySubProjectId(int id) {
+        String query = """
+                SELECT * FROM Task WHERE subproject_id = ?
+                """;
+
+        return jdbcTemplate.query(query, taskRowMapperForFullProject, id);
     }
 }

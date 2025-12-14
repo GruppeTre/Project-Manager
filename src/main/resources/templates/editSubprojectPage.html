@@ -43,12 +43,12 @@
 
         <div class="row">
             <label for="start-date" class="form-label" th:text="'Start Date'"></label>
-            <input id="start-date" type="date" name="startDate" th:value="*{startDate}" th:min="${#temporals.format(project.startDate, 'yyyy-MM-dd')}" required>
+            <input id="start-date" type="date" name="startDate" th:value="*{startDate}" th:min="${#temporals.format(project.startDate, 'yyyy-MM-dd')}" th:max="${#temporals.format(project.endDate, 'yyyy-MM-dd')}" required>
         </div>
 
         <div class="row">
             <label for="end-date" class="form-label" th:text="'End Date'"></label>
-            <input id="end-date" type="date" name="endDate" th:value="*{endDate}" th:max="${#temporals.format(project.endDate, 'yyyy-MM-dd')}" required>
+            <input id="end-date" type="date" name="endDate" th:value="*{endDate}" th:min="${#temporals.format(project.startDate, 'yyyy-MM-dd')}" th:max="${#temporals.format(project.endDate, 'yyyy-MM-dd')}"  required>
         </div>
 
 

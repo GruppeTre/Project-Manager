@@ -1,5 +1,6 @@
 package com.mavi.projectmanager.repository;
 
+import com.mavi.projectmanager.model.Task;
 import org.springframework.dao.DataAccessException;
 import com.mavi.projectmanager.model.SubProject;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,17 +15,18 @@ import java.sql.Statement;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.List;
 
 @Repository
 public class SubProjectRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private ProjectRepository projectRepository;
+    private TaskRepository taskRepository;
     private static final Comparator<SubProject> SUB_PROJECT_COMPARATOR = Comparator.comparing(SubProject::getStartDate).thenComparing(SubProject::getEndDate);
 
-    public SubProjectRepository(JdbcTemplate jdbcTemplate, ProjectRepository projectRepository) {
+    public SubProjectRepository(JdbcTemplate jdbcTemplate, TaskRepository taskRepository) {
         this.jdbcTemplate = jdbcTemplate;
-        this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
     }
 
     public RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
@@ -40,6 +42,28 @@ public class SubProjectRepository {
         Date endDate = rs.getDate("end_date");
         LocalDate convertedEndDate = endDate.toLocalDate();
         subProject.setEndDate(convertedEndDate);
+
+        return subProject;
+    });
+
+    //Jens Gotfredsen
+    public RowMapper<SubProject> subProjectRowMapperForFullProject = ((rs, rowNum) -> {
+        SubProject subProject = new SubProject();
+
+        int subProjectId = rs.getInt("id");
+        subProject.setId(subProjectId);
+        subProject.setName(rs.getString("name"));
+
+        Date startDate = rs.getDate("start_date");
+        LocalDate convertedStartDate = startDate.toLocalDate();
+        subProject.setStartDate(convertedStartDate);
+
+        Date endDate = rs.getDate("end_date");
+        LocalDate convertedEndDate = endDate.toLocalDate();
+        subProject.setEndDate(convertedEndDate);
+
+        List<Task> taskList = taskRepository.getTaskBySubProjectId(subProjectId);
+        subProject.setTaskList(taskList);
 
         return subProject;
     });
@@ -145,6 +169,15 @@ public class SubProjectRepository {
         }
 
         return rowsAffected;
+    }
+
+    //Jens Gotfredsen
+    public List<SubProject> getSubProjectsByProjectId(int id) {
+        String query = """
+                SELECT * FROM Subproject WHERE project_id = ?
+                """;
+
+        return jdbcTemplate.query(query, subProjectRowMapperForFullProject, id);
     }
 
 }

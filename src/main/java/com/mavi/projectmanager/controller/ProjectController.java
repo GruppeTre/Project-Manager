@@ -230,6 +230,7 @@ public class ProjectController {
 
             model.addAttribute("error", true);
             model.addAttribute("invalidField", e.getField());
+            model.addAttribute("project", projectService.getProjectById(projectId));
             model.addAttribute("subProject", subProject);
             return "createSubProjectPage";
         }

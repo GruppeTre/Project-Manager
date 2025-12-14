@@ -19,11 +19,13 @@ import java.sql.Date;
 public class ProjectRepository {
     private final JdbcTemplate jdbcTemplate;
     private AccountRepository accountRepository;
+    private SubProjectRepository subProjectRepository;
     private static final Comparator<Project> PROJECT_COMPARATOR = Comparator.comparing(Project::getStartDate).thenComparing(Project::getEndDate);
 
-    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, EmployeeRepository employeeRepository) {
+    public ProjectRepository(JdbcTemplate jdbcTemplate, AccountRepository accountRepository, SubProjectRepository subProjectRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.accountRepository = accountRepository;
+        this.subProjectRepository = subProjectRepository;
     }
 
     //Jens Gotfredsen
@@ -64,58 +66,11 @@ public class ProjectRepository {
         LocalDate convertedEndDate = endDate.toLocalDate();
         project.setEndDate(convertedEndDate);
 
-        List<SubProject> subProjectsList = getSubProjectsByProjectId(projectId);
+        List<SubProject> subProjectsList = subProjectRepository.getSubProjectsByProjectId(projectId);
 
         project.setSubProjectsList(subProjectsList);
 
         return project;
-    });
-
-    //Jens Gotfredsen
-    public RowMapper<SubProject> subProjectRowMapper = ((rs, rowNum) -> {
-        SubProject subProject = new SubProject();
-
-        int subProjectId = rs.getInt("id");
-        subProject.setId(subProjectId);
-        subProject.setName(rs.getString("name"));
-
-        Date startDate = rs.getDate("start_date");
-        LocalDate convertedStartDate = startDate.toLocalDate();
-        subProject.setStartDate(convertedStartDate);
-
-        Date endDate = rs.getDate("end_date");
-        LocalDate convertedEndDate = endDate.toLocalDate();
-        subProject.setEndDate(convertedEndDate);
-
-        List<Task> taskList = getTaskBySubProjectId(subProjectId);
-        subProject.setTaskList(taskList);
-
-        return subProject;
-    });
-
-    //Jens Gotfredsen
-    public RowMapper<Task> taskRowMapper = ((rs, rowNum) -> {
-        Task task = new Task();
-
-        int taskId = rs.getInt("id");
-        task.setId(taskId);
-        task.setName(rs.getString("name"));
-        task.setDescription(rs.getString("description"));
-
-        Date startDate = rs.getDate("start_date");
-        LocalDate convertedStartDate = startDate.toLocalDate();
-        task.setStartDate(convertedStartDate);
-
-        Date endDate = rs.getDate("end_date");
-        LocalDate convertedEndDate = endDate.toLocalDate();
-        task.setEndDate(convertedEndDate);
-
-        task.setEstimatedDuration(rs.getInt("estimated_duration"));
-
-        List<Account> accountList = accountRepository.getAccountsByTaskId(taskId);
-        task.setAccountList(accountList);
-
-        return task;
     });
 
     //Jens Gotfredsen
@@ -260,24 +215,6 @@ public class ProjectRepository {
                 """;
 
         return jdbcTemplate.queryForObject(query, fullProjectRowMapper, id);
-    }
-
-    //Jens Gotfredsen
-    public List<SubProject> getSubProjectsByProjectId(int id) {
-        String query = """
-                SELECT * FROM Subproject WHERE project_id = ?
-                """;
-
-        return jdbcTemplate.query(query, subProjectRowMapper, id);
-    }
-
-    //Jens Gotfredsen
-    public List<Task> getTaskBySubProjectId(int id) {
-        String query = """
-                SELECT * FROM Task WHERE subproject_id = ?
-                """;
-
-        return jdbcTemplate.query(query, taskRowMapper, id);
     }
 
     //Emil Gurresø
