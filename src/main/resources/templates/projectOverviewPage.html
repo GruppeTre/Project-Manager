@@ -63,7 +63,7 @@
                                             </article>
                                             <div class="project-buttons-container">
                                                 <a class="button button-primary" th:if="${session.account.role.id == 2 && task.archived == 1}" th:href="@{/project/{projectId}/subproject/{subprojectId}/task/{taskId}/edit(projectId=${project.id}, subprojectId=${sb.id}, taskId=${task.id})}" th:text="#{overview.button.edit}"></a>
-                                                <a class="button button-primary" th:if="${session.account.role.id == 2}" th:href="@{/project/{projectId}/task/{taskId}/archive(projectId=${project.id}, taskId=${task.id})}" th:text="#{projectOverviewPage.button.close}"></a>
+                                                <a class="button button-primary" th:if="${session.account.role.id == 2 && task.archived == 1}" th:href="@{/project/{projectId}/task/{taskId}/archive(projectId=${project.id}, taskId=${task.id})}" th:text="#{projectOverviewPage.button.close}"></a>
                                             </div>
                                         </div>
                                         <div class="task-description-wrapper">
