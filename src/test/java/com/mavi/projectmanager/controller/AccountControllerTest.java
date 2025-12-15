@@ -184,6 +184,8 @@ class AccountControllerTest {
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(Mockito.any(HttpSession.class), Mockito.any(Role.class)))
+                .thenReturn(true);
 
         mockMvc.perform(post("/account/editUser").sessionAttr("account", testAccount))
                 .andExpect(status().is3xxRedirection())
@@ -280,6 +282,8 @@ class AccountControllerTest {
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
                 .thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(any(HttpSession.class), any(Role.class)))
+                .thenReturn(true);
 
         mockMvc.perform(post("/account/deleteUser")
                         .param("employee.mail", testAccount.getMail())
@@ -323,6 +327,8 @@ class AccountControllerTest {
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class)))
+                .thenReturn(true);
+        mockedStatic.when(() -> SessionUtils.userHasRole(any(HttpSession.class), any(Role.class)))
                 .thenReturn(true);
 
         mockMvc.perform(post("/account/deleteUser")
