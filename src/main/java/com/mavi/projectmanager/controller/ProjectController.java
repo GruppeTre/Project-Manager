@@ -257,7 +257,9 @@ public class ProjectController {
             return "createSubProjectPage";
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
 
         return redirect;
     }
@@ -285,7 +287,9 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
         //return to project view
         return redirect;
     }
@@ -355,7 +359,9 @@ public class ProjectController {
             return "editSubprojectPage";
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
 
         return redirect;
 
@@ -394,7 +400,9 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
 
         //return to project view
         return redirect;
@@ -476,7 +484,9 @@ public class ProjectController {
             return "editTaskPage";
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
 
         return redirect;
     }
@@ -540,7 +550,9 @@ public class ProjectController {
             return "createTaskPage";
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
 
         return redirect;
     }
@@ -573,7 +585,9 @@ public class ProjectController {
 
         taskService.archiveTask(taskToArchive);
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
 
         return redirect;
     }

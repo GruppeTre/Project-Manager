@@ -5,7 +5,6 @@ import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
-import com.mavi.projectmanager.repository.TaskRepository;
 import com.mavi.projectmanager.service.utils.DateUtils;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
