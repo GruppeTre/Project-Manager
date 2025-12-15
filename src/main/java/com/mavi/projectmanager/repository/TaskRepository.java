@@ -71,10 +71,7 @@ public class TaskRepository {
 
         task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
-        Integer checkActual = rs.getObject("actual_duration", Integer.class);
-        if (checkActual != null) {
-            task.setActualDuration(rs.getInt("actual_duration"));
-        }
+        task.setActualDuration(rs.getInt("actual_duration"));
 
         task.setArchived(rs.getInt("archived"));
 
