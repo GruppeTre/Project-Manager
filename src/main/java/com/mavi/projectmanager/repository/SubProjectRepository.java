@@ -147,9 +147,6 @@ public class SubProjectRepository {
 
     }
 
-    //returns rowsAffected - catches DataAccessException - checks for?
-    //Checks for consistency in end_date and start_date between these fields in SubProejct, Task and Project.
-    //ToDo: the above mentioned.
     public int updateSubProject(SubProject subProject) {
 
         String sql = """

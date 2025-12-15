@@ -145,6 +145,8 @@ public class AccountService {
 
     //Jens Gotfredsen
     public String generatePassword(){
+
+        //todo: refactor with constants at top of method, and add constant for desired password length
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder sb = new StringBuilder();
         String lowerCasePool = "abcdefghijklmnopqrstuvxyz";
@@ -183,11 +185,13 @@ public class AccountService {
     }
 
     //Magnus Sørensen
+    //todo: refactor local variable to be more descriptive
     private boolean isValidPassword(String str){
 
+        //todo: make this constant final
         int MIN_LENGTH = 16;
 
-        //todo: Insert password validation here (min amount of characters etc)
+        //todo: fix if statement (should not be inline)
         if(str.length() < MIN_LENGTH) return false;
 
         if(containsWhitespace(str)) {

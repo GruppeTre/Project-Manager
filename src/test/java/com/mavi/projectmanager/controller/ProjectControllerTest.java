@@ -166,7 +166,6 @@ class ProjectControllerTest {
         verify(projectService, times(1)).getProjectsByLead(leadAccount.getId());
     }
 
-    //todo: shouldShowEditProjectPage
     //Magnus Sørensen
     @Test
     void shouldShowEditProjectPage() throws Exception {
@@ -328,8 +327,6 @@ class ProjectControllerTest {
 
         verify(projectService).createProject(any(Project.class));
     }
-
-    //todo: shouldRejectProjectWithEndDateInThePast
 
     //Jacob Klitgaard
     @Test
