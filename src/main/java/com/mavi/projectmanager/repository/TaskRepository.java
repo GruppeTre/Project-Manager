@@ -71,7 +71,10 @@ public class TaskRepository {
 
         task.setEstimatedDuration(rs.getInt("estimated_duration"));
 
-        task.setActualDuration(rs.getInt("actual_duration"));
+        Integer checkActual = rs.getObject("actual_duration", Integer.class);
+        if (checkActual != null) {
+            task.setActualDuration(rs.getInt("actual_duration"));
+        }
 
         task.setArchived(rs.getInt("archived"));
 
@@ -192,7 +195,7 @@ public class TaskRepository {
 
     public int archiveTask(Task task){
         String query = """
-                    UPDATE Task
+                    UPDATE task
                     SET archived = 0, actual_duration = ?
                     WHERE id = ?
                 """;
@@ -210,9 +213,30 @@ public class TaskRepository {
     //Jens Gotfredsen
     public List<Task> getTaskBySubProjectId(int id) {
         String query = """
-                SELECT * FROM Task WHERE subproject_id = ?
+                SELECT * FROM task WHERE subproject_id = ?
                 """;
 
         return jdbcTemplate.query(query, taskRowMapperForFullProject, id);
+    }
+
+    //Magnus Sørensen
+    public int deleteTask(Task toDelete) {
+
+        String sql = """
+                DELETE FROM task
+                WHERE id = ?
+                """;
+
+        int taskId = toDelete.getId();
+
+        int rowsAffected;
+
+        try {
+            rowsAffected = jdbcTemplate.update(sql, taskId);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("An unexpected error occured while trying to delete task with id: " + taskId);
+        }
+
+        return rowsAffected;
     }
 }

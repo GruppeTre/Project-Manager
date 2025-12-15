@@ -5,6 +5,7 @@ import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
+import com.mavi.projectmanager.repository.TaskRepository;
 import com.mavi.projectmanager.service.utils.DateUtils;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
@@ -103,17 +104,6 @@ public class ProjectService {
     //Jens Gotfredsen
     public List<Project> getProjectByTeamMember(int id) {
         return projectRepository.getProjectByTeamMember(id);
-    }
-
-    //Magnus Sørensen
-    public void deleteTask(Task toDelete) {
-
-        int rowsAffected = projectRepository.deleteTask(toDelete);
-
-        if (rowsAffected != 1) {
-            throw new IllegalArgumentException("Unexpected number of tasks with id: " + toDelete.getId()
-            + " found in database! Expected: [1], actual: [" + rowsAffected + "]");
-        }
     }
 
     public void archiveProject(Project project){

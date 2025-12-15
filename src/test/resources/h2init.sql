@@ -70,27 +70,6 @@ CREATE TABLE account_project_junction (
                                               ON DELETE CASCADE
 );
 
-CREATE TABLE project_subproject_junction (
-                                             project_id INT NOT NULL,
-                                             subproject_id INT NOT NULL,
-
-                                             PRIMARY KEY(project_id, subproject_id),
-                                             FOREIGN KEY(project_id) REFERENCES project(id)
-                                                 ON DELETE CASCADE,
-                                             FOREIGN KEY(subproject_id) REFERENCES subproject(id)
-                                                 ON DELETE CASCADE
-);
-
-CREATE TABLE subproject_task_junction (
-                                          subproject_id INT NOT NULL,
-                                          task_id INT NOT NULL,
-
-                                          PRIMARY KEY(subproject_id, task_id),
-                                          FOREIGN KEY(subproject_id) REFERENCES subproject(id)
-                                              ON DELETE CASCADE,
-                                          FOREIGN KEY(task_id) REFERENCES task(id)
-                                              ON DELETE CASCADE
-);
 
 CREATE TABLE account_task_junction (
                                         account_id INT NOT NULL,
