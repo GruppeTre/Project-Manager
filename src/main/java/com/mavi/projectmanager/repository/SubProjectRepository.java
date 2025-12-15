@@ -135,18 +135,6 @@ public class SubProjectRepository {
         return rowsAffected;
     }
 
-    public SubProject getSubprojectById(int id) {
-
-        String sql = """
-                SELECT s.id, s.name, s.start_date, s.end_date
-                FROM subproject s
-                WHERE s.id = ?
-                """;
-
-        return jdbcTemplate.queryForObject(sql, subProjectRowMapper, id);
-
-    }
-
     //returns rowsAffected - catches DataAccessException - checks for?
     //Checks for consistency in end_date and start_date between these fields in SubProejct, Task and Project.
     //ToDo: the above mentioned.
