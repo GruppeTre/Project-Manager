@@ -2,7 +2,7 @@ package com.mavi.projectmanager.exception;
 
 public class InvalidDateException extends InvalidFieldException {
 
-    private int errorId;
+    private final int errorId;
 
     public InvalidDateException(String message, int errorId) {
         super(message, Field.DATE);

@@ -53,7 +53,6 @@ class AccountControllerTest {
     private Employee testEmployee;
     private Account emptyAccount;
     private List<Account> accountList;
-    private Employee emptyEmployee;
 
     @BeforeEach
     void setUp() {
@@ -64,7 +63,7 @@ class AccountControllerTest {
         testEmployee.setLastName("Petersen");
         testEmployee.setMail("pepe@company.com");
 
-        emptyEmployee = new Employee();
+        Employee emptyEmployee = new Employee();
 
         emptyAccount = new Account();
         emptyAccount.setEmployee(emptyEmployee);

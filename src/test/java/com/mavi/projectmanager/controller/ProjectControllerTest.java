@@ -48,7 +48,6 @@ class ProjectControllerTest {
     private Model model;
 
     private Project testProject;
-    private SubProject testSubProject;
     private List<Project> projectList;
     private List<Account> projectLeads;
     private Account leadAccount;
@@ -81,7 +80,7 @@ class ProjectControllerTest {
         testProject.setEndDate(LocalDate.of(2025, 11, 30));
         testProject.setLeadsList(List.of(leadAccount));
 
-        testSubProject = new SubProject();
+        SubProject testSubProject = new SubProject();
         testSubProject.setId(1);
         testSubProject.setName("Test SubProject");
         testSubProject.setStartDate(LocalDate.of(2025, 11, 28));

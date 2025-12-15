@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 public class AccountService {
 
-    private final int SUPER_ADMIN_ID = 1;
     private final AccountRepository accountRepository;
     private final EmployeeService employeeService;
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
@@ -132,6 +131,7 @@ public class AccountService {
 
     //Magnus Sørensen
     public Account deleteAccount(Account toDelete) {
+        final int SUPER_ADMIN_ID = 1;
 
         //User should not be able to delete every account
         if (toDelete.getId() == SUPER_ADMIN_ID) {

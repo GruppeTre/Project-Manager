@@ -22,7 +22,6 @@ public class SubProjectRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private TaskRepository taskRepository;
-    private static final Comparator<SubProject> SUB_PROJECT_COMPARATOR = Comparator.comparing(SubProject::getStartDate).thenComparing(SubProject::getEndDate);
 
     public SubProjectRepository(JdbcTemplate jdbcTemplate, TaskRepository taskRepository) {
         this.jdbcTemplate = jdbcTemplate;

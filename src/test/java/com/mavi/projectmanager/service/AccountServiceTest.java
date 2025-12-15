@@ -34,7 +34,6 @@ class AccountServiceTest {
     private Account logInAccount;
     private Account registerAccount;
     private Account dbAccount;
-    private Employee logInEmployee;
     private Employee dbEmployee;
 
     @BeforeEach
@@ -48,7 +47,7 @@ class AccountServiceTest {
         Role role = Role.ADMIN;
         int id = 1;
 
-        logInEmployee = new Employee();
+        Employee logInEmployee = new Employee();
         logInEmployee.setMail(mail);
 
         logInAccount = new Account();

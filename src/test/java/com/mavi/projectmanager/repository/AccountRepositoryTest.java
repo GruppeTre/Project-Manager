@@ -7,10 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -22,7 +20,6 @@ class AccountRepositoryTest {
     private AccountRepository repository;
     private Account newAccount;
     private Account dbAccount;
-    private Employee empWithAccount;
     private Employee empWithoutAcc;
 
     @BeforeEach
@@ -34,7 +31,7 @@ class AccountRepositoryTest {
         empWithoutAcc.setMail("mich@alphasolutions.com");
         empWithoutAcc.setId(3);
 
-        empWithAccount = new Employee();
+        Employee empWithAccount = new Employee();
         empWithAccount.setPosition("Manager");
         empWithAccount.setFirstName("Anders");
         empWithAccount.setLastName("Nielsen");

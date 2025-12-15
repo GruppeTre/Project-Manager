@@ -347,8 +347,7 @@ public class ProjectController {
             System.out.println("start date: " + toEdit.getStartDate());
         } catch (IllegalArgumentException i) {
             //ToDO: add flash attribute
-            //todo: fix bad redirect
-            return "redirect/overviewPage?viewMode=projects";
+            return "redirect:/overviewPage?viewMode=projects";
         }
 
         model.addAttribute("subProject", toEdit);

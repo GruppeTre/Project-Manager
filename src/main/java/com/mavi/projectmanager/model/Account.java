@@ -33,10 +33,6 @@ public class Account {
         this.role = role;
     }
 
-    public int getEmployeeId() {
-        return this.employee.getId();
-    }
-
     public String getFirstName() {
         return employee.getFirstName();
     }

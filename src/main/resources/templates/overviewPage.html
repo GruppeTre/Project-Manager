@@ -21,7 +21,7 @@
             <div>
                 <div class="inline-block">
                     <label for="search_bar"></label>
-                    <input id="search_bar" type="search" th:placeholder="#{overview.search.placeholder}"></h2>
+                    <input id="search_bar" type="search" th:placeholder="#{overview.search.placeholder}"/>
                 </div>
                 <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block float-right">
                     <a class="button button-primary" th:href="@{/account/create}" th:text="#{overview.button.createAccount}"></a>

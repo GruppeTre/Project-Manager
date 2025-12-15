@@ -2,8 +2,6 @@ package com.mavi.projectmanager.exception;
 
 public enum Field {
     EMAIL("email"),
-    FIRST_NAME("firstName"),
-    SURNAME("surname"),
     PASSWORD("password"),
     EMPLOYEE("employee"),
     TITLE("title"),
