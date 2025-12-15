@@ -32,7 +32,7 @@ public class TaskService {
 
         Task newTask = taskRepository.createTask(task, subProject);
 
-        taskRepository.addEmployeesToTaskJunction(task);
+        taskRepository.insertToAccountTaskJunction(task);
 
         return newTask;
     }
@@ -49,10 +49,10 @@ public class TaskService {
         taskRepository.updateTask(task);
 
         //delete row(s) from junction table
-        taskRepository.deleteFromEmployeesToTaskJunction(task.getId());
+        taskRepository.deleteAccountFromAccountTaskJunction(task.getId());
 
         //insert new rows
-        taskRepository.addEmployeesToTaskJunction(task);
+        taskRepository.insertToAccountTaskJunction(task);
 
         return task;
     }

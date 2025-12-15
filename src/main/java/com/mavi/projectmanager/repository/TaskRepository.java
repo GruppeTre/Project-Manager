@@ -147,9 +147,10 @@ public class TaskRepository {
     }
 
     //Jens Gotfredsen
-    public void addEmployeesToTaskJunction(Task task){
+    public void insertToAccountTaskJunction(Task task){
         String query = """
-                INSERT INTO account_task_junction (
+                INSERT INTO acc
+                    ount_task_junction (
                 task_id,
                 account_id
                 )
@@ -169,7 +170,7 @@ public class TaskRepository {
     }
 
     //Magnus Sørensen
-    public void deleteFromEmployeesToTaskJunction(int taskId) {
+    public void deleteAccountFromAccountTaskJunction(int taskId) {
 
         String sql = """
                 DELETE FROM account_task_junction
