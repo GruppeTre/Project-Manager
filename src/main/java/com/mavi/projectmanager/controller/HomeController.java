@@ -58,6 +58,7 @@ public class HomeController {
 
             redirect = redirect.concat(viewMode);
 
+            //todo: remove return statements and simply return outside if/else statement
             return redirect;
         }
         else{

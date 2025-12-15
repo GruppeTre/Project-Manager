@@ -1,4 +1,4 @@
-async function generatePassword() {
+function generatePassword() {
     //Stores the html elements in a constant (essentially variable/attribute in java)
     const passwordInput = document.getElementById('generatedPassword');
     const notification = document.getElementById('passwordNotification');
@@ -8,29 +8,22 @@ async function generatePassword() {
     notification.textContent = 'Generating...';
 
     try {
-        //Calls the spring endpoint
-        const response = await fetch(endpointUrl, {
-            method: 'GET'
-        });
+        const request = new XMLHttpRequest();
 
-        //Throws if you're not logged in or is not an admin in the endpoint (prevents malicious intent)
-        if (!response.ok) {
-            throw new Error(`Authentication/Authorization error: ${response.status}`);
+        request.open('GET', endpointUrl, false);
+        request.send(null);
+
+        if (request.status !== 200) {
+            throw new Error(`Request failed with status ${request.status}`);
         }
 
-        //Saves the generated password
-        const generatedPassword = await response.text();
+        const generatedPassword = request.responseText;
 
-
-        //Sets the password input
         passwordInput.value = generatedPassword;
 
+        navigator.clipboard.writeText(generatedPassword);
 
-        //Copies the password to clipboard and notifies the user
-        await navigator.clipboard.writeText(generatedPassword);
-
-        notification.textContent = 'New password generated and copied to clipboard! Ensure that it is securely delivered to the employee';
-
+        notification.textContent = 'New password generated and copied to clipboard';
     } catch (error) {
         console.error('Password generation failed:', error);
         notification.textContent = 'Failed to generate password.';
