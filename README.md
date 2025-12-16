@@ -52,7 +52,7 @@ You're now set to try out the project calculation tool, go to your website and c
 
 ## Usage
 The project is for exam purposes, in order to add data on your own team members, edit the insert script.
-This will change post-exam so that the tool no "emulates" an external database for employees.
+This will change post-exam so that the tool no longer "emulates" an external database for employees.
 As the project expects a specific email string namely @alphasolutions, we recommend refactoring the isValidEmail method to not check for this - simply check for @ or omit entirely.
 - If you choose do the above, please bear in mind to update the INSERT script to account for the employees you need to add yourself.
 
