@@ -188,9 +188,7 @@ public class ProjectController {
 
         taskService.archiveTask(taskToArchive);
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
-
-        return redirect;
+        return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     //Jacob Klitgaard
@@ -238,9 +236,7 @@ public class ProjectController {
             return "createSubProjectPage";
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
-
-        return redirect;
+        return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     //Emil Gurresø
@@ -288,9 +284,7 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
-        //return to project view
-        return redirect;
+        return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     //Magnus Sørensen
@@ -317,10 +311,8 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
-
         //return to project view
-        return redirect;
+        return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     //Emil Gurresø
@@ -387,9 +379,7 @@ public class ProjectController {
             return "editSubprojectPage";
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
-
-        return redirect;
+        return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     //Magnus Sørensen
@@ -468,9 +458,7 @@ public class ProjectController {
             return "editTaskPage";
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
-
-        return redirect;
+        return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     //Jens Gotfredsen
@@ -532,9 +520,7 @@ public class ProjectController {
             return "createTaskPage";
         }
 
-        String redirect = "redirect:/project/view/" + projectId + "?viewMode=project";
-
-        return redirect;
+        return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     @PostMapping("/{id}/archive")
