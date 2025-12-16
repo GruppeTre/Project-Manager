@@ -29,7 +29,7 @@
 
                 <!-- action feedback (on delete account) -->
                 <div th:if="${error}" class="form-error-container">
-                    <label th:if="${undefined}" th:text="#{projectOverviewPage.error.accountDeletion}"></label>
+                    <label th:if="${undefined}" th:text="#{projectOverviewPage.error.undefined}"></label>
                     <label th:if="${adminDeletion}" th:text="#{projectOverviewPage.error.adminDeletion}"></label>
                 </div>
 
