@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 public class AccountService {
 
-    private final int SUPER_ADMIN_ID = 1;
     private final AccountRepository accountRepository;
     private final EmployeeService employeeService;
     private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
@@ -112,7 +111,7 @@ public class AccountService {
     //Magnus Sørensen
     public boolean accountLogin(Account account){
         try {
-        Account getAccount = accountRepository.getAccountByMail(account.getMail());
+            Account getAccount = accountRepository.getAccountByMail(account.getMail());
 
             return encoder.matches(account.getPassword(), getAccount.getPassword());
         } catch (RuntimeException e) {
@@ -132,6 +131,7 @@ public class AccountService {
 
     //Magnus Sørensen
     public Account deleteAccount(Account toDelete) {
+        final int SUPER_ADMIN_ID = 1;
 
         //User should not be able to delete every account
         if (toDelete.getId() == SUPER_ADMIN_ID) {
@@ -144,57 +144,60 @@ public class AccountService {
     }
 
     //Jens Gotfredsen
-    public String generatePassword(){
+    public String generatePassword() {
+        final String LOWER_CASE_POOL = "abcdefghijklmnopqrstuvxyz";
+        final String UPPER_CASE_POOL = "ABCEDFGHIJKLMNOPQRSTUVWXYZ";
+        final String NUMBER_POOL = "1234567890";
+        final String SPECIAL_CHAR_POOL = "!#€%&/()=?+-*@${}";
+        final int PASSWORD_LENGTH = 16;
+
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder sb = new StringBuilder();
-        String lowerCasePool = "abcdefghijklmnopqrstuvxyz";
-        String upperCasePool = "ABCEDFGHIJKLMNOPQRSTUVWXYZ";
-        String numberPool = "1234567890";
-        String specialCharacterPool = "!#€%&/()=?+-*@${}";
 
         //Appends 8 secure random lowercase characters in string builder
-        for(int i = 0; i < 8; i++){
-            int randomIndex = secureRandom.nextInt(lowerCasePool.length());
-            sb.append(lowerCasePool.charAt(randomIndex));
+        for(int i = 0; i < PASSWORD_LENGTH/2; i++){
+            int randomIndex = secureRandom.nextInt(LOWER_CASE_POOL.length());
+            sb.append(LOWER_CASE_POOL.charAt(randomIndex));
         }
 
         //Inserts 4 secure random upper case characters to string builder
-        for(int i = 0; i < 4; i++){
-            int randomIndex = secureRandom.nextInt(upperCasePool.length());
+        for(int i = 0; i < PASSWORD_LENGTH/4; i++){
+            int randomIndex = secureRandom.nextInt(UPPER_CASE_POOL.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
-            sb.insert(insertIndex, upperCasePool.charAt(randomIndex));
+            sb.insert(insertIndex, UPPER_CASE_POOL.charAt(randomIndex));
         }
 
         //Inserts 2 secure random numbers in string builder
-        for(int i = 0; i < 2; i++){
-            int randomIndex = secureRandom.nextInt(numberPool.length());
+        for(int i = 0; i < PASSWORD_LENGTH/8; i++){
+            int randomIndex = secureRandom.nextInt(NUMBER_POOL.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
-            sb.insert(insertIndex, numberPool.charAt(randomIndex));
+            sb.insert(insertIndex, NUMBER_POOL.charAt(randomIndex));
         }
 
         //Inserts 2 secure random special characters in string builder
-        for(int i = 0; i < 2; i++){
-            int randomIndex = secureRandom.nextInt(numberPool.length());
+        for(int i = 0; i < PASSWORD_LENGTH/8; i++){
+            int randomIndex = secureRandom.nextInt(NUMBER_POOL.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
-            sb.insert(insertIndex, specialCharacterPool.charAt(randomIndex));
+            sb.insert(insertIndex, SPECIAL_CHAR_POOL.charAt(randomIndex));
         }
 
         return sb.toString();
     }
 
     //Magnus Sørensen
-    private boolean isValidPassword(String str){
+    private boolean isValidPassword(String password){
 
-        int MIN_LENGTH = 16;
+        final int MIN_LENGTH = 16;
 
-        //todo: Insert password validation here (min amount of characters etc)
-        if(str.length() < MIN_LENGTH) return false;
-
-        if(containsWhitespace(str)) {
+        if(password.length() < MIN_LENGTH) {
             return false;
         }
 
-        return !str.isBlank();
+        if(containsWhitespace(password)) {
+            return false;
+        }
+
+        return !password.isBlank();
     }
 
     //Magnus Sørensen

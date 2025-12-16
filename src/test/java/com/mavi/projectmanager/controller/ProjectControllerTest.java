@@ -48,7 +48,6 @@ class ProjectControllerTest {
     private Model model;
 
     private Project testProject;
-    private SubProject testSubProject;
     private List<Project> projectList;
     private List<Account> projectLeads;
     private Account leadAccount;
@@ -81,7 +80,7 @@ class ProjectControllerTest {
         testProject.setEndDate(LocalDate.of(2025, 11, 30));
         testProject.setLeadsList(List.of(leadAccount));
 
-        testSubProject = new SubProject();
+        SubProject testSubProject = new SubProject();
         testSubProject.setId(1);
         testSubProject.setName("Test SubProject");
         testSubProject.setStartDate(LocalDate.of(2025, 11, 28));
@@ -166,15 +165,13 @@ class ProjectControllerTest {
         verify(projectService, times(1)).getProjectsByLead(leadAccount.getId());
     }
 
-    //todo: shouldShowEditProjectPage
     //Magnus Sørensen
     @Test
     void shouldShowEditProjectPage() throws Exception {
 
         when(projectService.getProjectById(testProject.getId())).thenReturn(testProject);
 
-        //todo: replace with mock implementation of accountService.getAccountsByRole (when it is implemented)
-        when(accountService.getAccountByID(anyInt())).thenReturn(leadAccount);
+        when(accountService.getAccountsByRole(any(Role.class))).thenReturn(List.of(leadAccount));
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
@@ -261,8 +258,7 @@ class ProjectControllerTest {
         when(projectService.updateProject(any(Project.class)))
                 .thenThrow(new InvalidDateException("End date cannot be in the past!", 2));
 
-        //todo: replace with mock implementation of accountService.getAccountsByRole (when it is implemented)
-        when(accountService.getAccountByID(anyInt())).thenReturn(leadAccount);
+        when(accountService.getAccountsByRole(any(Role.class))).thenReturn(List.of(leadAccount));
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
@@ -290,8 +286,7 @@ class ProjectControllerTest {
         when(projectService.updateProject(any(Project.class)))
                 .thenThrow(new InvalidDateException("End date cannot be before start date", 1));
 
-        //todo: replace with mock implementation of accountService.getAccountsByRole (when it is implemented)
-        when(accountService.getAccountByID(anyInt())).thenReturn(leadAccount);
+        when(accountService.getAccountsByRole(any(Role.class))).thenReturn(List.of(leadAccount));
 
         MockedStatic<SessionUtils> mockedStatic = Mockito.mockStatic(SessionUtils.class);
         mockedStatic.when(() -> SessionUtils.isLoggedIn(Mockito.any(HttpSession.class))).thenReturn(true);
@@ -328,8 +323,6 @@ class ProjectControllerTest {
 
         verify(projectService).createProject(any(Project.class));
     }
-
-    //todo: shouldRejectProjectWithEndDateInThePast
 
     //Jacob Klitgaard
     @Test

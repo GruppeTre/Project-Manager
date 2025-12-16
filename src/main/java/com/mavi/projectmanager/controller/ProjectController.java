@@ -296,7 +296,7 @@ public class ProjectController {
 
     //Emil Gurresø
     @GetMapping("/edit/{projectId}/{subProjectId}")
-    public String editSubproject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId, Model model, HttpSession session) {
+    public String editSubproject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
@@ -312,11 +312,10 @@ public class ProjectController {
 
         try {
             toEdit = subProjectService.getSubprojectById(subProjectId);
-
-            System.out.println("start date: " + toEdit.getStartDate());
         } catch (IllegalArgumentException i) {
-            //ToDO: add flash attribute
-            return "redirect/overviewPage?viewMode=projects";
+            redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute("undefined", true);
+            return "redirect:/overview?viewMode=projects";
         }
 
         model.addAttribute("subProject", toEdit);

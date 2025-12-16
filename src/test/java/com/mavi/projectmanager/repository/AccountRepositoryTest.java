@@ -20,7 +20,6 @@ class AccountRepositoryTest {
     private AccountRepository repository;
     private Account newAccount;
     private Account dbAccount;
-    private Employee empWithAccount;
     private Employee empWithoutAcc;
 
     @BeforeEach
@@ -32,7 +31,7 @@ class AccountRepositoryTest {
         empWithoutAcc.setMail("mich@alphasolutions.com");
         empWithoutAcc.setId(3);
 
-        empWithAccount = new Employee();
+        Employee empWithAccount = new Employee();
         empWithAccount.setPosition("Manager");
         empWithAccount.setFirstName("Anders");
         empWithAccount.setLastName("Nielsen");

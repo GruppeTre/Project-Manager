@@ -62,10 +62,6 @@ public class Project {
         this.subProjectsList = subProjectsList;
     }
 
-    public int getArchived() {
-        return archived;
-    }
-
     public void setArchived(int archived) {
         this.archived = archived;
     }

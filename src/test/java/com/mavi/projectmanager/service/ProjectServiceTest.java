@@ -40,7 +40,6 @@ class ProjectServiceTest {
 
     private Project dbProject;
     private Task dbTask;
-    private Project newProject;
     private Account leadAccount;
 
     @BeforeEach
@@ -77,7 +76,7 @@ class ProjectServiceTest {
         dbProject.setName(name);
         dbProject.setId(id);
 
-        newProject = new Project();
+        Project newProject = new Project();
         newProject.setLeadsList(defaultLeadsList);
         newProject.setStartDate(startDate);
         newProject.setEndDate(endDate);

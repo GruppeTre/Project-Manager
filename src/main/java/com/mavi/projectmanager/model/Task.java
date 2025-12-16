@@ -101,7 +101,7 @@ public class Task {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && estimatedDuration == task.estimatedDuration && Objects.equals(name, task.name) && Objects.equals(startDate, task.startDate) && Objects.equals(endDate, task.endDate) && Objects.equals(description, task.description) && Objects.equals(accountList, task.accountList);
+        return id == task.id && Objects.equals(estimatedDuration, task.estimatedDuration) && Objects.equals(name, task.name) && Objects.equals(startDate, task.startDate) && Objects.equals(endDate, task.endDate) && Objects.equals(description, task.description) && Objects.equals(accountList, task.accountList);
     }
 
     @Override

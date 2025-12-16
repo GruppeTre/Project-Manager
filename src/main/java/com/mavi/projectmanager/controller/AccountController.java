@@ -69,7 +69,7 @@ public class AccountController {
 
     //Jens Gotfredsen
     @GetMapping("/edit/{id}")
-    public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
+    public String getEditUser(HttpSession session, @PathVariable int id, Model model){
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -125,13 +125,14 @@ public class AccountController {
         try {
             toDelete = this.service.deleteAccount(toDelete);
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("admin-deletion", true);
+            redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute("adminDeletion", true);
             return "redirect:/overview?viewMode=accounts";
         }
 
-        // todo: redirect attributes to show feedback on operation on overview page
         if (toDelete == null) {
             redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute("undefined", true);
         } else {
             redirectAttributes.addFlashAttribute("success", true);
         }
