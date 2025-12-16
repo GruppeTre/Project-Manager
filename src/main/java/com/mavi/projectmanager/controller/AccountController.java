@@ -98,7 +98,7 @@ public class AccountController {
         }
 
         //Reject user if user is not Admin
-        if (!sessionUserIsAdmin(session)) {
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
             return "redirect:/overview?viewMode=projects";
         }
 
@@ -116,7 +116,7 @@ public class AccountController {
         }
 
         //Reject user if user is not Admin
-        if (!sessionUserIsAdmin(session)) {
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
             return "redirect:/overview?viewMode=projects";
         }
 
@@ -154,9 +154,5 @@ public class AccountController {
         }
 
         return service.generatePassword();
-    }
-
-    private boolean sessionUserIsAdmin(HttpSession session) {
-        return ((Account)session.getAttribute("account")).getRole() == Role.ADMIN;
     }
 }

@@ -32,6 +32,12 @@ public class ProjectController {
         this.taskService = taskService;
     }
 
+    /*
+    ===================================
+    =             PROJECT             =
+    ===================================
+     */
+
     //Jacob Klitgaard
     @GetMapping("/create")
     public String getCreateProjectPage(Model model) {
@@ -160,36 +166,51 @@ public class ProjectController {
         return "projectOverviewPage";
     }
 
-    @GetMapping("/{projectId}/task/{taskId}/archive")
-    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, Model model){
+    //Emil Gurresø
+    @PostMapping("/delete")
+    public String deleteProject(HttpSession session, @ModelAttribute Project toDelete, RedirectAttributes redirectAttributes) {
+
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
-            return "redirect:/project/view/" + projectId;
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
+            return "redirect:/overview?viewMode=projects";
         }
 
-        model.addAttribute("task", taskService.getTask(taskId));
+        try {
+            projectService.deleteProject(toDelete);
+        } catch (Exception e) {
+            return "redirect:/overview?viewMode=projects";
+        }
 
-        return "closeTaskPage";
+        return "redirect:/overview?viewMode=projects";
     }
 
-    @PostMapping("/{projectId}/task/{taskId}/archive")
-    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, @ModelAttribute Task task){
-        if (!SessionUtils.isLoggedIn(session)) {
+    @PostMapping("/{id}/archive")
+    public String archiveProject(@PathVariable("id") int id, HttpSession session){
+        if(!SessionUtils.isLoggedIn(session)){
             return "redirect:/";
         }
-        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
-            return "redirect:/project/view/" + projectId;
+
+        if(!SessionUtils.userHasRole(session, Role.ADMIN)){
+            return "redirect:/overview?viewMode=projects";
         }
 
-        Task taskToArchive = taskService.getTask(taskId);
-        taskToArchive.setActualDuration(task.getActualDuration());
+        Project projectToArchive = projectService.getProjectById(id);
 
-        taskService.archiveTask(taskToArchive);
+        projectService.archiveProject(projectToArchive);
 
-        return "redirect:/project/view/" + projectId + "?viewMode=project";
+        return "redirect:/overview?viewMode=projects";
     }
+
+    /*
+    ===================================
+    =           SUBPROJECT            =
+    ===================================
+     */
+
 
     //Jacob Klitgaard
     @GetMapping("/{projectId}/create")
@@ -236,29 +257,11 @@ public class ProjectController {
             return "createSubProjectPage";
         }
 
-        return "redirect:/project/view/" + projectId + "?viewMode=project";
-    }
+        String redirect = "redirect:/project/view/" + projectId;
 
-    //Emil Gurresø
-    @PostMapping("/delete")
-    public String deleteProject(HttpSession session, @ModelAttribute Project toDelete, RedirectAttributes redirectAttributes) {
+        redirect = redirect.concat("?viewMode=project");
 
-        if (!SessionUtils.isLoggedIn(session)) {
-            return "redirect:/";
-        }
-
-        //Reject user if user is not Admin
-        if (!SessionUtils.userHasRole(session, Role.ADMIN)) {
-            return "redirect:/overview?viewMode=projects";
-        }
-
-        try {
-            projectService.deleteProject(toDelete);
-        } catch (Exception e) {
-            return "redirect:/overview?viewMode=projects";
-        }
-
-        return "redirect:/overview?viewMode=projects";
+        return redirect;
     }
 
     //Jacob Klitgaard
@@ -284,35 +287,11 @@ public class ProjectController {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
-        return "redirect:/project/view/" + projectId + "?viewMode=project";
-    }
+        String redirect = "redirect:/project/view/" + projectId;
 
-    //Magnus Sørensen
-    @PostMapping("/edit/{projectId}/task/delete")
-    public String deleteTask(@PathVariable int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
-
-        System.out.println("entering endpoint");
-
-        if (!SessionUtils.isLoggedIn(session)) {
-            return "redirect:/";
-        }
-
-        //Reject user if user is not Admin
-        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
-            return "redirect:/overview?viewMode=projects";
-        }
-
-        toDelete = taskService.getTask(toDelete.getId());
-
-        System.out.println("got task with id: " + toDelete.getId());
-        try {
-            projectService.deleteTask(toDelete);
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", true);
-        }
-
+        redirect = redirect.concat("?viewMode=project");
         //return to project view
-        return "redirect:/project/view/" + projectId + "?viewMode=project";
+        return redirect;
     }
 
     //Emil Gurresø
@@ -360,7 +339,7 @@ public class ProjectController {
 
         model.addAttribute("project", toUpdate); // ensures Thymeleaf has it
 
-       Project project = projectService.getProjectById(projectId);
+        Project project = projectService.getProjectById(projectId);
 
         try {
             subProjectService.updateSubProject(toUpdate, project);
@@ -379,7 +358,53 @@ public class ProjectController {
             return "editSubprojectPage";
         }
 
-        return "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
+
+        return redirect;
+
+        //ToDO: add RedirectAttributes for whether the update was successful. - redirect to the same page and return the same object with it.
+    }
+
+    /*
+    ===================================
+    =              TASK               =
+    ===================================
+     */
+
+    //Magnus Sørensen
+    @PostMapping("/edit/{projectId}/task/delete")
+    public String deleteTask(@PathVariable int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        System.out.println("entering endpoint");
+
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+
+        //Reject user if user is not Admin
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/overview?viewMode=projects";
+        }
+
+        //todo: check if lead is actual owner of project and task?
+
+        toDelete = taskService.getTask(toDelete.getId());
+
+        System.out.println("got task with id: " + toDelete.getId());
+        try {
+            taskService.deleteTask(toDelete);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", true);
+        }
+
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
+
+        //return to project view
+        return redirect;
     }
 
     //Magnus Sørensen
@@ -458,12 +483,16 @@ public class ProjectController {
             return "editTaskPage";
         }
 
-        return "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
+
+        return redirect;
     }
 
     //Jens Gotfredsen
     @GetMapping("/{projectId}/subproject/{subProjectId}/task/create")
-    public String createTask(@PathVariable int subProjectId, @PathVariable int projectId, Model model, HttpSession session){
+    public String getCreateTaskPage(@PathVariable int subProjectId, @PathVariable int projectId, Model model, HttpSession session){
         if(!SessionUtils.isLoggedIn(session)){
             return "redirect:/";
         }
@@ -520,24 +549,46 @@ public class ProjectController {
             return "createTaskPage";
         }
 
-        return "redirect:/project/view/" + projectId + "?viewMode=project";
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
+
+        return redirect;
     }
 
-    @PostMapping("/{id}/archive")
-    public String archiveProject(@PathVariable("id") int id, HttpSession session){
-        if(!SessionUtils.isLoggedIn(session)){
+    @GetMapping("/{projectId}/task/{taskId}/archive")
+    public String getArchiveTaskPage(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, Model model){
+        if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
-
-        if(!SessionUtils.userHasRole(session, Role.ADMIN)){
-            return "redirect:/overview?viewMode=projects";
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/project/view/" + projectId;
         }
 
-        Project projectToArchive = projectService.getProjectById(id);
+        model.addAttribute("task", taskService.getTask(taskId));
 
-        projectService.archiveProject(projectToArchive);
+        return "closeTaskPage";
+    }
 
-        return "redirect:/overview?viewMode=projects";
+    @PostMapping("/{projectId}/task/{taskId}/archive")
+    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, @ModelAttribute Task task){
+        if (!SessionUtils.isLoggedIn(session)) {
+            return "redirect:/";
+        }
+        if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
+            return "redirect:/project/view/" + projectId;
+        }
+
+        Task taskToArchive = taskService.getTask(taskId);
+        taskToArchive.setActualDuration(task.getActualDuration());
+
+        taskService.archiveTask(taskToArchive);
+
+        String redirect = "redirect:/project/view/" + projectId;
+
+        redirect = redirect.concat("?viewMode=project");
+
+        return redirect;
     }
 }
 
