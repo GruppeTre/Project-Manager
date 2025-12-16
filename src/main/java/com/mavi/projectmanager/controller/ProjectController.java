@@ -388,8 +388,6 @@ public class ProjectController {
             return "redirect:/overview?viewMode=projects";
         }
 
-        //todo: check if lead is actual owner of project and task?
-
         toDelete = taskService.getTask(toDelete.getId());
 
         System.out.println("got task with id: " + toDelete.getId());
