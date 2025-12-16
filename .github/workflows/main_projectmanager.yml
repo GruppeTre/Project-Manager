@@ -25,6 +25,7 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven
+        env:
           SPRING_PROFILES_ACTIVE: prod
           PROD_DATABASE_URL: ${{secrets.PROD_DATABASE_URL}}
           PROD_USERNAME: ${{secrets.PROD_USERNAME}}
@@ -66,3 +67,4 @@ jobs:
           package: '*.jar'
 
           
+
