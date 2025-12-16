@@ -130,7 +130,6 @@ public class AccountController {
             return "redirect:/overview?viewMode=accounts";
         }
 
-        // todo: redirect attributes to show feedback on operation on overview page
         if (toDelete == null) {
             redirectAttributes.addFlashAttribute("error", true);
             redirectAttributes.addFlashAttribute("undefined", true);
