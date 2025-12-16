@@ -185,20 +185,19 @@ public class AccountService {
     }
 
     //Magnus Sørensen
-    //todo: refactor local variable to be more descriptive
-    private boolean isValidPassword(String str){
+    private boolean isValidPassword(String password){
 
-        //todo: make this constant final
-        int MIN_LENGTH = 16;
+        final int MIN_LENGTH = 16;
 
-        //todo: fix if statement (should not be inline)
-        if(str.length() < MIN_LENGTH) return false;
-
-        if(containsWhitespace(str)) {
+        if(password.length() < MIN_LENGTH) {
             return false;
         }
 
-        return !str.isBlank();
+        if(containsWhitespace(password)) {
+            return false;
+        }
+
+        return !password.isBlank();
     }
 
     //Magnus Sørensen
