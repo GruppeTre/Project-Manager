@@ -144,41 +144,41 @@ public class AccountService {
     }
 
     //Jens Gotfredsen
-    public String generatePassword(){
+    public String generatePassword() {
+        final String LOWER_CASE_POOL = "abcdefghijklmnopqrstuvxyz";
+        final String UPPER_CASE_POOL = "ABCEDFGHIJKLMNOPQRSTUVWXYZ";
+        final String NUMBER_POOL = "1234567890";
+        final String SPECIAL_CHAR_POOL = "!#€%&/()=?+-*@${}";
+        final int PASSWORD_LENGTH = 16;
 
-        //todo: refactor with constants at top of method, and add constant for desired password length
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder sb = new StringBuilder();
-        String lowerCasePool = "abcdefghijklmnopqrstuvxyz";
-        String upperCasePool = "ABCEDFGHIJKLMNOPQRSTUVWXYZ";
-        String numberPool = "1234567890";
-        String specialCharacterPool = "!#€%&/()=?+-*@${}";
 
         //Appends 8 secure random lowercase characters in string builder
-        for(int i = 0; i < 8; i++){
-            int randomIndex = secureRandom.nextInt(lowerCasePool.length());
-            sb.append(lowerCasePool.charAt(randomIndex));
+        for(int i = 0; i < PASSWORD_LENGTH/2; i++){
+            int randomIndex = secureRandom.nextInt(LOWER_CASE_POOL.length());
+            sb.append(LOWER_CASE_POOL.charAt(randomIndex));
         }
 
         //Inserts 4 secure random upper case characters to string builder
-        for(int i = 0; i < 4; i++){
-            int randomIndex = secureRandom.nextInt(upperCasePool.length());
+        for(int i = 0; i < PASSWORD_LENGTH/4; i++){
+            int randomIndex = secureRandom.nextInt(UPPER_CASE_POOL.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
-            sb.insert(insertIndex, upperCasePool.charAt(randomIndex));
+            sb.insert(insertIndex, UPPER_CASE_POOL.charAt(randomIndex));
         }
 
         //Inserts 2 secure random numbers in string builder
-        for(int i = 0; i < 2; i++){
-            int randomIndex = secureRandom.nextInt(numberPool.length());
+        for(int i = 0; i < PASSWORD_LENGTH/8; i++){
+            int randomIndex = secureRandom.nextInt(NUMBER_POOL.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
-            sb.insert(insertIndex, numberPool.charAt(randomIndex));
+            sb.insert(insertIndex, NUMBER_POOL.charAt(randomIndex));
         }
 
         //Inserts 2 secure random special characters in string builder
-        for(int i = 0; i < 2; i++){
-            int randomIndex = secureRandom.nextInt(numberPool.length());
+        for(int i = 0; i < PASSWORD_LENGTH/8; i++){
+            int randomIndex = secureRandom.nextInt(NUMBER_POOL.length());
             int insertIndex = secureRandom.nextInt(sb.length() + 1);
-            sb.insert(insertIndex, specialCharacterPool.charAt(randomIndex));
+            sb.insert(insertIndex, SPECIAL_CHAR_POOL.charAt(randomIndex));
         }
 
         return sb.toString();
