@@ -57,16 +57,12 @@ public class HomeController {
             String viewMode = "?viewMode=accounts";
 
             redirect = redirect.concat(viewMode);
-
-            //todo: remove return statements and simply return outside if/else statement
-            return redirect;
-        }
-        else{
+        } else{
             String viewMode = "?viewMode=projects";
             redirect = redirect.concat(viewMode);
-
-            return redirect;
         }
+
+        return redirect;
     }
 
     //Jens Gotfredsen
