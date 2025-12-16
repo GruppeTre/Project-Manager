@@ -82,8 +82,8 @@ We believe in an inclusive environment.
 1. We expect you to use a respectful tone towards others.
 2. Discussions are always welcome, but be mindful of the above.
 
-Everyone needs to be able to come express their opinions and ideas - big or small in a safe environment.
-Failure to adhere to common sense and reasoning when engaging with others is cause for removal, feedback ignored and more.
+Everyone needs to be able to express their opinions and ideas - big or small in a safe environment.
+Failure to adhere to common sense and reason when engaging with others is cause for removal, feedback ignored etc.
 
 ## Contributing
 To contribute to the project such as creating issues or pull requests please refer to [Contributing][contr]
