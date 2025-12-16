@@ -26,6 +26,13 @@
                 <div th:if="${session.account.role.name() == 'ADMIN'}" class="inline-block float-right">
                     <a class="button button-primary" th:href="@{/account/create}" th:text="#{overview.button.createAccount}"></a>
                 </div>
+
+                <!-- action feedback (on delete account) -->
+                <div th:if="${error}" class="form-error-container">
+                    <label th:if="${undefined}" th:text="#{projectOverviewPage.error.accountDeletion}"></label>
+                    <label th:if="${adminDeletion}" th:text="#{projectOverviewPage.error.adminDeletion}"></label>
+                </div>
+
             </div>
             <div>
                 <table class="overview_table" th:object="${accounts}">
