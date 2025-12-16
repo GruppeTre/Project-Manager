@@ -26,7 +26,8 @@ public class HomeController {
 
     //Jens Gotfredsen
     @GetMapping
-    public String getLogin(Model model){
+    public String getLogin(Model model) {
+
         Employee employee = new Employee();
         Account account = new Account();
 

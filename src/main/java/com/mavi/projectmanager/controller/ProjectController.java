@@ -512,7 +512,10 @@ public class ProjectController {
 
     //Jens Gotfredsen
     @PostMapping("/{projectId}/subproject/{subProjectId}/task/create")
-    public String createTask(@RequestParam("employeeList") List<String> accountList, @RequestParam("retrievedProjectId") int projectId, @RequestParam("retrievedSubProjectId") int subProjectId, @ModelAttribute Task task, HttpSession session, Model model) {
+    public String createTask(@RequestParam("employeeList") List<String> accountList,
+                             @RequestParam("retrievedProjectId") int projectId,
+                             @RequestParam("retrievedSubProjectId") int subProjectId, @ModelAttribute Task task,
+                             HttpSession session, Model model) {
 
         if(!SessionUtils.isLoggedIn(session)){
             return "redirect:/";
@@ -558,10 +561,12 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/task/{taskId}/archive")
-    public String getArchiveTaskPage(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, Model model){
+    public String getArchiveTaskPage(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, Model model) {
+
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
+
         if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/project/view/" + projectId;
         }
@@ -572,10 +577,13 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/task/{taskId}/archive")
-    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, @ModelAttribute Task task){
+    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId,
+                              HttpSession session, @ModelAttribute Task task) {
+
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
+
         if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/project/view/" + projectId;
         }
