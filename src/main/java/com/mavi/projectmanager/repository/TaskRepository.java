@@ -82,7 +82,7 @@ public class TaskRepository {
     });
 
     //Jens Gotfredsen
-    public Task createTask(Task task, SubProject subProject){
+    public Task createTask(Task task, SubProject subProject) {
 
         String query = """
                 INSERT INTO task (
@@ -147,7 +147,8 @@ public class TaskRepository {
     }
 
     //Jens Gotfredsen
-    public void addEmployeesToTaskJunction(Task task){
+    public void addEmployeesToTaskJunction(Task task) {
+
         String query = """
                 INSERT INTO account_task_junction (
                 task_id,
@@ -158,8 +159,8 @@ public class TaskRepository {
 
         List<Integer> accountIds = new ArrayList<>();
 
-        for(Account list : task.getAccountList()){
-            accountIds.add(list.getId());
+        for(Account account : task.getAccountList()){
+            accountIds.add(account.getId());
         }
 
         jdbcTemplate.batchUpdate(query, accountIds, accountIds.size(), (ps, accountId) -> {
@@ -180,7 +181,8 @@ public class TaskRepository {
     }
 
     //Jens Gotfredsen
-    public Task getTaskById(int id){
+    public Task getTaskById(int id) {
+
         String query = """
                 SELECT *
                 FROM task
@@ -190,7 +192,8 @@ public class TaskRepository {
         return jdbcTemplate.queryForObject(query, taskRowMapper, id);
     }
 
-    public int archiveTask(Task task){
+    public int archiveTask(Task task) {
+
         String query = """
                     UPDATE task
                     SET archived = 0, actual_duration = ?
@@ -198,6 +201,7 @@ public class TaskRepository {
                 """;
 
         int rowsAffected;
+
         try {
             rowsAffected = jdbcTemplate.update(query, task.getActualDuration(), task.getId());
         } catch (DataAccessException e) {

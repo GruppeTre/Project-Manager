@@ -109,7 +109,8 @@ public class AccountService {
 
 
     //Magnus Sørensen
-    public boolean accountLogin(Account account){
+    public boolean accountLogin(Account account) {
+
         try {
             Account getAccount = accountRepository.getAccountByMail(account.getMail());
 
@@ -131,14 +132,13 @@ public class AccountService {
 
     //Magnus Sørensen
     public Account deleteAccount(Account toDelete) {
+
         final int SUPER_ADMIN_ID = 1;
 
         //User should not be able to delete every account
         if (toDelete.getId() == SUPER_ADMIN_ID) {
             throw new IllegalArgumentException("The super admin account cannot be deleted!");
         }
-
-        //insert nullcheck for ID here
 
         return this.accountRepository.deleteAccount(toDelete);
     }
@@ -185,7 +185,7 @@ public class AccountService {
     }
 
     //Magnus Sørensen
-    private boolean isValidPassword(String password){
+    private boolean isValidPassword(String password) {
 
         final int MIN_LENGTH = 16;
 

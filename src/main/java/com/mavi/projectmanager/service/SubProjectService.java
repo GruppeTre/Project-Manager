@@ -74,6 +74,7 @@ public class SubProjectService {
 
     //Jacob Klitgaard
     private void validateDates(SubProject subProjectToCheck, Project projectToCompare) {
+
         if (subProjectToCheck.getStartDate().isAfter(subProjectToCheck.getEndDate())) {
             throw new InvalidDateException("Subproject start date cannot be after end date!", 3);
         }

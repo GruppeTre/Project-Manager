@@ -24,7 +24,7 @@ public class ProjectService {
     }
 
     //Magnus Sørensen
-    public List<Project> getProjects(){
+    public List<Project> getProjects() {
         return projectRepository.getProjects();
     }
 
@@ -38,7 +38,7 @@ public class ProjectService {
     }
 
     //Magnus Sørensen
-    public List<Project> getProjectsByLead(int id){
+    public List<Project> getProjectsByLead(int id) {
         return projectRepository.getProjectsByLead(id);
     }
 
@@ -84,7 +84,7 @@ public class ProjectService {
     }
 
     //Jens Gotfredsen
-    public Project getFullProjectById(int id){
+    public Project getFullProjectById(int id) {
         return this.projectRepository.getFullProjectById(id);
     }
 
@@ -113,7 +113,7 @@ public class ProjectService {
         }
     }
 
-    public List<Project> getArchivedProjects(){
+    public List<Project> getArchivedProjects() {
         return projectRepository.getArchivedProjects();
     }
 

@@ -14,7 +14,6 @@ import java.sql.Statement;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 
 @Repository
@@ -69,6 +68,7 @@ public class SubProjectRepository {
 
     //Jacob Klitgaard
     public SubProject getSubProjectById(int id) {
+
         String query = """
                 SELECT * FROM subproject WHERE id = ?
                 """;
@@ -135,9 +135,6 @@ public class SubProjectRepository {
         return rowsAffected;
     }
 
-    //returns rowsAffected - catches DataAccessException - checks for?
-    //Checks for consistency in end_date and start_date between these fields in SubProejct, Task and Project.
-    //ToDo: the above mentioned.
     public int updateSubProject(SubProject subProject) {
 
         String sql = """
@@ -167,5 +164,4 @@ public class SubProjectRepository {
 
         return jdbcTemplate.query(query, subProjectRowMapperForFullProject, id);
     }
-
 }
