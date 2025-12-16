@@ -20,6 +20,8 @@ class ProjectRepositoryTest {
 
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private TaskRepository taskRepository;
 
     private Project dbProjectWithLead;
     private Project dbProjectWithoutLead;
@@ -123,18 +125,22 @@ class ProjectRepositoryTest {
         assertEquals("Projekt Alpha", project.getName());
         assertEquals(LocalDate.parse("2025-11-28"), project.getStartDate());
         assertEquals(LocalDate.parse("2025-11-30"), project.getEndDate());
-        assertFalse(project.getSubProjectsList().isEmpty());
-        assertEquals(1, project.getSubProjectsList().getFirst().getId());
-        assertEquals("Subproject Charlie", project.getSubProjectsList().getFirst().getName());
-        assertEquals(LocalDate.parse("2025-12-12"), project.getSubProjectsList().getFirst().getStartDate());
-        assertEquals(LocalDate.parse("2025-12-18"), project.getSubProjectsList().getFirst().getEndDate());
-        assertFalse(project.getSubProjectsList().isEmpty());
-        assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getId());
-        assertEquals("Task A", project.getSubProjectsList().getFirst().getTaskList().getFirst().getName());
-        assertEquals("Test beskrivelse", project.getSubProjectsList().getFirst().getTaskList().getFirst().getDescription());
-        assertEquals(LocalDate.parse("2025-12-12"), project.getSubProjectsList().getFirst().getTaskList().getFirst().getStartDate());
-        assertEquals(LocalDate.parse("2025-12-13"), project.getSubProjectsList().getFirst().getTaskList().getFirst().getEndDate());
-        assertEquals(8, project.getSubProjectsList().getFirst().getTaskList().getFirst().getEstimatedDuration());
+
+        List<SubProject> sp = project.getSubProjectsList();
+        assertFalse(sp.isEmpty());
+        assertEquals(1, sp.getFirst().getId());
+        assertEquals("Subproject Charlie", sp.getFirst().getName());
+        assertEquals(LocalDate.parse("2025-12-12"), sp.getFirst().getStartDate());
+        assertEquals(LocalDate.parse("2025-12-18"), sp.getFirst().getEndDate());
+
+        List<Task> t = sp.getFirst().getTaskList();
+        assertFalse(t.isEmpty());
+        assertEquals(1, t.getFirst().getId());
+        assertEquals("Task A", t.getFirst().getName());
+        assertEquals("Test beskrivelse", t.getFirst().getDescription());
+        assertEquals(LocalDate.parse("2025-12-12"), t.getFirst().getStartDate());
+        assertEquals(LocalDate.parse("2025-12-13"), t.getFirst().getEndDate());
+        assertEquals(8, t.getFirst().getEstimatedDuration());
         assertFalse(project.getSubProjectsList().getFirst().getTaskList().getFirst().getAccountList().isEmpty());
         assertEquals(1, project.getSubProjectsList().getFirst().getTaskList().getFirst().getAccountList().getFirst().getId());
 
@@ -166,6 +172,6 @@ class ProjectRepositoryTest {
         //retrieve first task of first subproject
         Task toDelete = dbProjectWithLead.getSubProjectsList().getFirst().getTaskList().getFirst();
 
-        assertEquals(1, this.projectRepository.deleteTask(toDelete));
+        assertEquals(1, this.taskRepository.deleteTask(toDelete));
     }
 }

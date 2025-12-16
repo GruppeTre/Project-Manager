@@ -80,7 +80,7 @@ public class ProjectRepository {
 
         String query = """
                  SELECT p.id, p.name, p.start_date, p.end_date, p.archived
-                 FROM Project p
+                 FROM project p
                  WHERE p.archived = 1
                 """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);
@@ -100,7 +100,7 @@ public class ProjectRepository {
                             p.start_date,
                             p.end_date,
                             p.archived
-                        FROM Project p
+                        FROM project p
                         INNER JOIN account_project_junction apj
                             ON p.id = apj.project_id
                         WHERE apj.account_id = ? AND p.archived = 1
@@ -118,7 +118,7 @@ public class ProjectRepository {
                                    CONCAT(e.firstName, ' ', e.lastName)
                                    SEPARATOR','
                                ) AS leads
-                        FROM Project p
+                        FROM project p
                         LEFT JOIN account_project_junction apj ON p.id = apj.project_id
                         LEFT JOIN Account a ON apj.account_id = a.id
                         LEFT JOIN Employee e ON a.emp_id = e.id
@@ -170,7 +170,7 @@ public class ProjectRepository {
     public Project updateProject(Project project) {
 
         String query = """
-                UPDATE Project
+                UPDATE project
                 SET name = ?, start_date = ?, end_date = ?
                 WHERE id = ?
                 """;
@@ -216,7 +216,7 @@ public class ProjectRepository {
     //Jens Gotfredsen
     public Project getFullProjectById(int id) {
         String query = """
-                SELECT * FROM Project WHERE id = ?
+                SELECT * FROM project WHERE id = ?
                 """;
 
         return jdbcTemplate.queryForObject(query, fullProjectRowMapper, id);
@@ -245,27 +245,6 @@ public class ProjectRepository {
         return rowsAffected;
     }
 
-    //Magnus Sørensen
-    public int deleteTask(Task toDelete) {
-
-        String sql = """
-                DELETE FROM task
-                WHERE id = ?
-                """;
-
-        int taskId = toDelete.getId();
-
-        int rowsAffected;
-
-        try {
-            rowsAffected = jdbcTemplate.update(sql, taskId);
-        } catch (DataAccessException e) {
-            throw new RuntimeException("An unexpected error occured while trying to delete task with id: " + taskId);
-        }
-
-        return rowsAffected;
-    }
-
     public List<Project> getProjectByTeamMember(int id) {
         String query = """
                         SELECT
@@ -277,7 +256,7 @@ public class ProjectRepository {
                         FROM Project p
                         WHERE EXISTS (
                         SELECT 1
-                        FROM Subproject sp
+                        FROM subproject sp
                         JOIN Task t
                             ON t.subproject_id = sp.id
                         JOIN account_task_junction atj
@@ -294,7 +273,7 @@ public class ProjectRepository {
     public int archiveProject(Project project) {
 
         String query = """
-                    UPDATE Project
+                    UPDATE project
                     SET archived = 0
                     WHERE id = ?
                 """;
@@ -313,7 +292,7 @@ public class ProjectRepository {
 
         String query = """
              SELECT p.id, p.name, p.start_date, p.end_date, p.archived
-             FROM Project p
+             FROM project p
              WHERE p.archived = 0
             """;
         List<Project> projects = jdbcTemplate.query(query, projectRowMapper);

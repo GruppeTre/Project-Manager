@@ -105,18 +105,7 @@ public class ProjectService {
         return projectRepository.getProjectByTeamMember(id);
     }
 
-    //Magnus Sørensen
-    public void deleteTask(Task toDelete) {
-
-        int rowsAffected = projectRepository.deleteTask(toDelete);
-
-        if (rowsAffected != 1) {
-            throw new IllegalArgumentException("Unexpected number of tasks with id: " + toDelete.getId()
-            + " found in database! Expected: [1], actual: [" + rowsAffected + "]");
-        }
-    }
-
-    public void archiveProject(Project project) {
+    public void archiveProject(Project project){
         int rowsAffected = projectRepository.archiveProject(project);
         if(rowsAffected != 1){
             throw new IllegalArgumentException("An unexpected number of projects with id: " + project.getId()

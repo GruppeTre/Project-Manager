@@ -48,7 +48,7 @@ public class SubProjectService {
 
     //Jacob Klitgaard
     public SubProject getSubprojectById(int id) {
-        return subProjectRepository.getSubprojectById(id);
+        return subProjectRepository.getSubProjectById(id);
     }
 
     //Jacob Klitgaard

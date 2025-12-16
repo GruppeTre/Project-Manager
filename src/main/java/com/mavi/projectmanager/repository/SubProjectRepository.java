@@ -67,10 +67,11 @@ public class SubProjectRepository {
         return subProject;
     });
 
+    //Jacob Klitgaard
     public SubProject getSubProjectById(int id) {
 
         String query = """
-                SELECT * FROM Subproject sp WHERE id = ?
+                SELECT * FROM subproject WHERE id = ?
                 """;
 
         try {
@@ -135,17 +136,9 @@ public class SubProjectRepository {
         return rowsAffected;
     }
 
-    public SubProject getSubprojectById(int id) {
-
-        String sql = """
-                SELECT s.id, s.name, s.start_date, s.end_date
-                FROM subproject s
-                WHERE s.id = ?
-                """;
-
-        return jdbcTemplate.queryForObject(sql, subProjectRowMapper, id);
-    }
-
+    //returns rowsAffected - catches DataAccessException - checks for?
+    //Checks for consistency in end_date and start_date between these fields in SubProejct, Task and Project.
+    //ToDo: the above mentioned.
     public int updateSubProject(SubProject subProject) {
 
         String sql = """
@@ -170,7 +163,7 @@ public class SubProjectRepository {
     //Jens Gotfredsen
     public List<SubProject> getSubProjectsByProjectId(int id) {
         String query = """
-                SELECT * FROM Subproject WHERE project_id = ?
+                SELECT * FROM subproject WHERE project_id = ?
                 """;
 
         return jdbcTemplate.query(query, subProjectRowMapperForFullProject, id);

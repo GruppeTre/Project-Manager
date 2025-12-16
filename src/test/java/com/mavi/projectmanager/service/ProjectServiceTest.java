@@ -6,6 +6,7 @@ import com.mavi.projectmanager.exception.InvalidFieldException;
 import com.mavi.projectmanager.model.*;
 import com.mavi.projectmanager.repository.AccountRepository;
 import com.mavi.projectmanager.repository.ProjectRepository;
+import com.mavi.projectmanager.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ class ProjectServiceTest {
 
     @MockitoBean
     AccountRepository accountRepository;
+
+    @MockitoBean
+    TaskRepository taskRepository;
 
     private Project dbProject;
     private Task dbTask;
@@ -221,16 +225,4 @@ class ProjectServiceTest {
 
         verify(projectRepository).deleteProject(dbProject);
     }
-
-    //Magnus Sørensen
-    @Test
-    void shouldDeleteTask() {
-
-        when(projectRepository.deleteTask(dbTask)).thenReturn(1);
-
-        assertDoesNotThrow(() -> this.projectService.deleteTask(dbTask));
-
-        verify(projectRepository).deleteTask(dbTask);
-    }
-
 }
