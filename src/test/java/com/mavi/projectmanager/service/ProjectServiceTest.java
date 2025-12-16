@@ -63,8 +63,8 @@ class ProjectServiceTest {
         leadAccount.setId(accountId);
 
         List<Account> defaultLeadsList = List.of(leadAccount);
-        LocalDate startDate = LocalDate.parse("2025-12-01");
-        LocalDate endDate = LocalDate.parse("2025-12-17");
+        LocalDate startDate = LocalDate.now().minusDays(1);
+        LocalDate endDate = LocalDate.now().plusDays(3);
         String name = "Test Project";
         int id = 1;
 
@@ -104,7 +104,7 @@ class ProjectServiceTest {
     @Test
     void shouldEditProjectStartDate () {
 
-        LocalDate newDate = LocalDate.parse("2025-11-01");
+        LocalDate newDate = LocalDate.now().plusDays(1);
 
         dbProject.setStartDate(newDate);
 
@@ -171,7 +171,7 @@ class ProjectServiceTest {
     @Test
     void editProjectShouldRejectProjectWithEndDateInThePast () {
 
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate yesterday = dbProject.getEndDate().minusDays(4);
 
         dbProject.setEndDate(yesterday);
 
