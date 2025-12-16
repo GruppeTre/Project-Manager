@@ -39,7 +39,6 @@ class ProjectServiceTest {
     TaskRepository taskRepository;
 
     private Project dbProject;
-    private Task dbTask;
     private Account leadAccount;
 
     @BeforeEach
@@ -83,7 +82,7 @@ class ProjectServiceTest {
         newProject.setName(name);
         newProject.setId(id);
 
-        dbTask = new Task();
+        Task dbTask = new Task();
         dbTask.setId(id);
     }
 
