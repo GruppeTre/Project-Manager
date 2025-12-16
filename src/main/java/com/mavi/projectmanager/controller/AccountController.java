@@ -54,7 +54,6 @@ public class AccountController {
         //Check to see if all fields are filled correctly
         try{
             service.createUser(newAccount);
-
         } catch (InvalidFieldException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("error", true);
@@ -69,7 +68,7 @@ public class AccountController {
 
     //Jens Gotfredsen
     @GetMapping("/edit/{id}")
-    public String getEditUser(HttpSession session, @PathVariable int id, Model model){
+    public String getEditUser(HttpSession session, @PathVariable int id, Model model) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -91,7 +90,7 @@ public class AccountController {
 
     //Jens Gotfredsen
     @PostMapping("/editUser")
-    public String editUser(HttpSession session, @ModelAttribute Account updatedAccount){
+    public String editUser(HttpSession session, @ModelAttribute Account updatedAccount) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -143,7 +142,8 @@ public class AccountController {
     //Jens Gotfredsen
     @GetMapping("/generatePassword")
     @ResponseBody
-    public String generatePassword(HttpSession session){
+    public String generatePassword(HttpSession session) {
+
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }

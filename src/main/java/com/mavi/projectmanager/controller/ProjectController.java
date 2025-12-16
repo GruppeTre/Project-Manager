@@ -149,6 +149,7 @@ public class ProjectController {
     //Jens Gotfredsen
     @GetMapping("/view/{id}")
     public String getProjectOverview(@PathVariable("id") int id, @RequestParam( value = "viewMode", required=false) String viewMode, Model model, HttpSession session) {
+
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
@@ -161,10 +162,12 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/task/{taskId}/archive")
-    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, Model model){
+    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, Model model) {
+
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
+
         if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/project/view/" + projectId;
         }
@@ -175,9 +178,11 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/task/{taskId}/archive")
-    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, @ModelAttribute Task task){
+    public String archiveTask(@PathVariable("projectId") int projectId, @PathVariable("taskId") int taskId, HttpSession session, @ModelAttribute Task task) {
+
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
+
         }
         if (!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/project/view/" + projectId;
@@ -194,6 +199,7 @@ public class ProjectController {
     //Jacob Klitgaard
     @GetMapping("/{projectId}/create")
     public String getCreateSubProjectsPage(@PathVariable("projectId") int projectId, Model model) {
+
         SubProject subProject = new SubProject();
 
         model.addAttribute("subProject", subProject);
@@ -201,7 +207,6 @@ public class ProjectController {
         model.addAttribute("project", projectService.getProjectById(projectId));
 
         return "createSubProjectPage";
-
     }
 
     //Jacob KLitgaard
@@ -215,7 +220,6 @@ public class ProjectController {
         if(!SessionUtils.userHasRole(session, Role.PROJECT_LEAD)) {
             return "redirect:/";
         }
-
 
         try {
             subProjectService.createSubProject(subProject, projectId);
@@ -241,7 +245,7 @@ public class ProjectController {
 
     //Emil Gurresø
     @PostMapping("/delete")
-    public String deleteProject(HttpSession session, @ModelAttribute Project toDelete, RedirectAttributes redirectAttributes) {
+    public String deleteProject(HttpSession session, @ModelAttribute Project toDelete) {
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
@@ -276,8 +280,6 @@ public class ProjectController {
 
         SubProject toDelete = subProjectService.getSubProjectById(subProjectId);
 
-        System.out.println("id: " + toDelete.getId());
-
         try {
             subProjectService.deleteSubProject(toDelete);
         } catch (IllegalArgumentException e) {
@@ -291,8 +293,6 @@ public class ProjectController {
     @PostMapping("/edit/{projectId}/task/delete")
     public String deleteTask(@PathVariable int projectId, @ModelAttribute Task toDelete, HttpSession session, RedirectAttributes redirectAttributes) {
 
-        System.out.println("entering endpoint");
-
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
@@ -304,20 +304,19 @@ public class ProjectController {
 
         toDelete = taskService.getTask(toDelete.getId());
 
-        System.out.println("got task with id: " + toDelete.getId());
         try {
             projectService.deleteTask(toDelete);
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", true);
         }
 
-        //return to project view
         return "redirect:/project/view/" + projectId + "?viewMode=project";
     }
 
     //Emil Gurresø
     @GetMapping("/edit/{projectId}/{subProjectId}")
     public String editSubproject(@PathVariable("projectId") int projectId, @PathVariable("subProjectId") int subProjectId, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
         }
@@ -364,13 +363,13 @@ public class ProjectController {
 
         try {
             subProjectService.updateSubProject(toUpdate, project);
-
         } catch (InvalidFieldException e) {
 
             if (e instanceof InvalidDateException) {
                 int errorId = ((InvalidDateException) e).getErrorId();
                 model.addAttribute("errorId", errorId);
             }
+
             model.addAttribute("error", true);
             model.addAttribute("invalidField", e.getField());
             model.addAttribute("subProject", toUpdate);
@@ -463,7 +462,8 @@ public class ProjectController {
 
     //Jens Gotfredsen
     @GetMapping("/{projectId}/subproject/{subProjectId}/task/create")
-    public String createTask(@PathVariable int subProjectId, @PathVariable int projectId, Model model, HttpSession session){
+    public String createTask(@PathVariable int subProjectId, @PathVariable int projectId, Model model, HttpSession session) {
+
         if(!SessionUtils.isLoggedIn(session)){
             return "redirect:/";
         }
@@ -483,7 +483,8 @@ public class ProjectController {
 
     //Jens Gotfredsen
     @PostMapping("/{projectId}/subproject/{subProjectId}/task/create")
-    public String createTask(@RequestParam("employeeList") List<String> accountList, @RequestParam("retrievedProjectId") int projectId, @RequestParam("retrievedSubProjectId") int subProjectId, @ModelAttribute Task task, HttpSession session, Model model){
+    public String createTask(@RequestParam("employeeList") List<String> accountList, @RequestParam("retrievedProjectId") int projectId, @RequestParam("retrievedSubProjectId") int subProjectId, @ModelAttribute Task task, HttpSession session, Model model) {
+
         if(!SessionUtils.isLoggedIn(session)){
             return "redirect:/";
         }
@@ -524,7 +525,8 @@ public class ProjectController {
     }
 
     @PostMapping("/{id}/archive")
-    public String archiveProject(@PathVariable("id") int id, HttpSession session){
+    public String archiveProject(@PathVariable("id") int id, HttpSession session) {
+
         if(!SessionUtils.isLoggedIn(session)){
             return "redirect:/";
         }

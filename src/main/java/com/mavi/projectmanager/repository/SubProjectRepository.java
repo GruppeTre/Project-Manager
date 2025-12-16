@@ -68,6 +68,7 @@ public class SubProjectRepository {
     });
 
     public SubProject getSubProjectById(int id) {
+
         String query = """
                 SELECT * FROM Subproject sp WHERE id = ?
                 """;
@@ -143,7 +144,6 @@ public class SubProjectRepository {
                 """;
 
         return jdbcTemplate.queryForObject(sql, subProjectRowMapper, id);
-
     }
 
     public int updateSubProject(SubProject subProject) {
@@ -175,5 +175,4 @@ public class SubProjectRepository {
 
         return jdbcTemplate.query(query, subProjectRowMapperForFullProject, id);
     }
-
 }

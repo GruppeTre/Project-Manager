@@ -24,7 +24,7 @@ public class TaskService {
 
     //Jens Gotfredsen
     @Transactional
-    public Task createTask(Task task, SubProject subProject){
+    public Task createTask(Task task, SubProject subProject) {
 
         trimFields(task);
 
@@ -57,7 +57,7 @@ public class TaskService {
         return task;
     }
 
-    public void archiveTask(Task task){
+    public void archiveTask(Task task) {
         int rowsAffected = taskRepository.archiveTask(task);
         if(rowsAffected != 1){
             throw new IllegalArgumentException("An unexpected number of projects with id: " + task.getId()
@@ -100,6 +100,7 @@ public class TaskService {
 
     //Jens Gotfredsen
     private void validateDates(Task taskToCheck, SubProject subProjectToCompare) {
+
         if (taskToCheck.getStartDate().isAfter(taskToCheck.getEndDate())) {
             throw new InvalidDateException("Task start date cannot be after end date!", 3);
         }

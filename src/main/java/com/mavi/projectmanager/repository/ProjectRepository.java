@@ -77,6 +77,7 @@ public class ProjectRepository {
 
     //Jens Gotfredsen
     public List<Project> getProjects() {
+
         String query = """
                  SELECT p.id, p.name, p.start_date, p.end_date, p.archived
                  FROM Project p
@@ -91,6 +92,7 @@ public class ProjectRepository {
 
     //Jens Gotfredsen
     public List<Project> getProjectsByLead(int id) {
+
         String query = """
                         SELECT
                             p.id,
@@ -289,7 +291,8 @@ public class ProjectRepository {
         return jdbcTemplate.query(query, projectRowMapper, id);
     }
 
-    public int archiveProject(Project project){
+    public int archiveProject(Project project) {
+
         String query = """
                     UPDATE Project
                     SET archived = 0
@@ -306,7 +309,8 @@ public class ProjectRepository {
         return rowsAffected;
     }
 
-    public List<Project> getArchivedProjects(){
+    public List<Project> getArchivedProjects() {
+
         String query = """
              SELECT p.id, p.name, p.start_date, p.end_date, p.archived
              FROM Project p

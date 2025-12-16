@@ -24,7 +24,7 @@ public class ProjectService {
     }
 
     //Magnus Sørensen
-    public List<Project> getProjects(){
+    public List<Project> getProjects() {
         return projectRepository.getProjects();
     }
 
@@ -38,7 +38,7 @@ public class ProjectService {
     }
 
     //Magnus Sørensen
-    public List<Project> getProjectsByLead(int id){
+    public List<Project> getProjectsByLead(int id) {
         return projectRepository.getProjectsByLead(id);
     }
 
@@ -84,7 +84,7 @@ public class ProjectService {
     }
 
     //Jens Gotfredsen
-    public Project getFullProjectById(int id){
+    public Project getFullProjectById(int id) {
         return this.projectRepository.getFullProjectById(id);
     }
 
@@ -116,7 +116,7 @@ public class ProjectService {
         }
     }
 
-    public void archiveProject(Project project){
+    public void archiveProject(Project project) {
         int rowsAffected = projectRepository.archiveProject(project);
         if(rowsAffected != 1){
             throw new IllegalArgumentException("An unexpected number of projects with id: " + project.getId()
@@ -124,7 +124,7 @@ public class ProjectService {
         }
     }
 
-    public List<Project> getArchivedProjects(){
+    public List<Project> getArchivedProjects() {
         return projectRepository.getArchivedProjects();
     }
 

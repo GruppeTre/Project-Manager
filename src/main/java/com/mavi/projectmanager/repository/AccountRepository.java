@@ -76,7 +76,8 @@ public class AccountRepository {
     }
 
     //Jens Gotfredsen
-    public Account getAccountByID(int id){
+    public Account getAccountByID(int id) {
+
         String query= """
                         SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
                         INNER JOIN Employee e ON a.emp_id = e.id
@@ -91,7 +92,8 @@ public class AccountRepository {
     }
 
     //Jens Gotfredsen
-    public Account updatedAccount(Account updatedAccount){
+    public Account updatedAccount(Account updatedAccount) {
+
         String query = "UPDATE Account SET role = ?, password = ? WHERE id = ?";
 
         int accountID = updatedAccount.getId();
@@ -108,14 +110,14 @@ public class AccountRepository {
         }
 
         return updatedAccount;
-
-
     }
 
     //Jens Gotfredsen
     public Account getAccountByMail(String mail) {
+
         String query = """
-                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
+                        SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName
+                        FROM Account a
                         INNER JOIN Employee e ON a.emp_id = e.id
                         WHERE e.mail = ?
                       """;
@@ -123,13 +125,13 @@ public class AccountRepository {
         try{
             return jdbcTemplate.queryForObject(query, accountRowMapper, mail);
         } catch (EmptyResultDataAccessException e) {
-
             return null;
         }
     }
 
     //Jens Gotfredsen
     public List<Account> getAccounts() {
+
         String query = """
                         SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName
                         FROM Account a
@@ -158,7 +160,8 @@ public class AccountRepository {
     }
 
     //Jens Gotfredsen
-    public List<Account> getAccountsByProjectId(int id){
+    public List<Account> getAccountsByProjectId(int id) {
+
         String query = """
                 SELECT
                     a.*,
@@ -193,6 +196,7 @@ public class AccountRepository {
 
     //Jens Gotfredsen
     public List<Account> getAccountsByTaskId(int id) {
+
         String query = """
                 SELECT a.*, e.id AS employee_id, e.position, e.mail, e.firstName, e.lastName FROM Account a
                 INNER JOIN account_task_junction atj

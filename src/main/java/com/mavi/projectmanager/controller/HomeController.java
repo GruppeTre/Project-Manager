@@ -39,9 +39,9 @@ public class HomeController {
 
     //Jens Gotfredsen
     @PostMapping("/login")
-    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account){
+    public String login(Model model, HttpSession session, HttpServletResponse response, @ModelAttribute Account account) {
 
-        if(!accountService.accountLogin(account)){
+        if(!accountService.accountLogin(account)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             model.addAttribute("error", true);
             model.addAttribute("account", account);
@@ -55,7 +55,6 @@ public class HomeController {
 
         if(SessionUtils.userHasRole(session, Role.ADMIN)) {
             String viewMode = "?viewMode=accounts";
-
             redirect = redirect.concat(viewMode);
         } else{
             String viewMode = "?viewMode=projects";
@@ -68,6 +67,7 @@ public class HomeController {
     //Jens Gotfredsen
     @PostMapping("/logout")
     public String logout(HttpSession session) {
+
         session.invalidate();
 
         return "redirect:/";
@@ -97,14 +97,17 @@ public class HomeController {
         if(viewModeContainer.equals("projects") && SessionUtils.userHasRole(session, Role.ADMIN)){
             model.addAttribute("projects", projectService.getProjects());
         }
+
         if(viewModeContainer.equals("projects") && SessionUtils.userHasRole(session, Role.PROJECT_LEAD)){
             int projectLeadId = ((Account) session.getAttribute("account")).getId();
             model.addAttribute("projectsByLead", projectService.getProjectsByLead(projectLeadId));
         }
+
         if(viewModeContainer.equals("projects") && SessionUtils.userHasRole(session, Role.TEAM_MEMBER)){
             int teamMemberId = ((Account) session.getAttribute("account")).getId();
             model.addAttribute("projectsByTeam", projectService.getProjectByTeamMember(teamMemberId));
         }
+
         if(viewModeContainer.equals("archive") && SessionUtils.userHasRole(session, Role.ADMIN)){
             model.addAttribute("archivedProjects", projectService.getArchivedProjects());
         }
