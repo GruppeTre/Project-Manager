@@ -69,7 +69,7 @@ public class AccountController {
 
     //Jens Gotfredsen
     @GetMapping("/edit/{id}")
-    public String getEditUser(HttpSession session, @PathVariable int id, Model model, HttpSession httpSession){
+    public String getEditUser(HttpSession session, @PathVariable int id, Model model){
 
         if (!SessionUtils.isLoggedIn(session)) {
             return "redirect:/";
