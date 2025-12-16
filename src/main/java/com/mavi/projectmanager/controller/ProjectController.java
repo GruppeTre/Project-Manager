@@ -363,8 +363,6 @@ public class ProjectController {
         redirect = redirect.concat("?viewMode=project");
 
         return redirect;
-
-        //ToDO: add RedirectAttributes for whether the update was successful. - redirect to the same page and return the same object with it.
     }
 
     /*
