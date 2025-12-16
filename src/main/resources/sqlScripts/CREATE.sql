@@ -53,7 +53,7 @@ CREATE TABLE task (
                       start_date DATE NOT NULL,
                       end_date DATE NOT NULL,
                       estimated_duration INT NOT NULL,
-                      actual_duration INT,
+                      actual_duration INT NULL,
                       archived BIT NOT NULL,
                       subproject_id INT NOT NULL,
 
