@@ -2,17 +2,22 @@ package com.mavi.projectmanager.exception;
 
 public enum Field {
     EMAIL("email"),
-    FIRST_NAME("firstName"),
-    SURNAME("surname"),
-    PASSWORD("password");
+    PASSWORD("password"),
+    EMPLOYEE("employee"),
+    TITLE("title"),
+    DATE("date"),
+    ESTIMATION("estimation"),
+    DESCRIPTION("description");
 
     private final String value;
 
-    private Field(String value) {
+    Field(String value) {
         this.value = value;
     }
 
     public String getValue() {
         return value;
     }
+
+
 }

@@ -1,0 +1,115 @@
+DROP ALL OBJECTS;
+
+CREATE TABLE employee (
+                          id INT NOT NULL UNIQUE AUTO_INCREMENT,
+                          position VARCHAR(50) NOT NULL,
+                          mail VARCHAR(100) NOT NULL UNIQUE,
+                          firstName VARCHAR(50) NOT NULL,
+                          lastName VARCHAR(50) NOT NULL,
+
+                          PRIMARY KEY(id)
+);
+
+CREATE TABLE account (
+                         id INT NOT NULL UNIQUE AUTO_INCREMENT,
+                         role INT NOT NULL CHECK (role BETWEEN 1 AND 3),
+                         password VARCHAR(255) NOT NULL,
+                         emp_id INT NOT NULL UNIQUE,
+
+                         PRIMARY KEY(id),
+                         FOREIGN KEY(emp_id) REFERENCES employee(id)
+                             ON DELETE CASCADE
+);
+
+CREATE TABLE project (
+                         id INT NOT NULL UNIQUE AUTO_INCREMENT,
+                         name VARCHAR(50) NOT NULL,
+                         start_date DATE NOT NULL,
+                         end_date DATE NOT NULL,
+                         archived BIT NOT NULL,
+
+                         PRIMARY KEY(id)
+);
+
+CREATE TABLE subproject (
+                            id INT NOT NULL UNIQUE AUTO_INCREMENT,
+                            name VARCHAR(50) NOT NULL,
+                            start_date DATE NOT NULL,
+                            end_date DATE NOT NULL,
+                            project_id INT NOT NULL,
+
+                            PRIMARY KEY(id),
+                            FOREIGN KEY(project_id) REFERENCES project(id)
+                                ON DELETE CASCADE
+);
+
+CREATE TABLE task (
+                      id INT NOT NULL UNIQUE AUTO_INCREMENT,
+                      name VARCHAR(50) NOT NULL,
+                      description VARCHAR(255),
+                      start_date DATE NOT NULL,
+                      end_date DATE NOT NULL,
+                      estimated_duration INT NOT NULL,
+                      actual_duration INT,
+                      archived BIT NOT NULL,
+                      subproject_id INT NOT NULL,
+
+                      PRIMARY KEY(id),
+                      FOREIGN KEY(subproject_id) REFERENCES subproject(id)
+                          ON DELETE CASCADE
+);
+
+CREATE TABLE account_project_junction (
+                                          account_id INT NOT NULL,
+                                          project_id INT NOT NULL,
+
+                                          PRIMARY KEY(account_id, project_id),
+                                          FOREIGN KEY(account_id) REFERENCES account(id)
+                                              ON DELETE CASCADE,
+                                          FOREIGN KEY(project_id) REFERENCES project(id)
+                                              ON DELETE CASCADE
+);
+
+
+CREATE TABLE account_task_junction (
+                                        account_id INT NOT NULL,
+                                        task_id INT NOT NULL,
+
+                                        PRIMARY KEY(account_id, task_id),
+                                        FOREIGN KEY(account_id) REFERENCES account(id)
+                                            ON DELETE CASCADE,
+                                        FOREIGN KEY(task_id) REFERENCES task(id)
+                                            ON DELETE CASCADE
+);
+
+INSERT INTO employee (position, mail, firstName, lastName)
+VALUES ('Manager', 'admin@alphasolutions.com','Anders', 'Nielsen'),
+       ('Udvikler', 'idso@alphasolutions.com', 'Ida', 'Sorensen'),
+       ('Support', 'mich@alphasolutions.com', 'Mikkel', 'Christensen');
+
+INSERT INTO account(role, password, emp_id)
+-- all passwords are 'admin'
+VALUES (1, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 1),
+       (2, '$argon2id$v=19$m=16384,t=2,p=1$6OHVitLLygwARCqoWmqBBQ$a9v0WVnYKhIdATHYQotVZOhxlfDB3XP8LQbhAVepm98', 2);
+
+INSERT INTO project(name, start_date, end_date, archived)
+VALUES ('Projekt Alpha', '2025-11-28', '2025-11-30', 1),
+       ('Projekt Beta', '2025-12-01', '2025-12-17', 1);
+
+INSERT INTO account_project_junction(account_id, project_id)
+VALUES (2,1);
+
+INSERT INTO subproject(name, start_date, end_date, project_id)
+VALUES
+('Subproject Charlie', '2025-12-12', '2025-12-18', 1),
+('Subproject Delta', '2025-12-18', '2025-12-20', 1);
+
+INSERT INTO task(name, description, start_date, end_date, estimated_duration, subproject_id, archived)
+VALUES
+('Task A', 'Test beskrivelse', '2025-12-12', '2025-12-13', 8, 1, 1),
+('Task B', 'Test beskrivelse', '2025-12-13', '2025-12-15', 24, 1, 1);
+
+INSERT INTO account_task_junction(account_id, task_id)
+VALUES
+(1, 1),
+(2, 2);

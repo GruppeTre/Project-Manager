@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{page.createTask.title}"></title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<header th:replace="~{fragments/_commonElements :: header}"></header>
+
+<main class="container">
+    <section>
+        <article>
+            <form th:action="@{/project/{projectId}/subproject/{subProjectId}/task/create(projectId=${projectId}, subProjectId=${subProject.id})}" th:object="${task}" method="post">
+
+                <input type="hidden" name="retrievedProjectId" th:value="${projectId}">
+                <input type="hidden" name="retrievedSubProjectId" th:value="${subProject.id}">
+
+                <!-- Error messages -->
+                <div th:if="${error}" class="form-error-container">
+                    <div th:if="${invalidField == 'date'}">
+                        <label th:if="${errorId == 3}" th:text="#{form.error.date.startDateAfterEndDate}"></label>
+                        <label th:if="${errorId == 4}" th:text="#{form.error.date.endDateInPast}"></label>
+                        <label th:if="${errorId == 5}" th:text="#{form.error.date.startDateBeforeSubprojectStartDate}"></label>
+                        <label th:if="${errorId == 6}" th:text="#{form.error.date.startDateAfterSubprojectEndDate}"></label>
+                        <label th:if="${errorId == 7}" th:text="#{form.error.date.endDateBeforeSubprojectStartDate}"></label>
+                        <label th:if="${errorId == 8}" th:text="#{form.error.date.endDateAfterSubprojectEndDate}"></label>
+                    </div>
+                    <div th:if="${invalidField == 'title'}">
+                        <label th:text="#{form.error.taskTitle}"></label>
+                    </div>
+                    <div th:if="${invalidField == 'employee'}">
+                        <label th:text="#{form.error.employee}"></label>
+                    </div>
+                    <div th:if="${invalidField == 'estimation'}">
+                        <label th:text="#{form.error.estimation}"></label>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 th:text="#{newTask.title}"></h2>
+                </div>
+
+                <!-- task name -->
+                <div class="row">
+                    <label for="name" class="form-label" th:text="#{form.label.taskName}"></label>
+                    <input id="name" type="text" th:field="*{name}" th:placeholder="#{form.input.taskName.placeholder}" required>
+                </div>
+
+                <!-- task description -->
+                <div class="row">
+                    <label for="description" class="form-label" th:text="#{form.label.taskDescription}"></label>
+                    <input id="description" type="text" th:field="*{description}" th:placeholder="#{form.input.taskDescription.placeholder}">
+                </div>
+
+                <!-- task estimation -->
+                <div class="row">
+                    <label for="estimation" class="form-label" th:text="#{form.label.taskEstimation}"></label>
+                    <input id="estimation" type="text" th:field="*{estimatedDuration}" th:placeholder="#{form.input.taskEstimation.placeholder}" required>
+                </div>
+
+                <!-- task employee -->
+                <div class="row">
+                    <label for="employee" class="form-label" th:text="#{form.label.taskEmployee}"></label>
+                    <label class="small-info" th:text="#{form.label.employeeInfo}"></label>
+                    <select class="multiselect" id="employee" name="employeeList" multiple required>
+                        <option th:each="t : ${teamList}" th:text="${t.firstName} + ' ' + ${t.lastName} + ', ' + ${t.mail}" th:value="${t.mail}"></option>
+                    </select>
+                </div>
+
+                <!-- start date -->
+
+                <div class="row">
+                    <label for="start-date" class="form-label" th:text="#{form.label.startDate}"></label>
+                    <input id="start-date" type="date" th:field="*{startDate}" th:min="${#temporals.format(subProject.startDate, 'yyyy-MM-dd')}" th:max="${#temporals.format(subProject.endDate, 'yyyy-MM-dd')}" required>
+                </div>
+
+                <!-- end date -->
+
+                <div class="row">
+                    <label for="end-date" class="form-label" th:text="#{form.label.endDate}"></label>
+                    <input id="end-date" type="date" th:field="*{endDate}" th:min="${#temporals.format(subProject.startDate, 'yyyy-MM-dd')}" th:max="${#temporals.format(subProject.endDate, 'yyyy-MM-dd')}" required>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="row">
+                    <a class="button" th:href="@{/project/view/{id}(id=${projectId}, viewMode='project')}" th:text="#{form.button.back}"></a>
+                    <button class="button" type="submit" th:text="#{form.button.submit}"></button>
+                </div>
+            </form>
+        </article>
+    </section>
+</main>
+<footer th:replace="~{fragments/_commonElements :: footer}"></footer>
+</body>
+</html>

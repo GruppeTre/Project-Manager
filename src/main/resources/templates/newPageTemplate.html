@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Template</title>
-    <link rel="stylesheet" th:href="@{/style/normalize.css}">
-    <link rel="stylesheet" th:href="@{/style/skeleton.css}">
-    <link rel="stylesheet" th:href="@{/style/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 </head>
 <body>
+    <header th:replace="~{fragments/_commonElements :: header}"></header>
+    <main class="container">
 
+    </main>
+    <footer th:replace="~{fragments/_commonElements :: footer}"></footer>
 </body>
 </html>

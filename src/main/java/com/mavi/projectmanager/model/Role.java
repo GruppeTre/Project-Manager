@@ -1,0 +1,34 @@
+package com.mavi.projectmanager.model;
+
+public enum Role {
+    ADMIN (1, "Admin"),
+    PROJECT_LEAD (2, "Project Lead"),
+    TEAM_MEMBER (3, "Team Member");
+
+    private final int id;
+    private final String value;
+
+    Role (int id, String value) {
+        this.id = id;
+        this.value = value;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    //Converter
+    public static Role getRoleByID(int id){
+        for(Role role : Role.values()){
+            if(role.id == id){
+                return role;
+            }
+        }
+
+        throw new IllegalArgumentException("No role found with id: " + id);
+    }
+}
