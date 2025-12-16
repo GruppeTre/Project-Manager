@@ -111,7 +111,7 @@ public class AccountService {
     //Magnus Sørensen
     public boolean accountLogin(Account account){
         try {
-        Account getAccount = accountRepository.getAccountByMail(account.getMail());
+            Account getAccount = accountRepository.getAccountByMail(account.getMail());
 
             return encoder.matches(account.getPassword(), getAccount.getPassword());
         } catch (RuntimeException e) {
