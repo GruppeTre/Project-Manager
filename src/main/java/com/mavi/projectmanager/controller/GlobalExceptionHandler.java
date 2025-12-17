@@ -13,6 +13,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PageNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handlePageNotFound(PageNotFoundException ex, Model model){
-        return "";
+        return "error/404";
     }
 }
