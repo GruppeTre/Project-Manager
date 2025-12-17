@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Page Not Found</title>
+    <link rel="stylesheet" th:href="@{/css/normalize.css}">
+    <link rel="stylesheet" th:href="@{/css/skeleton.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body>
+<main class="container">
+    <section>
+        <article>
+            <div>
+                <h2>Something went wrong!</h2>
+                <p>For convenience we've provided a few links to guide you back!</p>
+
+                <div class="row">
+                    <a th:href="@{overview}" th:text="'Overview Page'"></a>
+                </div>
+                <div class="row">
+                    <a th:href="@{/}" th:text="'Login Page'"></a>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+</body>
+</html>
